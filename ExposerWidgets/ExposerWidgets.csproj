@@ -26,4 +26,9 @@
 		<None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
 		<None Include="nuget\Icon.png" Pack="true" PackagePath="" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Skyline.DataMiner.Core.SRM" Version="2.0.1" />
+	  <PackageReference Include="Skyline.DataMiner.Utils.InteractiveAutomationScriptToolkit" Version="8.0.4" />
+	</ItemGroup>
 </Project>
