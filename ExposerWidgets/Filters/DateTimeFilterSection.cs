@@ -5,29 +5,50 @@
     using Skyline.DataMiner.Utils.ExposerWidgets.Interfaces;
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
+    /// <summary>
+    /// Represents filter section with one date-time picker input.
+    /// </summary>
+    /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
     public class DateTimeFilterSection<DataMinerObjectType> : FilterSectionOneInput<DataMinerObjectType, DateTime>, IDataMinerObjectFilter<DataMinerObjectType>
     {
         private readonly DateTimePicker dateTimePicker = new DateTimePicker(DateTime.Now);
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DateTimeFilterSection{T}"/>"/> class.
+        /// </summary>
+        /// <param name="filterName">Name of filter.</param>
+        /// <param name="filterFunction">Filter exposers that will be used.</param>
         public DateTimeFilterSection(string filterName, Func<DateTime, FilterElement<DataMinerObjectType>> filterFunction) : base(filterName, filterFunction)
         {
             GenerateUi();
         }
 
+        /// <summary>
+        /// Indicates if filter is valid.
+        /// </summary>
         public override bool IsValid => true;
 
+        /// <summary>
+        /// Gets or sets value of date-time picker.
+        /// </summary>
         public override DateTime Value
         {
             get => dateTimePicker.DateTime;
             set => dateTimePicker.DateTime = value;
         }
 
+        /// <summary>
+        /// Sets value to current date-time and filter as non active.
+        /// </summary>
         public override void Reset()
         {
             IsActive = false;
             Value = DateTime.Now;
         }
 
+        /// <summary>
+        /// Generates UI of date-time filter section.
+        /// </summary>
         protected override void GenerateUi()
         {
             base.GenerateUi();
@@ -35,6 +56,9 @@
             AddWidget(dateTimePicker, 0, 1);
         }
 
+        /// <summary>
+        /// Handles default update of date-time filter.
+        /// </summary>
         protected override void HandleDefaultUpdate()
         {
             filterNameCheckBox.IsChecked = IsDefault;
