@@ -10,6 +10,9 @@
     using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
     using Skyline.DataMiner.Core.SRM;
 
+    /// <summary>
+    /// Section for filtering service definitions.
+    /// </summary>
     public class FindServiceDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ServiceDefinition>
     {
         private readonly StringFilterSection<ServiceDefinition> nameFilterSection = new StringFilterSection<ServiceDefinition>("Name", name => ServiceDefinitionExposers.Name.Equal(name));
@@ -28,6 +31,10 @@
 
         private readonly Button addPropertyFilterButton = new Button("Add Property Filter");
 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindServiceDefinitionsWithFiltersSection"/>"/> class.
+        /// </summary>
         public FindServiceDefinitionsWithFiltersSection() : base()
         {
             addNodeFunctionIdFilterButton.Pressed += AddNodeFunctionIdFilterButton_Pressed;
@@ -35,6 +42,9 @@
             addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
         }
 
+        /// <summary>
+        /// Resets filters in section to default values.
+        /// </summary>
         protected override void ResetFilters()
         {
             foreach (var filterSection in GetIndividualFilters())
@@ -63,6 +73,10 @@
             InvokeRegenerateUi();
         }
 
+        /// <summary>
+        /// Filtering all service definitions in system based on provided input.
+        /// </summary>
+        /// <returns>Collection of filtered service definitions.</returns>
         protected override IEnumerable<ServiceDefinition> FindItemsWithFilters()
         {
             if (!TryGetCombinedFilterElement(out var combinedFilter))
@@ -73,11 +87,20 @@
             return SrmManagers.ServiceManager.GetServiceDefinitions(combinedFilter);
         }
 
+        /// <summary>
+        /// Gets name of service definition.
+        /// </summary>
+        /// <param name="item">Service definition for which we want to retrieve name.</param>
+        /// <returns>Name of service definition.</returns>
         protected override string GetItemIdentifier(ServiceDefinition item)
         {
             return item.Name;
         }
 
+        /// <summary>
+        /// Adding filter section in the UI.
+        /// </summary>
+        /// <param name="row">Row on which section should appear.</param>
         protected override void AddFilterSections(ref int row)
         {
             AddSection(nameFilterSection, new SectionLayout(++row, 0));

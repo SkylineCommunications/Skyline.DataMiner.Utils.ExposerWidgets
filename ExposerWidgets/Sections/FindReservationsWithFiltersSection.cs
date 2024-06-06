@@ -11,6 +11,9 @@
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
+    /// <summary>
+    /// Section for filtering reservations.
+    /// </summary>
     public class FindReservationsWithFiltersSection : FindItemsWithFiltersSection<ReservationInstance>
     {
         private readonly FilterSectionBase<ReservationInstance> reservationIdFilterSection = new GuidFilterSection<ReservationInstance>("Reservation ID", x => ReservationInstanceExposers.ID.Equal(x));
@@ -45,6 +48,9 @@
         private readonly List<FilterSectionBase<ReservationInstance>> propertyFilterSections = new List<FilterSectionBase<ReservationInstance>>();
         private readonly Button addPropertyFilterButton = new Button("Add Property Filter");
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindReservationsWithFiltersSection"/>"/> class.
+        /// </summary>
         public FindReservationsWithFiltersSection() : base()
         {
             addResourceFilterButton.Pressed += AddResourceFilterButton_Pressed;
@@ -52,6 +58,11 @@
             addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
         }
 
+        /// <summary>
+        /// Adds default input filter for custom properties.
+        /// </summary>
+        /// <param name="propertyName">Name of property on reservation.</param>
+        /// <param name="propertyValue">Value of added property.</param>
         public void AddDefaultPropertyFilter(string propertyName, string propertyValue)
         {
             var propertyFilterSection = new StringStringFilterSection<ReservationInstance>("Property", (propName, propValue) => ReservationInstanceExposers.Properties.DictStringField(propName).Equal(propValue));
@@ -63,6 +74,9 @@
             InvokeRegenerateUi();
         }
 
+        /// <summary>
+        /// Resets filters in section to default values.
+        /// </summary>
         protected override void ResetFilters()
         {
             foreach (var filterSection in GetIndividualFilters())
@@ -85,13 +99,18 @@
 
         private void AddResourceFilterButton_Pressed(object sender, EventArgs e)
         {
-            var resourceFilterSection = new GuidFilterSection<ReservationInstance>("Uses Resource ID", (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.Contains((Guid)resourceId));
+            var resourceFilterSection = new GuidFilterSection<ReservationInstance>("Uses Resource ID", (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.Contains(resourceId));
 
             resourceFilterSections.Add(resourceFilterSection);
 
             InvokeRegenerateUi();
         }
 
+        /// <summary>
+        /// Setting visibility and enable state to all filters in section.
+        /// </summary>
+        /// <param name="isVisible">Determines if widget should be visible.</param>
+        /// <param name="isEnabled">Determines if widget should be edited.</param>
         protected override void HandleVisibilityAndEnabledUpdate(bool isVisible, bool isEnabled)
         {
             resourceFilterSections.ForEach(f => f.IsEnabled = isEnabled);
@@ -99,16 +118,29 @@
             propertyFilterSections.ForEach(f => f.IsEnabled = isEnabled);
         }
 
+        /// <summary>
+        /// Filtering all reservation instances in system based on provided input.
+        /// </summary>
+        /// <returns>Collection of filtered reservation instances.</returns>
         protected override IEnumerable<ReservationInstance> FindItemsWithFilters()
         {
             return SrmManagers.ResourceManager.GetReservationInstances(GetCombinedFilterElement()).ToList();
         }
 
+        /// <summary>
+        /// Gets name of reservation instance.
+        /// </summary>
+        /// <param name="item">Reservation instance for which we want to retrieve name.</param>
+        /// <returns>Name of reservation instance.</returns>
         protected override string GetItemIdentifier(ReservationInstance item)
         {
             return item.Name;
         }
 
+        /// <summary>
+        /// Adding filter section in the UI.
+        /// </summary>
+        /// <param name="row">Row on which section should appear.</param>
         protected override void AddFilterSections(ref int row)
         {
             AddSection(reservationNameEqualsFilterSection, new SectionLayout(++row, 0));

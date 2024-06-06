@@ -9,6 +9,9 @@
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
 
+    /// <summary>
+    /// Section for filtering tickets.
+    /// </summary>
     public class FindTicketsWithFiltersSection : FindItemsWithFiltersSection<Ticket>
     {
         private readonly FilterSectionBase<Ticket> ticketIdFilterSection = new StringFilterSection<Ticket>("Ticket ID", x => TicketingExposers.FullID.Equal(x));
@@ -28,6 +31,9 @@
 
         private readonly TicketingGatewayHelper ticketingHelper;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindTicketsWithFiltersSection"/>"/> class.
+        /// </summary>
         public FindTicketsWithFiltersSection() : base()
         {            
             ticketingHelper = new TicketingGatewayHelper { HandleEventsAsync = false };
@@ -38,6 +44,12 @@
             addPropertyValueFilterButton.Pressed += AddPropertyValueFilterButton_Pressed;
         }
 
+        /// <summary>
+        /// Adds string input filter for custom properties. 
+        /// </summary>
+        /// <param name="propertyName">Name of property on ticket.</param>
+        /// <param name="propertyValue">Value of added property.</param>
+        /// <param name="setAsDefault">Indicates if added inputs should be set as default values.</param>
         public void AddStringPropertyValueFilter(string propertyName, string propertyValue = null, bool setAsDefault = false)
         {
             var propertyFilterSection = new StringStringFilterSection<Ticket>("String Property", (pName, pValue) => TicketingExposers.CustomTicketFields.DictStringField(pName).Equal(pValue));
@@ -57,6 +69,13 @@
             InvokeRegenerateUi();
         }
 
+        /// <summary>
+        /// Adds enum input filter for custom properties. 
+        /// </summary>
+        /// <param name="propertyName">Name of property on ticket.</param>
+        /// <param name="firstPropertyValue">String value of added property.</param>
+        /// <param name="secondPropertyValue">Int value of added property.</param>
+        /// <param name="setAsDefault">Indicates if added inputs should be set as default values.</param>
         public void AddEnumPropertyValueFilter(string propertyName, string firstPropertyValue = null, int? secondPropertyValue = null, bool setAsDefault = false)
         {
             var propertyFilterSection = new TicketEnumFilterSection<Ticket>("Enum Property", (pName, pValue1, pValue2) => TicketingExposers.CustomTicketFields.DictField(pName).Equal($"{pValue1}/{pValue2}"));
@@ -77,6 +96,12 @@
             InvokeRegenerateUi();
         }
 
+        /// <summary>
+        /// Adds integer input filter for custom properties. 
+        /// </summary>
+        /// <param name="propertyName">Name of property on ticket.</param>
+        /// <param name="propertyValue">Integer value of added property.</param>
+        /// <param name="setAsDefault">Indicates if added inputs should be set as default values.</param>
         public void AddIntegerPropertyValueFilter(string propertyName, int? propertyValue = null, bool setAsDefault = false)
         {
             var propertyFilterSection = new StringIntegerFilterSection<Ticket>("Integer Property", (pName, pValue) => TicketingExposers.CustomTicketFields.DictField(pName).Equal(pValue));
@@ -96,6 +121,11 @@
             InvokeRegenerateUi();
         }
 
+        /// <summary>
+        /// Adds filter for properties that will check if property exists. 
+        /// </summary>
+        /// <param name="propertyName">Name of property that we are checking.</param>
+        /// <param name="setAsDefault">Indicates if added inputs should be set as default values.</param>
         public void AddPropertyExistenceFilter(string propertyName, bool setAsDefault = false)
         {
             var propertyExistenceFilterSection = new StringFilterSection<Ticket>("Property Exists", (pName) => TicketingExposers.CustomTicketFields.DictStringField(pName).NotEqual(string.Empty));
@@ -114,6 +144,9 @@
             InvokeRegenerateUi();
         }
 
+        /// <summary>
+        /// Resets filters in section to default values.
+        /// </summary>
         protected override void ResetFilters()
         {
             foreach (var filterSection in GetIndividualFilters())
@@ -149,6 +182,11 @@
             AddPropertyExistenceFilter(string.Empty);
         }
 
+        /// <summary>
+        /// Setting visibility and enable state to all filters in section.
+        /// </summary>
+        /// <param name="isVisible">Determines if widget should be visible.</param>
+        /// <param name="isEnabled">Determines if widget should be edited.</param>
         protected override void HandleVisibilityAndEnabledUpdate(bool isVisible, bool isEnabled)
         {
             ticketIdFilterSection.IsEnabled = isEnabled;
@@ -162,16 +200,29 @@
             propertyFilterSections.ForEach(f => f.IsEnabled = isEnabled);
         }
 
+        /// <summary>
+        /// Filtering all tickets in system based on provided input.
+        /// </summary>
+        /// <returns>Collection of filtered tickets.</returns>
         protected override IEnumerable<Ticket> FindItemsWithFilters()
         {
             return new HashSet<Ticket>(ticketingHelper.GetTickets(null, GetCombinedFilterElement(), false).ToList());
         }
 
+        /// <summary>
+        /// Gets name of ticket.
+        /// </summary>
+        /// <param name="item">Ticket for which we want to retrieve name.</param>
+        /// <returns>Name of ticket.</returns>
         protected override string GetItemIdentifier(Ticket item)
         {
             return item.ID.ToString();
         }
 
+        /// <summary>
+        /// Adding filter section in the UI.
+        /// </summary>
+        /// <param name="row">Row on which section should appear.</param>
         protected override void AddFilterSections(ref int row)
         {
             AddSection(ticketIdFilterSection, new SectionLayout(++row, 0));

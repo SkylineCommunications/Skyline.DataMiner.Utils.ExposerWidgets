@@ -11,19 +11,25 @@
     using System.Linq;
     using Parameter = Skyline.DataMiner.Net.Profiles.Parameter;
 
+    /// <summary>
+    /// Section for filtering profile parameters.
+    /// </summary>
     public class FindProfileParametersWithFiltersSection : FindItemsWithFiltersSection<Parameter>
     {
-        private readonly FilterSectionBase<Parameter> idFilterSection = new GuidFilterSection<Parameter>("Profile Parameter ID", x => ParameterExposers.ID.Equal((Guid)x));
+        private readonly FilterSectionBase<Parameter> idFilterSection = new GuidFilterSection<Parameter>("Profile Parameter ID", x => ParameterExposers.ID.Equal(x));
 
-        private readonly FilterSectionBase<Parameter> nameFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Equals", x => ParameterExposers.Name.Equal((string)x));
+        private readonly FilterSectionBase<Parameter> nameFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Equals", x => ParameterExposers.Name.Equal(x));
 
-        private readonly FilterSectionBase<Parameter> nameContainsFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Contains", x => ParameterExposers.Name.Contains((string)x));
+        private readonly FilterSectionBase<Parameter> nameContainsFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Contains", x => ParameterExposers.Name.Contains(x));
 
-        private readonly FilterSectionBase<Parameter> nameDoesntContainFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Doesn't Contain", x => ParameterExposers.Name.NotContains((string)x));
+        private readonly FilterSectionBase<Parameter> nameDoesntContainFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Doesn't Contain", x => ParameterExposers.Name.NotContains(x));
 
         private readonly List<FilterSectionBase<Parameter>> discreetFilterSections = new List<FilterSectionBase<Parameter>>();
         private readonly Button addDiscreetFilterButton = new Button("Add Discreet Filter");
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindProfileParametersWithFiltersSection"/>"/> class.
+        /// </summary>
         public FindProfileParametersWithFiltersSection() : base()
         {
             addDiscreetFilterButton.Pressed += AddDiscreetFilterButton_Pressed;
@@ -31,13 +37,17 @@
 
         private void AddDiscreetFilterButton_Pressed(object sender, EventArgs e)
         {
-            var discreetFilterSection = new StringFilterSection<Parameter>("Has Discreet", discreet => ParameterExposers.Discretes.Contains((string)discreet));
+            var discreetFilterSection = new StringFilterSection<Parameter>("Has Discreet", discreet => ParameterExposers.Discretes.Contains(discreet));
 
             discreetFilterSections.Add(discreetFilterSection);
 
             InvokeRegenerateUi();
         }
 
+        /// <summary>
+        /// Adding filter sections on a row specified.
+        /// </summary>
+        /// <param name="row">Row position where new section should appear.</param>
         protected override void AddFilterSections(ref int row)
         {
             AddSection(idFilterSection, new SectionLayout(++row, 0));
@@ -56,16 +66,27 @@
             AddWidget(addDiscreetFilterButton, ++row, 0);
         }
 
+        /// <summary>
+        /// Retrieving all items in the system based on input values.
+        /// </summary>
+        /// <returns>Collection of profile parameters.</returns>
         protected override IEnumerable<Parameter> FindItemsWithFilters()
         {
             return SrmManagers.ProfileManager.GetParametersWithFilter(GetCombinedFilterElement());
         }
 
+        /// <summary>
+        /// Retrieves name of profile parameter.
+        /// </summary>
+        /// <returns>Name of profile parameter.</returns>
         protected override string GetItemIdentifier(Parameter item)
         {
             return item.Name;
         }
 
+        /// <summary>
+        /// Resets filters in section to default values.
+        /// </summary>
         protected override void ResetFilters()
         {
             foreach (var filterSection in GetIndividualFilters())

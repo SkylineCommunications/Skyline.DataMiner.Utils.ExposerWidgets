@@ -10,7 +10,7 @@
     using Label = InteractiveAutomationScript.Label;
 
     /// <summary>
-    /// Section for selecting general info about filtering.
+    /// Section for selecting base info about filtering.
     /// </summary>
     /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
     public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : Section, IDisableableUi

@@ -11,19 +11,22 @@
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
+    /// <summary>
+    /// Section for filtering resources.
+    /// </summary>
     public class FindResourcesWithFiltersSection : FindItemsWithFiltersSection<FunctionResource>
     {
-        private readonly FilterSectionBase<FunctionResource> functionGuidFilterSection = new GuidFilterSection<FunctionResource>("Function Guid", x => FunctionResourceExposers.FunctionGUID.Equal((Guid)x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> functionGuidFilterSection = new GuidFilterSection<FunctionResource>("Function Guid", x => FunctionResourceExposers.FunctionGUID.Equal(x).CAST<Resource, FunctionResource>());
 
-        private readonly FilterSectionBase<FunctionResource> resourcePoolFilterSection = new ResourcePoolFilterSection("Resource Pool", x => ResourceExposers.PoolGUIDs.Contains((Guid)x).CAST<Resource, FunctionResource>(), SrmManagers.ResourceManager.GetResourcePools());
+        private readonly FilterSectionBase<FunctionResource> resourcePoolFilterSection = new ResourcePoolFilterSection("Resource Pool", x => ResourceExposers.PoolGUIDs.Contains(x).CAST<Resource, FunctionResource>(), SrmManagers.ResourceManager.GetResourcePools());
 
-        private readonly FilterSectionBase<FunctionResource> resourceNameEqualsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Equals", x => ResourceExposers.Name.Equal((string)x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> resourceNameEqualsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Equals", x => ResourceExposers.Name.Equal(x).CAST<Resource, FunctionResource>());
 
-        private readonly FilterSectionBase<FunctionResource> resourceNameContainsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Contains", x => ResourceExposers.Name.Contains((string)x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> resourceNameContainsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Contains", x => ResourceExposers.Name.Contains(x).CAST<Resource, FunctionResource>());
 
-        private readonly FilterSectionBase<FunctionResource> resourceNameDoesNotContainFilterSection = new StringFilterSection<FunctionResource>("Resource Name Does Not Contain", x => ResourceExposers.Name.NotContains((string)x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> resourceNameDoesNotContainFilterSection = new StringFilterSection<FunctionResource>("Resource Name Does Not Contain", x => ResourceExposers.Name.NotContains(x).CAST<Resource, FunctionResource>());
 
-        private readonly FilterSectionBase<FunctionResource> resourceIdFilterSection = new GuidFilterSection<FunctionResource>("Resource ID", x => ResourceExposers.ID.Equal((Guid)x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> resourceIdFilterSection = new GuidFilterSection<FunctionResource>("Resource ID", x => ResourceExposers.ID.Equal(x).CAST<Resource, FunctionResource>());
 
         private readonly FilterSectionBase<FunctionResource> dmaIdFilterSection = new IntegerFilterSection<FunctionResource>("DMA ID", x => ResourceExposers.DmaID.Equal(Convert.ToInt32(x)).CAST<Resource, FunctionResource>());
 
@@ -38,7 +41,9 @@
         private readonly Button addCapabilityDoesntContainFilterButton = new Button("Add 'Capability Does Not Contain' Filter");
         private readonly Button addCapabilityExistenceFilterButton = new Button("Add 'Capability Exists' Filter");
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FindResourcesWithFiltersSection"/>"/> class.
+        /// </summary>
         public FindResourcesWithFiltersSection() : base()
         {
             addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
@@ -72,7 +77,7 @@
 
         private void AddCapabilityExistenceFilterButton_Pressed(object sender, EventArgs e)
         {
-            var capabilityExistenceFilterSection = new StringFilterSection<FunctionResource>("Discrete Capability Exists", (cId) => ResourceExposers.Capabilities.DiscreteCapability(Guid.Parse((string)cId)).NotContains("random value").CAST<Resource, FunctionResource>());
+            var capabilityExistenceFilterSection = new StringFilterSection<FunctionResource>("Discrete Capability Exists", (cId) => ResourceExposers.Capabilities.DiscreteCapability(Guid.Parse(cId)).NotContains("random value").CAST<Resource, FunctionResource>());
 
             capabilityFilterSections.Add(capabilityExistenceFilterSection);
 
@@ -81,7 +86,7 @@
 
         private void AddPropertyExistenceFilterButton_Pressed(object sender, EventArgs e)
         {
-            var propertyExistenceFilterSection = new StringFilterSection<FunctionResource>("Property Exists", (pName) => ResourceExposers.Properties.DictStringField((string)pName).NotEqual("random value that will never be used as a property value").CAST<Resource, FunctionResource>());
+            var propertyExistenceFilterSection = new StringFilterSection<FunctionResource>("Property Exists", (pName) => ResourceExposers.Properties.DictStringField(pName).NotEqual("random value that will never be used as a property value").CAST<Resource, FunctionResource>());
 
             propertyFilterSections.Add(propertyExistenceFilterSection);
 
@@ -97,6 +102,9 @@
             InvokeRegenerateUi();
         }
 
+        /// <summary>
+        /// Resets filters in section to default values.
+        /// </summary>
         protected override void ResetFilters()
         {
             foreach (var filterSection in GetIndividualFilters())
@@ -105,21 +113,39 @@
             }
         }
 
+        /// <summary>
+        /// Setting visibility and enable state to all filters in section.
+        /// </summary>
+        /// <param name="isVisible">Determines if widget should be visible.</param>
+        /// <param name="isEnabled">Determines if widget should be edited.</param>
         protected override void HandleVisibilityAndEnabledUpdate(bool isVisible, bool isEnabled)
         {
             // no actions required
         }
 
+        /// <summary>
+        /// Filtering all resources in system based on provided input.
+        /// </summary>
+        /// <returns>Collection of filtered resources.</returns>
         protected override IEnumerable<FunctionResource> FindItemsWithFilters()
         {
             return SrmManagers.ResourceManager.GetResources(this.GetCombinedFilterElement().CAST<FunctionResource, Resource>()).Cast<FunctionResource>().ToList();
         }
 
+        /// <summary>
+        /// Gets name of resource.
+        /// </summary>
+        /// <param name="item">Resource for which we want to retrieve name.</param>
+        /// <returns>Name of resource.</returns>
         protected override string GetItemIdentifier(FunctionResource item)
         {
             return item.Name;
         }
 
+        /// <summary>
+        /// Adding filter section in the UI.
+        /// </summary>
+        /// <param name="row">Row on which section should appear.</param>
         protected override void AddFilterSections(ref int row)
         {
             AddSection(functionGuidFilterSection, new SectionLayout(++row, 0));
