@@ -1,13 +1,8 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
     using Skyline.DataMiner.Automation;
-    using Skyline.DataMiner.Core.SRM;
     using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
-    using Skyline.DataMiner.Net.Apps.Modules;
-    using Skyline.DataMiner.Net.ManagerStore;
     using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Net.Profiles;
-    using Skyline.DataMiner.Net.Ticketing;
     using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using Skyline.DataMiner.Utils.YLE.UI.Filters;
@@ -69,7 +64,11 @@
         /// <returns>Collection of dom instances.</returns>
         protected override IEnumerable<DomInstance> FindItemsWithFilters()
         {
-            if (domHelper == null) throw new ArgumentNullException("Module is not provided, therefore Dom Helper is null.");
+            if (domHelper == null) 
+            { 
+                engine.Log("Module is not provided, therefore Dom Helper is null.");
+                return new List<DomInstance>();
+            } 
 
             return domHelper.DomInstances.Read(GetCombinedFilterElement());
         }

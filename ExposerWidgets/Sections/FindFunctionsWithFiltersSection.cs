@@ -1,20 +1,13 @@
-﻿using Skyline.DataMiner.Core.SRM;
-using Skyline.DataMiner.Net;
-using Skyline.DataMiner.Net.Helper;
-using Skyline.DataMiner.Net.Messages;
-using Skyline.DataMiner.Net.VirtualFunctions;
-using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-using Skyline.DataMiner.Utils.YLE.UI.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
+﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
+    using Skyline.DataMiner.Core.SRM;
+    using Skyline.DataMiner.Net.Helper;
+    using Skyline.DataMiner.Net.Messages;
+    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+    using Skyline.DataMiner.Utils.YLE.UI.Filters;
+    using System.Collections.Generic;
+    using System.Linq;
+
     /// <summary>
     /// Section for filtering protocol functions.
     /// </summary>
