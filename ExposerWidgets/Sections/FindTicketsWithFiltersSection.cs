@@ -183,24 +183,6 @@
         }
 
         /// <summary>
-        /// Setting visibility and enable state to all filters in section.
-        /// </summary>
-        /// <param name="isVisible">Determines if widget should be visible.</param>
-        /// <param name="isEnabled">Determines if widget should be edited.</param>
-        protected override void HandleVisibilityAndEnabledUpdate(bool isVisible, bool isEnabled)
-        {
-            ticketIdFilterSection.IsEnabled = isEnabled;
-
-            ticketCreationDateFromFilterSection.IsEnabled = isEnabled;
-
-            ticketCreationDateUntilFilterSection.IsEnabled = isEnabled;
-
-            ticketDomainFilterSection.IsEnabled = isEnabled;
-
-            propertyFilterSections.ForEach(f => f.IsEnabled = isEnabled);
-        }
-
-        /// <summary>
         /// Filtering all tickets in system based on provided input.
         /// </summary>
         /// <returns>Collection of filtered tickets.</returns>

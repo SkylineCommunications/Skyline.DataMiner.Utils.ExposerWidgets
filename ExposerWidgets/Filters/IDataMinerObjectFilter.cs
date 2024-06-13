@@ -1,4 +1,4 @@
-﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Interfaces
+﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
     using Skyline.DataMiner.Net.Messages.SLDataGateway;
 

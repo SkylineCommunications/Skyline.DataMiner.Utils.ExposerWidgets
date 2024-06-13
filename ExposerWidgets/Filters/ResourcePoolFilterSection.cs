@@ -6,7 +6,6 @@
     using Skyline.DataMiner.Net.Messages;
     using Skyline.DataMiner.Net.Messages.SLDataGateway;
     using Skyline.DataMiner.Net.ResourceManager.Objects;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Interfaces;
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
     /// <summary>

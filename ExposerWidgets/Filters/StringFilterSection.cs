@@ -2,8 +2,6 @@
 {
     using System;
     using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Interfaces;
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
     /// <summary>

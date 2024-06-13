@@ -1,24 +1,23 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Skyline.DataMiner.Core.SRM;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Net.ResourceManager.Objects;
-    using Skyline.DataMiner.Net.Serialization;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-    using Skyline.DataMiner.Utils.YLE.UI.Filters;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Core.SRM;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.ResourceManager.Objects;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-    /// <summary>
-    /// Section for filtering reservations.
-    /// </summary>
-    public class FindReservationsWithFiltersSection : FindItemsWithFiltersSection<ReservationInstance>
+	/// <summary>
+	/// Section for filtering reservations.
+	/// </summary>
+	public class FindReservationsWithFiltersSection : FindItemsWithFiltersSection<ReservationInstance>
     {
         private readonly FilterSectionBase<ReservationInstance> reservationIdFilterSection = new GuidFilterSection<ReservationInstance>("Reservation ID", x => ReservationInstanceExposers.ID.Equal(x));
 
-        private readonly FilterSectionBase<ReservationInstance> reservationIdIsPartOfFilterSection = new StringFilterSection<ReservationInstance>("Reservation ID is part of", x => new ORFilterElement<ReservationInstance>((x).Split(';').Select(split => Guid.Parse(split)).Select(guid => ReservationInstanceExposers.ID.Equal(guid)).ToArray()));
+        private readonly FilterSectionBase<ReservationInstance> reservationIdIsPartOfFilterSection = new StringFilterSection<ReservationInstance>("Reservation ID is part of", x => new ORFilterElement<ReservationInstance>(x.Split(';').Select(split => Guid.Parse(split)).Select(guid => ReservationInstanceExposers.ID.Equal(guid)).ToArray()));
 
         private readonly FilterSectionBase<ReservationInstance> reservationServiceDefinitionIdFilterSection = new GuidFilterSection<ReservationInstance>("Service Definition ID", x => ServiceReservationInstanceExposers.ServiceDefinitionID.Equal(x));
 
@@ -104,18 +103,6 @@
             resourceFilterSections.Add(resourceFilterSection);
 
             InvokeRegenerateUi();
-        }
-
-        /// <summary>
-        /// Setting visibility and enable state to all filters in section.
-        /// </summary>
-        /// <param name="isVisible">Determines if widget should be visible.</param>
-        /// <param name="isEnabled">Determines if widget should be edited.</param>
-        protected override void HandleVisibilityAndEnabledUpdate(bool isVisible, bool isEnabled)
-        {
-            resourceFilterSections.ForEach(f => f.IsEnabled = isEnabled);
-
-            propertyFilterSections.ForEach(f => f.IsEnabled = isEnabled);
         }
 
         /// <summary>

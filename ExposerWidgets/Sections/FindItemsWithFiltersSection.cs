@@ -1,23 +1,22 @@
 ﻿namespace Skyline.DataMiner.Utils.YLE.UI.Filters
 {
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Interfaces;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Skyline.DataMiner.Net.Messages.SLDataGateway;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using Label = InteractiveAutomationScript.Label;
 
     /// <summary>
     /// Section for selecting base info about filtering.
     /// </summary>
     /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
-    public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : Section, IDisableableUi
+    public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : Section
     {
-        private readonly Label header = new Label($"Get {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Heading };
+        private readonly Label header = new Label($"Find {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Heading };
 
-        private readonly Button getItemsBasedOnFiltersButton = new Button($"Get {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction };
+        private readonly Button getItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction };
         private List<DataMinerObjectType> itemsBasedOnFilters = new List<DataMinerObjectType>();
 
         private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
@@ -52,42 +51,7 @@
             selectItemsCheckBoxList.Changed += (o, e) => SelectedItems = GetIndividuallySelectedItems();
 
             GenerateUi();
-            HandleVisibilityAndEnabledUpdate();
         }
-
-        /// <summary>
-        /// Gets or sets visibility state of section.
-        /// </summary>
-        public new bool IsVisible
-        {
-            get => base.IsVisible;
-            set
-            {
-                base.IsVisible = value;
-
-                if (!IsVisible) return; // if everything should be hidden, there is no point in calling the method below
-
-                HandleVisibilityAndEnabledUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets section enabled value.
-        /// </summary>
-        public new bool IsEnabled
-        {
-            get => base.IsEnabled;
-            set
-            {
-                base.IsEnabled = value;
-                HandleVisibilityAndEnabledUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Event triggered when we need UI state change.
-        /// </summary>
-		public event EventHandler<ValueEventArgs<EnabledState>> UiEnabledStateChangeRequired;
 
         /// <summary>
         /// Event triggered when we need to regenerate UI.
@@ -125,7 +89,6 @@
         public void RegenerateUi()
         {
             GenerateUi();
-            HandleVisibilityAndEnabledUpdate();
         }
 
         /// <summary>
@@ -156,34 +119,31 @@
         protected abstract string GetItemIdentifier(DataMinerObjectType item);
 
         private IEnumerable<DataMinerObjectType> GetItemsBasedOnFilters()
-        {
-            using (UiDisabler.StartNew(this))
+        {           
+            if (!OneOrMoreFiltersAreActive() || !ActiveFiltersAreValid())
             {
-                if (!OneOrMoreFiltersAreActive() || !ActiveFiltersAreValid())
-                {
-                    itemsBasedOnFilters = new List<DataMinerObjectType>();
-                }
-                else
-                {
-                    itemsBasedOnFilters = FindItemsWithFilters().ToList();
-                }
-
-                int previousAmountOfOptions = selectItemsCheckBoxList.Options.Count();
-
-                amountOfMatchingItemsLabel.Text = $"Found {itemsBasedOnFilters.Count} matching {typeof(DataMinerObjectType).Name}s";
-
-                selectItemsCheckBoxList.SetOptions(itemsBasedOnFilters.Select(r => GetItemIdentifier(r)).OrderBy(name => name).ToList());
-                selectItemsCheckBoxList.CheckAll();
-
-                var selectedResources = GetIndividuallySelectedItems();
-
-                selectAllButton.IsVisible = selectedResources.Any();
-                unselectAllButton.IsVisible = selectedResources.Any();
-
-                if (selectItemsCheckBoxList.Options.Count() != previousAmountOfOptions) InvokeRegenerateUi();
-
-                return selectedResources;
+                itemsBasedOnFilters = new List<DataMinerObjectType>();
             }
+            else
+            {
+                itemsBasedOnFilters = FindItemsWithFilters().ToList();
+            }
+
+            int previousAmountOfOptions = selectItemsCheckBoxList.Options.Count();
+
+            amountOfMatchingItemsLabel.Text = $"Found {itemsBasedOnFilters.Count} matching {typeof(DataMinerObjectType).Name}s";
+
+            selectItemsCheckBoxList.SetOptions(itemsBasedOnFilters.Select(r => GetItemIdentifier(r)).OrderBy(name => name).ToList());
+            selectItemsCheckBoxList.CheckAll();
+
+            var selectedResources = GetIndividuallySelectedItems();
+
+            selectAllButton.IsVisible = selectedResources.Any();
+            unselectAllButton.IsVisible = selectedResources.Any();
+
+            if (selectItemsCheckBoxList.Options.Count() != previousAmountOfOptions) InvokeRegenerateUi();
+
+            return selectedResources;       
         }
 
         private IEnumerable<DataMinerObjectType> GetIndividuallySelectedItems()
@@ -318,46 +278,11 @@
         }
 
         /// <summary>
-        /// Updates visibility and enable state of section.
-        /// </summary>
-        /// <param name="isVisible">Determines section visibility.</param>
-        /// <param name="isEnabled">Determines is section enabled for editing.</param>
-        protected virtual void HandleVisibilityAndEnabledUpdate(bool isVisible, bool isEnabled)
-        {
-            selectAllButton.IsVisible = SelectedItems.Any();
-            unselectAllButton.IsVisible = SelectedItems.Any();
-        }
-
-        /// <summary>
-        /// Updates visibility and enable state of section.
-        /// </summary>
-        protected void HandleVisibilityAndEnabledUpdate()
-        {
-            HandleVisibilityAndEnabledUpdate(IsVisible, IsEnabled);
-        }
-
-        /// <summary>
         /// Method that triggers UI regeneration evenet.
         /// </summary>
         protected void InvokeRegenerateUi()
         {
             RegenerateUiRequired?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Disables section UI.
-        /// </summary>
-        public void DisableUi()
-        {
-            UiEnabledStateChangeRequired?.Invoke(this, new ValueEventArgs<EnabledState>(EnabledState.Disabled));
-        }
-
-        /// <summary>
-        /// Enables section UI.
-        /// </summary>
-        public void EnableUi()
-        {
-            UiEnabledStateChangeRequired?.Invoke(this, new ValueEventArgs<EnabledState>(EnabledState.Enabled));
         }
     }
 }
