@@ -1,24 +1,24 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Skyline.DataMiner.Core.SRM;
-    using Skyline.DataMiner.Net.Messages;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Net.ResourceManager.Objects;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-    using Skyline.DataMiner.Utils.YLE.UI.Filters;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net.Messages;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.ResourceManager.Objects;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-    /// <summary>
-    /// Section for filtering resources.
-    /// </summary>
-    public class FindResourcesWithFiltersSection : FindItemsWithFiltersSection<FunctionResource>
+	/// <summary>
+	/// Section for filtering resources.
+	/// </summary>
+	public class FindResourcesWithFiltersSection : FindItemsWithFiltersSection<FunctionResource>
     {
         private readonly FilterSectionBase<FunctionResource> functionGuidFilterSection = new GuidFilterSection<FunctionResource>("Function Guid", x => FunctionResourceExposers.FunctionGUID.Equal(x).CAST<Resource, FunctionResource>());
 
-        private readonly FilterSectionBase<FunctionResource> resourcePoolFilterSection = new ResourcePoolFilterSection("Resource Pool", x => ResourceExposers.PoolGUIDs.Contains(x).CAST<Resource, FunctionResource>(), SrmManagers.ResourceManager.GetResourcePools());
+        private FilterSectionBase<FunctionResource> resourcePoolFilterSection;
 
         private readonly FilterSectionBase<FunctionResource> resourceNameEqualsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Equals", x => ResourceExposers.Name.Equal(x).CAST<Resource, FunctionResource>());
 
@@ -41,12 +41,18 @@
         private readonly Button addCapabilityDoesntContainFilterButton = new Button("Add 'Capability Does Not Contain' Filter");
         private readonly Button addCapabilityExistenceFilterButton = new Button("Add 'Capability Exists' Filter");
 
+        private readonly ResourceManagerHelper resourceManagerHelper;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FindResourcesWithFiltersSection"/>"/> class.
         /// </summary>
         public FindResourcesWithFiltersSection() : base()
         {
-            addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
+            resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
+
+			resourcePoolFilterSection = new ResourcePoolFilterSection("Resource Pool", x => ResourceExposers.PoolGUIDs.Contains(x).CAST<Resource, FunctionResource>(), resourceManagerHelper.GetResourcePools());
+
+			addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
 
             addPropertyExistenceFilterButton.Pressed += AddPropertyExistenceFilterButton_Pressed;
 
@@ -119,7 +125,7 @@
         /// <returns>Collection of filtered resources.</returns>
         protected override IEnumerable<FunctionResource> FindItemsWithFilters()
         {
-            return SrmManagers.ResourceManager.GetResources(this.GetCombinedFilterElement().CAST<FunctionResource, Resource>()).Cast<FunctionResource>().ToList();
+            return resourceManagerHelper.GetResources(this.GetCombinedFilterElement().CAST<FunctionResource, Resource>()).Cast<FunctionResource>().ToList();
         }
 
         /// <summary>

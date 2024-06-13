@@ -1,19 +1,20 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Skyline.DataMiner.Utils.YLE.UI.Filters;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Net.ServiceManager.Objects;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Core.SRM;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net.Messages;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.ServiceManager.Objects;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-    /// <summary>
-    /// Section for filtering service definitions.
-    /// </summary>
-    public class FindServiceDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ServiceDefinition>
+	/// <summary>
+	/// Section for filtering service definitions.
+	/// </summary>
+	public class FindServiceDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ServiceDefinition>
     {
         private readonly StringFilterSection<ServiceDefinition> nameFilterSection = new StringFilterSection<ServiceDefinition>("Name", name => ServiceDefinitionExposers.Name.Equal(name));
 
@@ -31,13 +32,16 @@
 
         private readonly Button addPropertyFilterButton = new Button("Add Property Filter");
 
+        private readonly ServiceManagerHelper serviceManagerHelper = new ServiceManagerHelper();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FindServiceDefinitionsWithFiltersSection"/>"/> class.
-        /// </summary>
-        public FindServiceDefinitionsWithFiltersSection() : base()
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FindServiceDefinitionsWithFiltersSection"/>"/> class.
+		/// </summary>
+		public FindServiceDefinitionsWithFiltersSection() : base()
         {
-            addNodeFunctionIdFilterButton.Pressed += AddNodeFunctionIdFilterButton_Pressed;
+            serviceManagerHelper.RequestResponseEvent += (s, e) => e.responseMessage = Engine.SLNet.SendSingleResponseMessage(e.requestMessage);
+
+			addNodeFunctionIdFilterButton.Pressed += AddNodeFunctionIdFilterButton_Pressed;
 
             addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
         }
@@ -84,7 +88,7 @@
                 combinedFilter = new ANDFilterElement<ServiceDefinition>(ServiceDefinitionExposers.Name.NotEqual(string.Empty));
             }
 
-            return SrmManagers.ServiceManager.GetServiceDefinitions(combinedFilter);
+            return serviceManagerHelper.GetServiceDefinitions(combinedFilter);
         }
 
         /// <summary>

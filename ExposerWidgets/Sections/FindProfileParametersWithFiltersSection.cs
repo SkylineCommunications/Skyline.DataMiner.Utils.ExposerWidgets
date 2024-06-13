@@ -1,20 +1,20 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-    using Skyline.DataMiner.Core.SRM;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Net.Profiles;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-    using Skyline.DataMiner.Utils.YLE.UI.Filters;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Parameter = Skyline.DataMiner.Net.Profiles.Parameter;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.Profiles;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.YLE.UI.Filters;
+	using Parameter = Skyline.DataMiner.Net.Profiles.Parameter;
 
-    /// <summary>
-    /// Section for filtering profile parameters.
-    /// </summary>
-    public class FindProfileParametersWithFiltersSection : FindItemsWithFiltersSection<Parameter>
+	/// <summary>
+	/// Section for filtering profile parameters.
+	/// </summary>
+	public class FindProfileParametersWithFiltersSection : FindItemsWithFiltersSection<Parameter>
     {
         private readonly FilterSectionBase<Parameter> idFilterSection = new GuidFilterSection<Parameter>("Profile Parameter ID", x => ParameterExposers.ID.Equal(x));
 
@@ -27,11 +27,15 @@
         private readonly List<FilterSectionBase<Parameter>> discreetFilterSections = new List<FilterSectionBase<Parameter>>();
         private readonly Button addDiscreetFilterButton = new Button("Add Discreet Filter");
 
+        private readonly ProfileHelper profileHelper;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FindProfileParametersWithFiltersSection"/>"/> class.
         /// </summary>
         public FindProfileParametersWithFiltersSection() : base()
         {
+            profileHelper = new ProfileHelper(Engine.SLNet.SendMessages);
+
             addDiscreetFilterButton.Pressed += AddDiscreetFilterButton_Pressed;
         }
 
@@ -72,7 +76,7 @@
         /// <returns>Collection of profile parameters.</returns>
         protected override IEnumerable<Parameter> FindItemsWithFilters()
         {
-            return SrmManagers.ProfileManager.GetParametersWithFilter(GetCombinedFilterElement());
+            return profileHelper.ProfileParameters.Read(GetCombinedFilterElement());
         }
 
         /// <summary>

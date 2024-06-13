@@ -3,7 +3,8 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Skyline.DataMiner.Core.SRM;
+	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net.Messages;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Net.ResourceManager.Objects;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
@@ -47,12 +48,16 @@
         private readonly List<FilterSectionBase<ReservationInstance>> propertyFilterSections = new List<FilterSectionBase<ReservationInstance>>();
         private readonly Button addPropertyFilterButton = new Button("Add Property Filter");
 
+        private readonly ResourceManagerHelper resourceManagerHelper;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FindReservationsWithFiltersSection"/>"/> class.
         /// </summary>
         public FindReservationsWithFiltersSection() : base()
         {
-            addResourceFilterButton.Pressed += AddResourceFilterButton_Pressed;
+			resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
+
+			addResourceFilterButton.Pressed += AddResourceFilterButton_Pressed;
 
             addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
         }
@@ -111,7 +116,7 @@
         /// <returns>Collection of filtered reservation instances.</returns>
         protected override IEnumerable<ReservationInstance> FindItemsWithFilters()
         {
-            return SrmManagers.ResourceManager.GetReservationInstances(GetCombinedFilterElement()).ToList();
+            return resourceManagerHelper.GetReservationInstances(GetCombinedFilterElement()).ToList();
         }
 
         /// <summary>

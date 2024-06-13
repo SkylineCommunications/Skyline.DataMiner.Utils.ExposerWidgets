@@ -1,17 +1,17 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-    using Skyline.DataMiner.Core.SRM;
-    using Skyline.DataMiner.Net.Helper;
-    using Skyline.DataMiner.Net.Messages;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-    using Skyline.DataMiner.Utils.YLE.UI.Filters;
-    using System.Collections.Generic;
-    using System.Linq;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net.Helper;
+	using Skyline.DataMiner.Net.Messages;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-    /// <summary>
-    /// Section for filtering protocol functions.
-    /// </summary>
-    public class FindFunctionsWithFiltersSection : FindItemsWithFiltersSection<FunctionDefinition>
+	/// <summary>
+	/// Section for filtering protocol functions.
+	/// </summary>
+	public class FindFunctionsWithFiltersSection : FindItemsWithFiltersSection<FunctionDefinition>
     {
         private readonly Label allActiveLable = new Label("All active functions:");
         private readonly Label protocolNameLabel = new Label("Protocol name:");
@@ -19,11 +19,14 @@
         private readonly CheckBox allActiveCheckbox = new CheckBox("Only active ones");
         private readonly TextBox protocolNameTextBox = new TextBox(string.Empty);
 
+        private readonly ProtocolFunctionHelper protocolFunctionHelper;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FindFunctionsWithFiltersSection"/>"/> class.
         /// </summary>
         public FindFunctionsWithFiltersSection() : base()
         {
+            protocolFunctionHelper = new ProtocolFunctionHelper(Engine.SLNet.SendMessages);
         }
 
         /// <summary>
@@ -49,7 +52,7 @@
 
             if (allActiveCheckbox.IsChecked)
             {
-                var activeProtocolFunctionVersions = SrmManagers.ProtocolFunctionManager.GetAllProtocolFunctions(true).Select(p => p.ProtocolFunctionVersions.FirstOrDefault());
+                var activeProtocolFunctionVersions = protocolFunctionHelper.GetAllProtocolFunctions(true).Select(p => p.ProtocolFunctionVersions.FirstOrDefault());
 
                 foreach (var version in activeProtocolFunctionVersions)
                 {
@@ -64,7 +67,7 @@
 
             if(!protocolNameLabel.Text.IsNullOrEmpty())
             {
-                var activeProtocolFunctionVersions = SrmManagers.ProtocolFunctionManager.GetProtocolFunctions(protocolNameLabel.Text).Select(p => p.ProtocolFunctionVersions.FirstOrDefault());
+                var activeProtocolFunctionVersions = protocolFunctionHelper.GetProtocolFunctions(protocolNameLabel.Text).Select(p => p.ProtocolFunctionVersions.FirstOrDefault());
 
                 foreach (var version in activeProtocolFunctionVersions)
                 {

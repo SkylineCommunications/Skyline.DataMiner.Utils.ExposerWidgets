@@ -1,18 +1,17 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-    using System;
-    using System.Collections.Generic;
-    using Skyline.DataMiner.Core.SRM;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Net.Profiles;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-    using Skyline.DataMiner.Utils.YLE.UI.Filters;
+	using System.Collections.Generic;
+	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.Profiles;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-    /// <summary>
-    /// Section for filtering profile definitions.
-    /// </summary>
-    public class FindProfileDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ProfileDefinition>
+	/// <summary>
+	/// Section for filtering profile definitions.
+	/// </summary>
+	public class FindProfileDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ProfileDefinition>
     {
         private readonly FilterSectionBase<ProfileDefinition> idFilterSection = new GuidFilterSection<ProfileDefinition>("Profile Definition ID", x => ProfileDefinitionExposers.ID.Equal(x));
 
@@ -22,11 +21,14 @@
 
         private readonly FilterSectionBase<ProfileDefinition> nameDoesntContainFilterSection = new StringFilterSection<ProfileDefinition>("Profile Definition Name Doesn't Contain", x => ProfileDefinitionExposers.Name.NotContains(x));
 
+        private readonly ProfileHelper profileHelper;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FindProfileDefinitionsWithFiltersSection"/>"/> class.
         /// </summary>
         public FindProfileDefinitionsWithFiltersSection() : base()
         {
+            profileHelper = new ProfileHelper(Engine.SLNet.SendMessages);
         }
 
         /// <summary>
@@ -50,7 +52,7 @@
         /// <returns>Collection of profile definitions.</returns>
         protected override IEnumerable<ProfileDefinition> FindItemsWithFilters()
         {
-            return SrmManagers.ProfileManager.GetProfileDefinitionsWithFilter(GetCombinedFilterElement());
+            return profileHelper.ProfileDefinitions.Read(GetCombinedFilterElement());
         }
 
         /// <summary>
