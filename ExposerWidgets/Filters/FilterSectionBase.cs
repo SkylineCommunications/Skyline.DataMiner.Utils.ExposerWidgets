@@ -98,14 +98,12 @@
             Clear();
             nextAvailableColumn = 0;
 
-            //AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
+            AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
 
-            //if (Invertible)
-            //{
-            //    AddWidget(invertFilterCheckBox, 0, nextAvailableColumn++);
-            //}
-
-			AddWidget(invertFilterCheckBox, 0, nextAvailableColumn++);
+            if (Invertible)
+            {
+                AddWidget(invertFilterCheckBox, 0, nextAvailableColumn++);
+            }
 		}
 
 		/// <summary>
