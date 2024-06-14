@@ -24,7 +24,7 @@
         /// <param name="resourcePools">Available resource pools.</param>
         public ResourcePoolFilterSection(string filterName, Func<Guid, FilterElement<FunctionResource>> emptyFilter, IEnumerable<ResourcePool> resourcePools) : base(filterName, emptyFilter)
         {
-            this.resourcePools = resourcePools;
+            this.resourcePools = resourcePools ?? new List<ResourcePool>();
 
             var resourcePoolOptions = resourcePools.Select(p => p.Name).OrderBy(name => name).ToList();
             resourcePoolDropDown = new DropDown(resourcePoolOptions, resourcePoolOptions[0]) { IsDisplayFilterShown = true };
