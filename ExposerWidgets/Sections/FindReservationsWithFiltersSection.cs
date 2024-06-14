@@ -75,7 +75,7 @@
 
             propertyFilterSections.Add(propertyFilterSection);
 
-            InvokeRegenerateUi();
+            InvokeRegenerateUi(); 
         }
 
         /// <summary>
