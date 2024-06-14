@@ -40,7 +40,7 @@
 
         private readonly FilterSectionBase<ReservationInstance> reservationLastModifiedAtFromFilterSection = new DateTimeFilterSection<ReservationInstance>("Reservation Last Modified At From", x => ReservationInstanceExposers.LastModifiedAt.GreaterThanOrEqual(x));
 
-        private readonly FilterSectionBase<ReservationInstance> reservationLastModifiedAtUntilFilterSection = new DateTimeFilterSection<ReservationInstance>("Reservation Last Modified At Until", x => ReservationInstanceExposers.LastModifiedAt.UncheckedLessThanOrEqual(x));
+        private readonly FilterSectionBase<ReservationInstance> reservationLastModifiedAtUntilFilterSection = new DateTimeFilterSection<ReservationInstance>("Reservation Last Modified At Until", x => ReservationInstanceExposers.LastModifiedAt.LessThanOrEqual(x));
 
         private readonly List<FilterSectionBase<ReservationInstance>> resourceFilterSections = new List<FilterSectionBase<ReservationInstance>>();
         private readonly Button addResourceFilterButton = new Button("Add Resource Filter");
