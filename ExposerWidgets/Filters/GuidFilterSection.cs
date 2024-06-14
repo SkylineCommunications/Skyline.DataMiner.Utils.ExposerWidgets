@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="filterName">Name of filter.</param>
         /// <param name="emptyFilter">Filter that will be applied.</param>
-        public GuidFilterSection(string filterName, Func<Guid, FilterElement<DataMinerObjectType>> emptyFilter) : base(filterName, emptyFilter)
+        public GuidFilterSection(string filterName, Func<Guid, FilterElement<DataMinerObjectType>> emptyFilter, Func<Guid, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
         {
             GenerateUi();
         }
@@ -44,7 +44,7 @@
         /// </summary>
         public override void Reset()
         {
-            IsActive = false;
+            IsIncluded = false;
             Value = Guid.Empty;
         }
 
@@ -55,7 +55,7 @@
         {
             base.GenerateUi();
 
-            AddWidget(filterContentTextBox, 0, 1);
+            AddWidget(filterContentTextBox, 0, nextAvailableColumn++);
         }
 
         /// <summary>
@@ -63,8 +63,6 @@
         /// </summary>
         protected override void HandleDefaultUpdate()
         {
-            filterNameCheckBox.IsChecked = IsDefault;
-            filterNameCheckBox.IsEnabled = !IsDefault;
             filterContentTextBox.IsEnabled = !IsDefault;
         }
     }

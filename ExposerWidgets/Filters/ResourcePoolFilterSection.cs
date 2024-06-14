@@ -51,7 +51,7 @@
         /// </summary>
         public override void Reset()
         {
-            IsActive = false;
+            IsIncluded = false;
             Value = resourcePools.First().ID;
         }
 
@@ -67,7 +67,7 @@
         {
             base.GenerateUi();
 
-            AddWidget(resourcePoolDropDown, 0, 1);
+            AddWidget(resourcePoolDropDown, 0, nextAvailableColumn++);
         }
 
         /// <summary>
@@ -75,8 +75,6 @@
         /// </summary>
         protected override void HandleDefaultUpdate()
         {
-            filterNameCheckBox.IsChecked = IsDefault;
-            filterNameCheckBox.IsEnabled = !IsDefault;
             resourcePoolDropDown.IsEnabled = !IsDefault;
         }
     }

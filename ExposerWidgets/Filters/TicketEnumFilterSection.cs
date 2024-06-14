@@ -30,7 +30,7 @@
         /// </summary>
         /// <param name="filterName">Name of filter.</param>
         /// <param name="emptyFilter">Filter that will be applied.</param>
-        public TicketEnumFilterSection(string filterName, Func<string, string, int, FilterElement<DataMinerObjectType>> emptyFilter) : base(filterName, emptyFilter)
+        public TicketEnumFilterSection(string filterName, Func<string, string, int, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, string, int, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
         {
             GenerateUi();
         }
@@ -67,12 +67,12 @@
             set => propertyValueNumeric.Value = value;
         }
 
-        /// <summary>
-        /// Resets filter values to default.
-        /// </summary>
-        public override void Reset()
+		/// <summary>
+		/// Resets filter values to default.
+		/// </summary>
+		public override void Reset()
         {
-            IsActive = false;
+            IsIncluded = false;
             FirstValue = string.Empty;
             SecondValue = string.Empty;
             ThirdValue = 0;
@@ -85,9 +85,9 @@
         {
             base.GenerateUi();
 
-            AddWidget(propertyNameTextBox, 0, 1);
-            AddWidget(propertyValueTextBox, 0, 2);
-            AddWidget(propertyValueNumeric, 1, 2);
+            AddWidget(propertyNameTextBox, 0, nextAvailableColumn++);
+            AddWidget(propertyValueTextBox, 0, nextAvailableColumn++);
+            AddWidget(propertyValueNumeric, 1, nextAvailableColumn);
         }
 
         /// <summary>
@@ -95,8 +95,6 @@
         /// </summary>
         protected override void HandleDefaultUpdate()
         {
-            filterNameCheckBox.IsChecked = IsDefault;
-            filterNameCheckBox.IsEnabled = !IsDefault;
             propertyNameTextBox.IsEnabled = !IsDefault;
             propertyValueTextBox.IsEnabled = !IsDefault;
             propertyValueNumeric.IsEnabled = !IsDefault;

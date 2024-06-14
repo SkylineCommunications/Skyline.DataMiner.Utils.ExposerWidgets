@@ -161,7 +161,7 @@
         /// Adding filter section to UI.
         /// </summary>
         /// <param name="row">Row on which we want to add section.</param>
-        protected abstract void AddFilterSections(ref int row);
+        protected abstract void AddFilterSections(ref int row, out int firstAvailableColumn);
 
         /// <summary>
         /// Gets collection of individual filters in section.
@@ -190,7 +190,7 @@
 
             if (!individualFilters.Any()) return true;
 
-            return individualFilters.Where(filter => filter.IsActive).All(filter => filter.IsValid);
+            return individualFilters.Where(filter => filter.IsIncluded).All(filter => filter.IsValid);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@
         {
             var individualFilters = GetIndividualFilters();
 
-            return individualFilters.Any(filter => filter.IsActive);
+            return individualFilters.Any(filter => filter.IsIncluded);
         }
 
         /// <summary>
@@ -233,7 +233,7 @@
             var individualActiveFilterElements = new List<FilterElement<DataMinerObjectType>>();
 
             individualActiveFilterElements.AddRange(defaultFilters);
-            individualActiveFilterElements.AddRange(GetIndividualFilters().Where(filter => filter.IsActive).Select(filter => filter.FilterElement));
+            individualActiveFilterElements.AddRange(GetIndividualFilters().Where(filter => filter.IsIncluded).Select(filter => filter.FilterElement));
 
             if (!individualActiveFilterElements.Any()) throw new InvalidOperationException("Unable to find any active filters");
 
@@ -260,7 +260,7 @@
         {
             AddWidget(header, ++row, 0, 1, 2);
 
-            AddFilterSections(ref row);
+            AddFilterSections(ref row, out int firstAvailablecolumn);
 
             AddWidget(new WhiteSpace(), ++row, 0);
 
@@ -268,13 +268,13 @@
 
             AddWidget(new WhiteSpace(), row + 1, 0);
 
-            AddWidget(amountOfMatchingItemsLabel, 0, 3);
-            AddWidget(selectAllButton, 0, 4, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(unselectAllButton, 0, 5, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(amountOfSelectedItemsLabel, 1, 3);
-            AddWidget(selectFirstXItemsNumeric, 1, 4, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(selectFirstXItemsButton, 1, 5, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(selectItemsCheckBoxList, 2, 3, selectItemsCheckBoxList.Options.Any() ? selectItemsCheckBoxList.Options.Count() : 1, 1, verticalAlignment: VerticalAlignment.Top);
+            AddWidget(amountOfMatchingItemsLabel, 0, firstAvailablecolumn);
+            AddWidget(selectAllButton, 0, firstAvailablecolumn + 1, verticalAlignment: VerticalAlignment.Top);
+            AddWidget(unselectAllButton, 0, firstAvailablecolumn + 2, verticalAlignment: VerticalAlignment.Top);
+            AddWidget(amountOfSelectedItemsLabel, 1, firstAvailablecolumn);
+            AddWidget(selectFirstXItemsNumeric, 1, firstAvailablecolumn + 1, verticalAlignment: VerticalAlignment.Top);
+            AddWidget(selectFirstXItemsButton, 1, firstAvailablecolumn + 2, verticalAlignment: VerticalAlignment.Top);
+            AddWidget(selectItemsCheckBoxList, 2, firstAvailablecolumn, selectItemsCheckBoxList.Options.Any() ? selectItemsCheckBoxList.Options.Count() : 1, 1, verticalAlignment: VerticalAlignment.Top);
         }
 
         /// <summary>

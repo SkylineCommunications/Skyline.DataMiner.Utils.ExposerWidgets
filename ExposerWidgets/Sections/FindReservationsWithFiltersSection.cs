@@ -16,15 +16,15 @@
 	/// </summary>
 	public class FindReservationsWithFiltersSection : FindItemsWithFiltersSection<ReservationInstance>
     {
-        private readonly FilterSectionBase<ReservationInstance> reservationIdFilterSection = new GuidFilterSection<ReservationInstance>("Reservation ID", x => ReservationInstanceExposers.ID.Equal(x));
+        private readonly FilterSectionBase<ReservationInstance> reservationIdFilterSection = new GuidFilterSection<ReservationInstance>("Reservation ID Equals", x => ReservationInstanceExposers.ID.Equal(x), x => ReservationInstanceExposers.ID.NotEqual(x));
 
         private readonly FilterSectionBase<ReservationInstance> reservationIdIsPartOfFilterSection = new StringFilterSection<ReservationInstance>("Reservation ID is part of", x => new ORFilterElement<ReservationInstance>(x.Split(';').Select(split => Guid.Parse(split)).Select(guid => ReservationInstanceExposers.ID.Equal(guid)).ToArray()));
 
-        private readonly FilterSectionBase<ReservationInstance> reservationServiceDefinitionIdFilterSection = new GuidFilterSection<ReservationInstance>("Service Definition ID", x => ServiceReservationInstanceExposers.ServiceDefinitionID.Equal(x));
+        private readonly FilterSectionBase<ReservationInstance> reservationServiceDefinitionIdFilterSection = new GuidFilterSection<ReservationInstance>("Service Definition ID Equals", x => ServiceReservationInstanceExposers.ServiceDefinitionID.Equal(x), x => ServiceReservationInstanceExposers.ServiceDefinitionID.NotEqual(x));
 
-        private readonly FilterSectionBase<ReservationInstance> reservationNameEqualsFilterSection = new StringFilterSection<ReservationInstance>("Reservation Name Equals", x => ReservationInstanceExposers.Name.Equal(x));
+        private readonly FilterSectionBase<ReservationInstance> reservationNameEqualsFilterSection = new StringFilterSection<ReservationInstance>("Reservation Name Equals", x => ReservationInstanceExposers.Name.Equal(x), x => ReservationInstanceExposers.Name.NotEqual(x));
 
-        private readonly FilterSectionBase<ReservationInstance> reservationNameContainsFilterSection = new StringFilterSection<ReservationInstance>("Reservation Name Contains", x => ReservationInstanceExposers.Name.Contains(x));
+        private readonly FilterSectionBase<ReservationInstance> reservationNameContainsFilterSection = new StringFilterSection<ReservationInstance>("Reservation Name Contains", x => ReservationInstanceExposers.Name.Contains(x), x => ReservationInstanceExposers.Name.NotContains(x));
 
         private readonly FilterSectionBase<ReservationInstance> reservationStartFromFilterSection = new DateTimeFilterSection<ReservationInstance>("Reservation Start From", x => ReservationInstanceExposers.Start.GreaterThanOrEqual(x));
 
@@ -94,7 +94,7 @@
 
         private void AddPropertyFilterButton_Pressed(object sender, EventArgs e)
         {
-            var propertyFilterSection = new StringStringFilterSection<ReservationInstance>("Property", (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Equal(propertyValue));
+            var propertyFilterSection = new StringStringFilterSection<ReservationInstance>("Property", (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Equal(propertyValue), (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue));
 
             propertyFilterSections.Add(propertyFilterSection);
 
@@ -103,7 +103,7 @@
 
         private void AddResourceFilterButton_Pressed(object sender, EventArgs e)
         {
-            var resourceFilterSection = new GuidFilterSection<ReservationInstance>("Uses Resource ID", (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.Contains(resourceId));
+            var resourceFilterSection = new GuidFilterSection<ReservationInstance>("Uses Resource ID", (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.Contains(resourceId), (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.NotContains(resourceId));
 
             resourceFilterSections.Add(resourceFilterSection);
 
@@ -133,7 +133,7 @@
         /// Adding filter section in the UI.
         /// </summary>
         /// <param name="row">Row on which section should appear.</param>
-        protected override void AddFilterSections(ref int row)
+        protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddSection(reservationNameEqualsFilterSection, new SectionLayout(++row, 0));
 
@@ -172,6 +172,8 @@
 
             AddWidget(addPropertyFilterButton, ++row, 0);
             AddWidget(addResourceFilterButton, ++row, 0);
+
+            firstAvailableColumn = ColumnCount + 1;
         }
     }
 }

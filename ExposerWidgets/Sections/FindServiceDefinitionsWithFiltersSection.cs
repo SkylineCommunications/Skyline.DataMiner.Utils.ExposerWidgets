@@ -105,7 +105,7 @@
         /// Adding filter section in the UI.
         /// </summary>
         /// <param name="row">Row on which section should appear.</param>
-        protected override void AddFilterSections(ref int row)
+        protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddSection(nameFilterSection, new SectionLayout(++row, 0));
 
@@ -128,6 +128,8 @@
             }
 
             AddWidget(addPropertyFilterButton, ++row, 0);
-        }
+
+			firstAvailableColumn = ColumnCount + 1;
+		}
     }
 }

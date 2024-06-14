@@ -11,7 +11,7 @@
         /// <summary>
         /// Indicates if the filter is active.
         /// </summary>
-        bool IsActive { get; }
+        bool IsIncluded { get; }
 
         /// <summary>
         /// Indicates if the filter is valid.

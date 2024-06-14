@@ -17,7 +17,7 @@
         /// </summary>
         /// <param name="filterName">Name of filter.</param>
         /// <param name="filterFunction">Filter exposers that will be used.</param>
-        public DateTimeFilterSection(string filterName, Func<DateTime, FilterElement<DataMinerObjectType>> filterFunction) : base(filterName, filterFunction)
+        public DateTimeFilterSection(string filterName, Func<DateTime, FilterElement<DataMinerObjectType>> filterFunction, Func<DateTime, FilterElement<DataMinerObjectType>> invertedFilterFunction = null) : base(filterName, filterFunction, invertedFilterFunction)
         {
             GenerateUi();
         }
@@ -41,7 +41,7 @@
         /// </summary>
         public override void Reset()
         {
-            IsActive = false;
+            IsIncluded = false;
             Value = DateTime.Now;
         }
 
@@ -60,8 +60,6 @@
         /// </summary>
         protected override void HandleDefaultUpdate()
         {
-            filterNameCheckBox.IsChecked = IsDefault;
-            filterNameCheckBox.IsEnabled = !IsDefault;
             dateTimePicker.IsEnabled = !IsDefault;
         }
     }

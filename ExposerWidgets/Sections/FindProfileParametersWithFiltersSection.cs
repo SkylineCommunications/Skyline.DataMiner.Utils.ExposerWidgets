@@ -52,7 +52,7 @@
         /// Adding filter sections on a row specified.
         /// </summary>
         /// <param name="row">Row position where new section should appear.</param>
-        protected override void AddFilterSections(ref int row)
+        protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddSection(idFilterSection, new SectionLayout(++row, 0));
 
@@ -68,7 +68,9 @@
             }
 
             AddWidget(addDiscreetFilterButton, ++row, 0);
-        }
+
+			firstAvailableColumn = ColumnCount + 1;
+		}
 
         /// <summary>
         /// Retrieving all items in the system based on input values.

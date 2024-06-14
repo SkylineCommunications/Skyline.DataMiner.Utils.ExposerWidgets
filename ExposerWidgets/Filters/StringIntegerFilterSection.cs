@@ -25,7 +25,7 @@
         /// </summary>
         /// <param name="filterName">Name of filter.</param>
         /// <param name="emptyFilter">Filter that will be applied.</param>
-        public StringIntegerFilterSection(string filterName, Func<string, int, FilterElement<DataMinerObjectType>> emptyFilter) : base(filterName, emptyFilter)
+        public StringIntegerFilterSection(string filterName, Func<string, int, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, int, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
         {
             GenerateUi();
         }
@@ -58,7 +58,7 @@
         /// </summary>
         public override void Reset()
         {
-            IsActive = false;
+            IsIncluded = false;
             FirstValue = string.Empty;
             SecondValue = 0;
         }
@@ -70,8 +70,8 @@
         {
             base.GenerateUi();
 
-            AddWidget(propertyNameTextBox, 0, 1);
-            AddWidget(propertyValueNumeric, 0, 2);
+            AddWidget(propertyNameTextBox, 0, nextAvailableColumn++);
+            AddWidget(propertyValueNumeric, 0, nextAvailableColumn++);
         }
 
         /// <summary>
@@ -79,8 +79,6 @@
         /// </summary>
         protected override void HandleDefaultUpdate()
         {
-            filterNameCheckBox.IsChecked = IsDefault;
-            filterNameCheckBox.IsEnabled = !IsDefault;
             propertyNameTextBox.IsEnabled = !IsDefault;
             propertyValueNumeric.IsEnabled = !IsDefault;
         }

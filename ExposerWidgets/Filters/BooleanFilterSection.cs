@@ -7,17 +7,17 @@
     /// <summary>
     /// Represents filter section with one checkbox input.
     /// </summary>
-    /// <typeparam name="T">Type of filtered object.</typeparam>
-    public class BooleanFilterSection<T> : FilterSectionOneInput<T, bool>, IDataMinerObjectFilter<T>
+    /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
+    public class BooleanFilterSection<DataMinerObjectType> : FilterSectionOneInput<DataMinerObjectType, bool>, IDataMinerObjectFilter<DataMinerObjectType>
     {
-        private readonly CheckBox filterChecbox = new CheckBox();
+        private readonly CheckBox filterValueCheckBox = new CheckBox();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BooleanFilterSection{T}"/>"/> class.
         /// </summary>
         /// <param name="filterName">Name of filter.</param>
         /// <param name="emptyFilter">Filter that will be applied.</param>
-        public BooleanFilterSection(string filterName, Func<bool, FilterElement<T>> emptyFilter) : base(filterName, emptyFilter)
+        public BooleanFilterSection(string filterName, Func<bool, FilterElement<DataMinerObjectType>> emptyFilter, Func<bool, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
         {
             GenerateUi();
         }
@@ -32,8 +32,8 @@
         /// </summary>
         public override bool Value
         {
-            get => filterChecbox.IsChecked;
-            set => filterChecbox.IsChecked = value;
+            get => filterValueCheckBox.IsChecked;
+            set => filterValueCheckBox.IsChecked = value;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@
         /// </summary>
         public override void Reset()
         {
-            IsActive = false;
+            IsIncluded = false;
             Value = false;
         }
 
@@ -50,9 +50,7 @@
         /// </summary>
         protected override void HandleDefaultUpdate()
         {
-            filterNameCheckBox.IsChecked = IsDefault;
-            filterNameCheckBox.IsEnabled = !IsDefault;
-            filterChecbox.IsEnabled = !IsDefault;
+            filterValueCheckBox.IsEnabled = !IsDefault;
         }
 
         /// <summary>
@@ -62,7 +60,7 @@
         {
             base.GenerateUi();
 
-            AddWidget(filterChecbox, 0, 1);
+            AddWidget(filterValueCheckBox, 0, nextAvailableColumn++);
         }
     }
 }

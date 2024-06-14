@@ -10,11 +10,10 @@
     public abstract class FilterSectionBase<DataMinerObjectType> : Section, IDataMinerObjectFilter<DataMinerObjectType>
     {
         private bool isDefault;
-        
-        /// <summary>
-        /// Checkbox that indicates if specific filter is used for filtering.
-        /// </summary>
-        protected CheckBox filterNameCheckBox;
+        protected int nextAvailableColumn = 0;
+
+        private readonly CheckBox filterNameCheckBox;
+        private readonly CheckBox invertFilterCheckBox = new CheckBox("Not");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterSectionBase{T}"/>"/> class.
@@ -28,7 +27,7 @@
         /// <summary>
         /// Gets or sets value of active filter.
         /// </summary>
-        public bool IsActive
+        public bool IsIncluded
         {
             get => filterNameCheckBox.IsChecked;
             protected set => filterNameCheckBox.IsChecked = value;
@@ -56,6 +55,8 @@
             protected set
             {
                 isDefault = value;
+                filterNameCheckBox.IsChecked = value;
+                filterNameCheckBox.IsEnabled = !value;
                 HandleDefaultUpdate();
             }
         }
@@ -70,6 +71,10 @@
         /// </summary>
         public abstract FilterElement<DataMinerObjectType> FilterElement { get; }
 
+        protected abstract bool Invertible { get; }
+
+        protected bool IsInverted => invertFilterCheckBox.IsChecked;
+
         /// <summary>
         /// Resets filter values to default.
         /// </summary>
@@ -81,8 +86,14 @@
         protected virtual void GenerateUi()
         {
             Clear();
+            nextAvailableColumn = 0;
 
-            AddWidget(filterNameCheckBox, 0, 0);
+            AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
+
+            if (Invertible)
+            {
+                AddWidget(invertFilterCheckBox, 0, nextAvailableColumn++);
+            }
         }
 
         /// <summary>
@@ -92,7 +103,7 @@
 
         private void HandleEnabledUpdate()
         {
-            bool filterIsChecked = IsActive;
+            bool filterIsChecked = IsIncluded;
 
             HandleDefaultUpdate();
 

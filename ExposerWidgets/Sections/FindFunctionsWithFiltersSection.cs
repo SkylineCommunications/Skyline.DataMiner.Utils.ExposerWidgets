@@ -13,7 +13,7 @@
 	/// </summary>
 	public class FindFunctionsWithFiltersSection : FindItemsWithFiltersSection<FunctionDefinition>
     {
-        private readonly Label allActiveLable = new Label("All active functions:");
+        private readonly Label allActiveLabel = new Label("All active functions:");
         private readonly Label protocolNameLabel = new Label("Protocol name:");
 
         private readonly CheckBox allActiveCheckbox = new CheckBox("Only active ones");
@@ -33,14 +33,16 @@
         /// Adding filter section in the UI.
         /// </summary>
         /// <param name="row">Row on which section should appear.</param>
-        protected override void AddFilterSections(ref int row)
+        protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
-            AddWidget(allActiveLable, ++row, 0);
+            AddWidget(allActiveLabel, ++row, 0);
             AddWidget(allActiveCheckbox, row, 1);
 
             AddWidget(protocolNameLabel, ++row, 0);
             AddWidget(protocolNameTextBox, row, 1);
-        }
+
+			firstAvailableColumn = ColumnCount + 1;
+		}
 
         /// <summary>
         /// Filtering all protocol functions in system based on provided input.
