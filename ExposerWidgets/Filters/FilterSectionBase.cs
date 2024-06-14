@@ -10,6 +10,10 @@
     public abstract class FilterSectionBase<DataMinerObjectType> : Section, IDataMinerObjectFilter<DataMinerObjectType>
     {
         private bool isDefault;
+
+        /// <summary>
+        /// Indicates how many columns this section already used.
+        /// </summary>
         protected int nextAvailableColumn = 0;
 
         private readonly CheckBox filterNameCheckBox;
@@ -71,8 +75,14 @@
         /// </summary>
         public abstract FilterElement<DataMinerObjectType> FilterElement { get; }
 
+        /// <summary>
+        /// Indicates if this filter section can be inverted.
+        /// </summary>
         protected abstract bool Invertible { get; }
 
+        /// <summary>
+        /// Indicates if this filter is inverted.
+        /// </summary>
         protected bool IsInverted => invertFilterCheckBox.IsChecked;
 
         /// <summary>

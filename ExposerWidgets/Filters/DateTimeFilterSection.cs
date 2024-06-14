@@ -12,12 +12,13 @@
     {
         private readonly DateTimePicker dateTimePicker = new DateTimePicker(DateTime.Now);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DateTimeFilterSection{T}"/>"/> class.
-        /// </summary>
-        /// <param name="filterName">Name of filter.</param>
-        /// <param name="filterFunction">Filter exposers that will be used.</param>
-        public DateTimeFilterSection(string filterName, Func<DateTime, FilterElement<DataMinerObjectType>> filterFunction, Func<DateTime, FilterElement<DataMinerObjectType>> invertedFilterFunction = null) : base(filterName, filterFunction, invertedFilterFunction)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DateTimeFilterSection{T}"/>"/> class.
+		/// </summary>
+		/// <param name="filterName">Name of filter.</param>
+		/// <param name="filterFunction">Filter exposers that will be used.</param>
+		/// <param name="invertedEmptyFilter">Optional inverted filter.</param>
+		public DateTimeFilterSection(string filterName, Func<DateTime, FilterElement<DataMinerObjectType>> filterFunction, Func<DateTime, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, filterFunction, invertedEmptyFilter)
         {
             GenerateUi();
         }

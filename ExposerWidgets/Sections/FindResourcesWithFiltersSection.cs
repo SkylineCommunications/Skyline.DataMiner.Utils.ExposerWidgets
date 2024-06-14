@@ -18,7 +18,7 @@
     {
         private readonly FilterSectionBase<FunctionResource> functionGuidFilterSection = new GuidFilterSection<FunctionResource>("Function Guid", x => FunctionResourceExposers.FunctionGUID.Equal(x).CAST<Resource, FunctionResource>());
 
-        private FilterSectionBase<FunctionResource> resourcePoolFilterSection;
+        private readonly FilterSectionBase<FunctionResource> resourcePoolFilterSection;
 
         private readonly FilterSectionBase<FunctionResource> resourceNameEqualsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Equals", x => ResourceExposers.Name.Equal(x).CAST<Resource, FunctionResource>());
 
@@ -138,11 +138,12 @@
             return item.Name;
         }
 
-        /// <summary>
-        /// Adding filter section in the UI.
-        /// </summary>
-        /// <param name="row">Row on which section should appear.</param>
-        protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
+		/// <summary>
+		/// Adding filter section in the UI.
+		/// </summary>
+		/// <param name="row">Row on which section should appear.</param>
+		/// <param name="firstAvailableColumn"></param>
+		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddSection(functionGuidFilterSection, new SectionLayout(++row, 0));
 

@@ -36,11 +36,12 @@
             if (!string.IsNullOrWhiteSpace(e.Value)) domHelper = new DomHelper(Engine.SLNet.SendMessages, e.Value);
         }
 
-        /// <summary>
-        /// Adding filter sections on a row specified.
-        /// </summary>
-        /// <param name="row">Row position where new section should appear.</param>
-        protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
+		/// <summary>
+		/// Adding filter sections on a row specified.
+		/// </summary>
+		/// <param name="row">Row position where new section should appear.</param>
+		/// <param name="firstAvailableColumn"></param>
+		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddWidget(moduleId, ++row, 0);
             AddWidget(moduleIdTextBox, row, 1);

@@ -157,11 +157,12 @@
             return selectedResources;
         }
 
-        /// <summary>
-        /// Adding filter section to UI.
-        /// </summary>
-        /// <param name="row">Row on which we want to add section.</param>
-        protected abstract void AddFilterSections(ref int row, out int firstAvailableColumn);
+		/// <summary>
+		/// Adding filter section to UI.
+		/// </summary>
+		/// <param name="row">Row on which we want to add section.</param>
+		/// <param name="firstAvailableColumn"></param>
+		protected abstract void AddFilterSections(ref int row, out int firstAvailableColumn);
 
         /// <summary>
         /// Gets collection of individual filters in section.

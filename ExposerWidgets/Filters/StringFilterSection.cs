@@ -15,12 +15,13 @@
         /// </summary>
         protected readonly TextBox filterContentTextBox = new TextBox();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="StringFilterSection{T}"/>"/> class.
-        /// </summary>
-        /// <param name="filterName">Name of filter.</param>
-        /// <param name="emptyFilter">Filter that will be applied.</param>
-        public StringFilterSection(string filterName, Func<string, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="StringFilterSection{T}"/>"/> class.
+		/// </summary>
+		/// <param name="filterName">Name of filter.</param>
+		/// <param name="emptyFilter">Filter that will be applied.</param>
+		/// <param name="invertedEmptyFilter">Optional inverted filter.</param>
+		public StringFilterSection(string filterName, Func<string, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
         {
             GenerateUi();
         }

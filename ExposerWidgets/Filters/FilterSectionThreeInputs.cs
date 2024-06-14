@@ -48,6 +48,9 @@
         /// </summary>
         public abstract FilterInputType3 ThirdValue { get; set; }
 
+		/// <summary>
+		/// Indicates if this filter section can be inverted.
+		/// </summary>
 		protected override bool Invertible => invertedFilterFunctionWithThreeInputs != null;
 
 		/// <summary>

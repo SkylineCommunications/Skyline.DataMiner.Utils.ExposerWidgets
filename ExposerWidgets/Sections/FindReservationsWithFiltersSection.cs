@@ -129,11 +129,12 @@
             return item.Name;
         }
 
-        /// <summary>
-        /// Adding filter section in the UI.
-        /// </summary>
-        /// <param name="row">Row on which section should appear.</param>
-        protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
+		/// <summary>
+		/// Adding filter section in the UI.
+		/// </summary>
+		/// <param name="row">Row on which section should appear.</param>
+		/// <param name="firstAvailableColumn"></param>
+		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddSection(reservationNameEqualsFilterSection, new SectionLayout(++row, 0));
 

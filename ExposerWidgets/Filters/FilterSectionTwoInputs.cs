@@ -43,7 +43,10 @@
         /// </summary>
         public abstract FilterInputType2 SecondValue { get; set; }
 
-        protected override bool Invertible => invertedFilterFunctionWithTwoInputs != null;
+		/// <summary>
+		/// Indicates if this filter section can be inverted.
+		/// </summary>
+		protected override bool Invertible => invertedFilterFunctionWithTwoInputs != null;
 
 		/// <summary>
 		/// Sets default values for filters.

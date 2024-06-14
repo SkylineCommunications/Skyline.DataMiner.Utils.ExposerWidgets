@@ -35,7 +35,10 @@
         /// </summary>
         public override FilterElement<DataMinerObjectType> FilterElement => IsInverted ? invertedFilterFunctionWithOneInput(Value) : filterFunctionWithOneInput(Value);
 
-        protected override bool Invertible => invertedFilterFunctionWithOneInput != null;
+		/// <summary>
+		/// Indicates if this filter section can be inverted.
+		/// </summary>
+		protected override bool Invertible => invertedFilterFunctionWithOneInput != null;
 
 		/// <summary>
 		/// Sets default value for filter.
