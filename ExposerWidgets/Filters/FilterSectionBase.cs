@@ -100,16 +100,18 @@
 
             AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
 
-            if (Invertible)
-            {
-                AddWidget(invertFilterCheckBox, 0, nextAvailableColumn++);
-            }
-        }
+            //if (Invertible)
+            //{
+            //    AddWidget(invertFilterCheckBox, 0, nextAvailableColumn++);
+            //}
 
-        /// <summary>
-        /// Handles default update of filter.
-        /// </summary>
-        protected abstract void HandleDefaultUpdate();
+			AddWidget(invertFilterCheckBox, 0, nextAvailableColumn++);
+		}
+
+		/// <summary>
+		/// Handles default update of filter.
+		/// </summary>
+		protected abstract void HandleDefaultUpdate();
 
         private void HandleEnabledUpdate()
         {

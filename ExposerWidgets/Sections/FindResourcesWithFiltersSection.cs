@@ -41,16 +41,14 @@
         private readonly Button addCapabilityDoesntContainFilterButton = new Button("Add 'Capability Does Not Contain' Filter");
         private readonly Button addCapabilityExistenceFilterButton = new Button("Add 'Capability Exists' Filter");
 
-        private readonly ResourceManagerHelper resourceManagerHelper;
+        private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FindResourcesWithFiltersSection"/>"/> class.
-        /// </summary>
-        public FindResourcesWithFiltersSection() : base()
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FindResourcesWithFiltersSection"/>"/> class.
+		/// </summary>
+		public FindResourcesWithFiltersSection() : base()
         {
-            resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
-
-			resourcePoolFilterSection = new ResourcePoolFilterSection("Resource Pool", x => ResourceExposers.PoolGUIDs.Contains(x).CAST<Resource, FunctionResource>(), resourceManagerHelper.GetResourcePools());
+			resourcePoolFilterSection = new ResourcePoolFilterSection("Resource Pool", x => ResourceExposers.PoolGUIDs.Contains(x).CAST<Resource, FunctionResource>(), resourceManagerHelper.GetResourcePools() ?? new ResourcePool[0]);
 
 			addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
 
