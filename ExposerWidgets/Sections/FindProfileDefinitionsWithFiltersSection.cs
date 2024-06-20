@@ -13,13 +13,11 @@
 	/// </summary>
 	public class FindProfileDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ProfileDefinition>
     {
-        private readonly FilterSectionBase<ProfileDefinition> idFilterSection = new GuidFilterSection<ProfileDefinition>("Profile Definition ID", x => ProfileDefinitionExposers.ID.Equal(x));
+        private readonly FilterSectionBase<ProfileDefinition> idFilterSection = new GuidFilterSection<ProfileDefinition>("Profile Definition ID Equals", x => ProfileDefinitionExposers.ID.Equal(x), x => ProfileDefinitionExposers.ID.NotEqual(x));
 
-        private readonly FilterSectionBase<ProfileDefinition> nameFilterSection = new StringFilterSection<ProfileDefinition>("Profile Definition Name Equals", x => ProfileDefinitionExposers.Name.Equal(x));
+        private readonly FilterSectionBase<ProfileDefinition> nameFilterSection = new StringFilterSection<ProfileDefinition>("Profile Definition Name Equals", x => ProfileDefinitionExposers.Name.Equal(x), x => ProfileDefinitionExposers.Name.NotEqual(x));
 
-        private readonly FilterSectionBase<ProfileDefinition> nameContainsFilterSection = new StringFilterSection<ProfileDefinition>("Profile Definition Name Contains", x => ProfileDefinitionExposers.Name.Contains(x));
-
-        private readonly FilterSectionBase<ProfileDefinition> nameDoesntContainFilterSection = new StringFilterSection<ProfileDefinition>("Profile Definition Name Doesn't Contain", x => ProfileDefinitionExposers.Name.NotContains(x));
+        private readonly FilterSectionBase<ProfileDefinition> nameContainsFilterSection = new StringFilterSection<ProfileDefinition>("Profile Definition Name Contains", x => ProfileDefinitionExposers.Name.Contains(x), x => ProfileDefinitionExposers.Name.NotContains(x));
 
         private readonly ProfileHelper profileHelper;
 
@@ -44,8 +42,6 @@
             AddSection(nameFilterSection, new SectionLayout(++row, 0));
 
             AddSection(nameContainsFilterSection, new SectionLayout(++row, 0));
-
-            AddSection(nameDoesntContainFilterSection, new SectionLayout(++row, 0));
 
 			firstAvailableColumn = ColumnCount + 1;
 		}

@@ -16,13 +16,11 @@
 	/// </summary>
 	public class FindProfileParametersWithFiltersSection : FindItemsWithFiltersSection<Parameter>
     {
-        private readonly FilterSectionBase<Parameter> idFilterSection = new GuidFilterSection<Parameter>("Profile Parameter ID", x => ParameterExposers.ID.Equal(x));
+        private readonly FilterSectionBase<Parameter> idFilterSection = new GuidFilterSection<Parameter>("Profile Parameter ID Equals", x => ParameterExposers.ID.Equal(x), x => ParameterExposers.ID.NotEqual(x));
 
-        private readonly FilterSectionBase<Parameter> nameFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Equals", x => ParameterExposers.Name.Equal(x));
+        private readonly FilterSectionBase<Parameter> nameFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Equals", x => ParameterExposers.Name.Equal(x), x => ParameterExposers.Name.NotEqual(x));
 
-        private readonly FilterSectionBase<Parameter> nameContainsFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Contains", x => ParameterExposers.Name.Contains(x));
-
-        private readonly FilterSectionBase<Parameter> nameDoesntContainFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Doesn't Contain", x => ParameterExposers.Name.NotContains(x));
+        private readonly FilterSectionBase<Parameter> nameContainsFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Contains", x => ParameterExposers.Name.Contains(x), x => ParameterExposers.Name.NotContains(x));
 
         private readonly List<FilterSectionBase<Parameter>> discreetFilterSections = new List<FilterSectionBase<Parameter>>();
         private readonly Button addDiscreetFilterButton = new Button("Add Discreet Filter");
@@ -42,7 +40,7 @@
 
         private void AddDiscreetFilterButton_Pressed(object sender, EventArgs e)
         {
-            var discreetFilterSection = new StringFilterSection<Parameter>("Has Discreet", discreet => ParameterExposers.Discretes.Contains(discreet));
+            var discreetFilterSection = new StringFilterSection<Parameter>("Has Discreet", discreet => ParameterExposers.Discretes.Contains(discreet), discreet => ParameterExposers.Discretes.NotContains(discreet));
 
             discreetFilterSections.Add(discreetFilterSection);
 
@@ -61,8 +59,6 @@
             AddSection(nameFilterSection, new SectionLayout(++row, 0));
 
             AddSection(nameContainsFilterSection, new SectionLayout(++row, 0));
-
-            AddSection(nameDoesntContainFilterSection, new SectionLayout(++row, 0));
 
             foreach (var discreetFilterSection in discreetFilterSections)
             {

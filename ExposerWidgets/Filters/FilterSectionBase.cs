@@ -104,6 +104,10 @@
             {
                 AddWidget(invertFilterCheckBox, 0, nextAvailableColumn++);
             }
+            else
+            {
+                nextAvailableColumn++;
+            }
 		}
 
 		/// <summary>

@@ -15,13 +15,13 @@
         /// </summary>
         protected readonly TextBox filterContentTextBox = new TextBox();
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="GuidFilterSection{T}"/>"/> class.
-		/// </summary>
-		/// <param name="filterName">Name of filter.</param>
-		/// <param name="emptyFilter">Filter that will be applied.</param>
-		/// <param name="invertedEmptyFilter">Optional inverted filter.</param>
-		public GuidFilterSection(string filterName, Func<Guid, FilterElement<DataMinerObjectType>> emptyFilter, Func<Guid, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GuidFilterSection{T}"/>"/> class.
+        /// </summary>
+        /// <param name="filterName">Name of filter.</param>
+        /// <param name="emptyFilter">Filter that will be applied.</param>
+        /// <param name="invertedEmptyFilter">Optional inverted filter.</param>
+        public GuidFilterSection(string filterName, Func<Guid, FilterElement<DataMinerObjectType>> emptyFilter, Func<Guid, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
         {
             GenerateUi();
         }
@@ -29,7 +29,18 @@
         /// <summary>
         /// Indicates if provided guid is valid or not.
         /// </summary>
-        public override bool IsValid => Guid.TryParse(filterContentTextBox.Text, out _);
+        public override bool IsValid 
+        {
+            get
+            {
+				bool valid = Guid.TryParse(filterContentTextBox.Text, out _);
+
+                filterContentTextBox.ValidationState = valid ? Automation.UIValidationState.Valid : Automation.UIValidationState.Invalid;
+                filterContentTextBox.ValidationText = "Provide a valid GUID";
+
+                return valid;
+			}
+		}
 
         /// <summary>
         /// Gets or sets guid filter value.

@@ -16,13 +16,13 @@
 	/// </summary>
 	public class FindServiceDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ServiceDefinition>
     {
-        private readonly StringFilterSection<ServiceDefinition> nameFilterSection = new StringFilterSection<ServiceDefinition>("Name", name => ServiceDefinitionExposers.Name.Equal(name));
+        private readonly StringFilterSection<ServiceDefinition> nameFilterSection = new StringFilterSection<ServiceDefinition>("Name Equals", name => ServiceDefinitionExposers.Name.Equal(name), name => ServiceDefinitionExposers.Name.NotEqual(name));
 
-        private readonly StringFilterSection<ServiceDefinition> nameContainsFilterSection = new StringFilterSection<ServiceDefinition>("Name Contains", name => ServiceDefinitionExposers.Name.Contains(name));
+        private readonly StringFilterSection<ServiceDefinition> nameContainsFilterSection = new StringFilterSection<ServiceDefinition>("Name Contains", name => ServiceDefinitionExposers.Name.Contains(name), name => ServiceDefinitionExposers.Name.NotContains(name));
 
-        private readonly GuidFilterSection<ServiceDefinition> idFilterSection = new GuidFilterSection<ServiceDefinition>("ID", id => ServiceDefinitionExposers.ID.Equal(id));
+        private readonly GuidFilterSection<ServiceDefinition> idFilterSection = new GuidFilterSection<ServiceDefinition>("ID Equals", id => ServiceDefinitionExposers.ID.Equal(id), id => ServiceDefinitionExposers.ID.NotEqual(id));
 
-        private readonly BooleanFilterSection<ServiceDefinition> isTemplateFilterSection = new BooleanFilterSection<ServiceDefinition>("Is Template", boolean => ServiceDefinitionExposers.IsTemplate.Equal(boolean));
+        private readonly BooleanFilterSection<ServiceDefinition> isTemplateFilterSection = new BooleanFilterSection<ServiceDefinition>("Is Template", boolean => ServiceDefinitionExposers.IsTemplate.Equal(boolean), boolean => ServiceDefinitionExposers.IsTemplate.NotEqual(boolean));
 
         private readonly List<FilterSectionBase<ServiceDefinition>> nodeFunctionIdFilterSections = new List<FilterSectionBase<ServiceDefinition>>();
 
@@ -62,7 +62,7 @@
 
         private void AddNodeFunctionIdFilterButton_Pressed(object sender, EventArgs e)
         {
-            var nodeFunctionIdFilterSection = new GuidFilterSection<ServiceDefinition>("Uses Function ID", guid => ServiceDefinitionExposers.NodeFunctionIDs.Contains(guid));
+            var nodeFunctionIdFilterSection = new GuidFilterSection<ServiceDefinition>("Uses Function ID", guid => ServiceDefinitionExposers.NodeFunctionIDs.Contains(guid), guid => ServiceDefinitionExposers.NodeFunctionIDs.NotContains(guid));
 
             nodeFunctionIdFilterSections.Add(nodeFunctionIdFilterSection);
 
@@ -71,7 +71,7 @@
 
         private void AddPropertyFilterButton_Pressed(object sender, EventArgs e)
         {
-            var propertyFilterSection = new StringStringFilterSection<ServiceDefinition>("Property", (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).Equal(propertyValue));
+            var propertyFilterSection = new StringStringFilterSection<ServiceDefinition>("Property Equals", (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).Equal(propertyValue), (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue));
 
             propertyFilterSections.Add(propertyFilterSection);
 

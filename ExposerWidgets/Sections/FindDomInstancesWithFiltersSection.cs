@@ -10,30 +10,30 @@
 	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
 	/// <summary>
-	/// Section for filtering dom instances.
+	/// Section for filtering DOM instances.
 	/// </summary>
 	public class FindDomInstancesWithFiltersSection : FindItemsWithFiltersSection<DomInstance>
     {
-        private readonly Label moduleId = new Label("Module ID:");
+        private readonly Label moduleId = new Label("DOM Module ID:");
 		private readonly TextBox moduleIdTextBox = new TextBox(string.Empty);
 
-		private readonly FilterSectionBase<DomInstance> idFilterSection = new GuidFilterSection<DomInstance>("Dom Instance ID Equals", x => DomInstanceExposers.Id.Equal(x), x => DomInstanceExposers.Id.NotEqual(x));
+		private readonly FilterSectionBase<DomInstance> idFilterSection = new GuidFilterSection<DomInstance>("DOM Instance ID Equals", x => DomInstanceExposers.Id.Equal(x), x => DomInstanceExposers.Id.NotEqual(x));
 
-        private readonly FilterSectionBase<DomInstance> nameFilterSection = new StringFilterSection<DomInstance>("Dom Instance Name Equals", x => DomInstanceExposers.Name.Equal(x), x => DomInstanceExposers.Name.NotEqual(x));
+        private readonly FilterSectionBase<DomInstance> nameFilterSection = new StringFilterSection<DomInstance>("DOM Instance Name Equals", x => DomInstanceExposers.Name.Equal(x), x => DomInstanceExposers.Name.NotEqual(x));
 
-        private readonly FilterSectionBase<DomInstance> nameContainsFilterSection = new StringFilterSection<DomInstance>("Dom Instance Name Contains", x => DomInstanceExposers.Name.Contains(x), x => DomInstanceExposers.Name.NotContains(x));
+        private readonly FilterSectionBase<DomInstance> nameContainsFilterSection = new StringFilterSection<DomInstance>("DOM Instance Name Contains", x => DomInstanceExposers.Name.Contains(x), x => DomInstanceExposers.Name.NotContains(x));
 
-		private readonly FilterSectionBase<DomInstance> definitionIdFilterSection = new GuidFilterSection<DomInstance>("Dom Definition ID Equals", x => DomInstanceExposers.DomDefinitionId.Equal(x), x => DomInstanceExposers.DomDefinitionId.NotEqual(x));
+		private readonly FilterSectionBase<DomInstance> definitionIdFilterSection = new GuidFilterSection<DomInstance>("DOM Definition ID Equals", x => DomInstanceExposers.DomDefinitionId.Equal(x), x => DomInstanceExposers.DomDefinitionId.NotEqual(x));
 
-		private readonly FilterSectionBase<DomInstance> statusIdFilterSection = new StringFilterSection<DomInstance>("Dom Status ID Equals", x => DomInstanceExposers.StatusId.Equal(x), x => DomInstanceExposers.StatusId.NotEqual(x));
+		private readonly FilterSectionBase<DomInstance> statusIdFilterSection = new StringFilterSection<DomInstance>("DOM Status ID Equals", x => DomInstanceExposers.StatusId.Equal(x), x => DomInstanceExposers.StatusId.NotEqual(x));
 
-		private readonly FilterSectionBase<DomInstance> createdAtFromFilterSection = new DateTimeFilterSection<DomInstance>("Dom Instance Created At From", x => DomInstanceExposers.CreatedAt.GreaterThanOrEqual(x));
+		private readonly FilterSectionBase<DomInstance> createdAtFromFilterSection = new DateTimeFilterSection<DomInstance>("DOM Instance Created At From", x => DomInstanceExposers.CreatedAt.GreaterThanOrEqual(x));
 
-		private readonly FilterSectionBase<DomInstance> createdAtUntilFilterSection = new DateTimeFilterSection<DomInstance>("Dom Instance Created At Until", x => DomInstanceExposers.CreatedAt.LessThanOrEqual(x));
+		private readonly FilterSectionBase<DomInstance> createdAtUntilFilterSection = new DateTimeFilterSection<DomInstance>("DOM Instance Created At Until", x => DomInstanceExposers.CreatedAt.LessThanOrEqual(x));
 
-		private readonly FilterSectionBase<DomInstance> lastModifiedAtFromFilterSection = new DateTimeFilterSection<DomInstance>("Dom Instance Last Modified At From", x => DomInstanceExposers.LastModified.GreaterThanOrEqual(x));
+		private readonly FilterSectionBase<DomInstance> lastModifiedAtFromFilterSection = new DateTimeFilterSection<DomInstance>("DOM Instance Last Modified At From", x => DomInstanceExposers.LastModified.GreaterThanOrEqual(x));
 
-		private readonly FilterSectionBase<DomInstance> lastModifiedAtUntilFilterSection = new DateTimeFilterSection<DomInstance>("Dom Instance Last Modified At Until", x => DomInstanceExposers.LastModified.LessThanOrEqual(x));
+		private readonly FilterSectionBase<DomInstance> lastModifiedAtUntilFilterSection = new DateTimeFilterSection<DomInstance>("DOM Instance Last Modified At Until", x => DomInstanceExposers.LastModified.LessThanOrEqual(x));
 
 		private readonly List<FilterSectionBase<DomInstance>> sectionDefinitionIdFilterSections = new List<FilterSectionBase<DomInstance>>();
 		private readonly Button addSectionDefinitionIdFilterButton = new Button("Add Section Definition Filter");
@@ -106,7 +106,7 @@
 		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddWidget(moduleId, ++row, 0);
-            AddWidget(moduleIdTextBox, row, 1);
+            AddWidget(moduleIdTextBox, row, 2);
 
             AddSection(idFilterSection, new SectionLayout(++row, 0));
 
@@ -155,11 +155,17 @@
         protected override IEnumerable<DomInstance> FindItemsWithFilters()
         {
             if (domHelper == null) 
-            { 
+            {
+				moduleIdTextBox.ValidationState = UIValidationState.Invalid;
+				moduleIdTextBox.ValidationText = "Provide a valid DOM Module ID";
                 return new List<DomInstance>();
-            } 
+            }
+			else
+			{
+				moduleIdTextBox.ValidationState = UIValidationState.Valid;
+			}
 
-            return domHelper.DomInstances.Read(GetCombinedFilterElement());
+			return domHelper.DomInstances.Read(GetCombinedFilterElement());
         }
 
         /// <summary>

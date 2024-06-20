@@ -16,21 +16,19 @@
 	/// </summary>
 	public class FindResourcesWithFiltersSection : FindItemsWithFiltersSection<FunctionResource>
     {
-        private readonly FilterSectionBase<FunctionResource> functionGuidFilterSection = new GuidFilterSection<FunctionResource>("Function Guid", x => FunctionResourceExposers.FunctionGUID.Equal(x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> functionGuidFilterSection = new GuidFilterSection<FunctionResource>("Function Guid Equals", x => FunctionResourceExposers.FunctionGUID.Equal(x).CAST<Resource, FunctionResource>(), x => FunctionResourceExposers.FunctionGUID.NotEqual(x).CAST<Resource, FunctionResource>());
 
         private readonly FilterSectionBase<FunctionResource> resourcePoolFilterSection;
 
-        private readonly FilterSectionBase<FunctionResource> resourceNameEqualsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Equals", x => ResourceExposers.Name.Equal(x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> resourceNameEqualsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Equals", x => ResourceExposers.Name.Equal(x).CAST<Resource, FunctionResource>(), x => ResourceExposers.Name.NotEqual(x).CAST<Resource, FunctionResource>());
 
-        private readonly FilterSectionBase<FunctionResource> resourceNameContainsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Contains", x => ResourceExposers.Name.Contains(x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> resourceNameContainsFilterSection = new StringFilterSection<FunctionResource>("Resource Name Contains", x => ResourceExposers.Name.Contains(x).CAST<Resource, FunctionResource>(), x => ResourceExposers.Name.NotContains(x).CAST<Resource, FunctionResource>());
 
-        private readonly FilterSectionBase<FunctionResource> resourceNameDoesNotContainFilterSection = new StringFilterSection<FunctionResource>("Resource Name Does Not Contain", x => ResourceExposers.Name.NotContains(x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> resourceIdFilterSection = new GuidFilterSection<FunctionResource>("Resource ID Equals", x => ResourceExposers.ID.Equal(x).CAST<Resource, FunctionResource>(), x => ResourceExposers.ID.NotEqual(x).CAST<Resource, FunctionResource>());
 
-        private readonly FilterSectionBase<FunctionResource> resourceIdFilterSection = new GuidFilterSection<FunctionResource>("Resource ID", x => ResourceExposers.ID.Equal(x).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> dmaIdFilterSection = new IntegerFilterSection<FunctionResource>("DMA ID Equals", x => ResourceExposers.DmaID.Equal(Convert.ToInt32(x)).CAST<Resource, FunctionResource>(), x => ResourceExposers.DmaID.NotEqual(Convert.ToInt32(x)).CAST<Resource, FunctionResource>());
 
-        private readonly FilterSectionBase<FunctionResource> dmaIdFilterSection = new IntegerFilterSection<FunctionResource>("DMA ID", x => ResourceExposers.DmaID.Equal(Convert.ToInt32(x)).CAST<Resource, FunctionResource>());
-
-        private readonly FilterSectionBase<FunctionResource> elementIdFilterSection = new IntegerFilterSection<FunctionResource>("Element ID", x => ResourceExposers.ElementID.Equal(Convert.ToInt32(x)).CAST<Resource, FunctionResource>());
+        private readonly FilterSectionBase<FunctionResource> elementIdFilterSection = new IntegerFilterSection<FunctionResource>("Element ID Equals", x => ResourceExposers.ElementID.Equal(Convert.ToInt32(x)).CAST<Resource, FunctionResource>(), x => ResourceExposers.ElementID.NotEqual(Convert.ToInt32(x)).CAST<Resource, FunctionResource>());
 
         private readonly List<FilterSectionBase<FunctionResource>> propertyFilterSections = new List<FilterSectionBase<FunctionResource>>();
         private readonly Button addPropertyFilterButton = new Button("Add Property Filter");
@@ -47,7 +45,9 @@
 		/// </summary>
 		public FindResourcesWithFiltersSection() : base()
         {
-			resourcePoolFilterSection = new ResourcePoolFilterSection("Resource Pool", x => ResourceExposers.PoolGUIDs.Contains(x).CAST<Resource, FunctionResource>(), resourceManagerHelper.GetResourcePools() ?? new ResourcePool[0]);
+            var resourcePools = resourceManagerHelper.GetResourcePools() ?? new ResourcePool[0];
+
+			resourcePoolFilterSection = new ResourcePoolFilterSection("Resource Pool Equals", x => ResourceExposers.PoolGUIDs.Contains(x).CAST<Resource, FunctionResource>(), resourcePools);
 
 			addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
 
@@ -140,8 +140,6 @@
             AddSection(resourceNameEqualsFilterSection, new SectionLayout(++row, 0));
 
             AddSection(resourceNameContainsFilterSection, new SectionLayout(++row, 0));
-
-            AddSection(resourceNameDoesNotContainFilterSection, new SectionLayout(++row, 0));
 
             AddSection(resourceIdFilterSection, new SectionLayout(++row, 0));
 
