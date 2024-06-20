@@ -38,7 +38,6 @@
 
         private readonly List<FilterSectionBase<FunctionResource>> capabilityFilterSections = new List<FilterSectionBase<FunctionResource>>();
         private readonly Button addCapabilityContainsFilterButton = new Button("Add 'Capability Contains' Filter");
-        private readonly Button addCapabilityDoesntContainFilterButton = new Button("Add 'Capability Does Not Contain' Filter");
         private readonly Button addCapabilityExistenceFilterButton = new Button("Add 'Capability Exists' Filter");
 
         private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
@@ -56,23 +55,12 @@
 
             addCapabilityContainsFilterButton.Pressed += AddCapabilityContainsFilterButton_Pressed;
 
-            addCapabilityDoesntContainFilterButton.Pressed += AddCapabilityDoesntContainFilterButton_Pressed;
-
             addCapabilityExistenceFilterButton.Pressed += AddCapabilityExistenceFilterButton_Pressed;
-        }
-
-        private void AddCapabilityDoesntContainFilterButton_Pressed(object sender, EventArgs e)
-        {
-            var capabilityFilterSection = new StringStringFilterSection<FunctionResource>("Discrete Capability Does Not Contain", (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(Guid.Parse(cId)).NotContains(cValue).CAST<Resource, FunctionResource>());
-
-            capabilityFilterSections.Add(capabilityFilterSection);
-
-            InvokeRegenerateUi();
         }
 
         private void AddCapabilityContainsFilterButton_Pressed(object sender, EventArgs e)
         {
-            var capabilityFilterSection = new StringStringFilterSection<FunctionResource>("Discrete Capability Contains", (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(Guid.Parse(cId)).Contains(cValue).CAST<Resource, FunctionResource>());
+            var capabilityFilterSection = new GuidStringFilterSection<FunctionResource>("Discrete Capability Contains", (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).Contains(cValue).CAST<Resource, FunctionResource>(), (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).NotContains(cValue).CAST<Resource, FunctionResource>());
 
             capabilityFilterSections.Add(capabilityFilterSection);
 
@@ -99,7 +87,7 @@
 
         private void AddPropertyFilterButton_Pressed(object sender, EventArgs e)
         {
-            var propertyFilterSection = new StringStringFilterSection<FunctionResource>("Property", (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).Equal(propertyValue).CAST<Resource, FunctionResource>());
+            var propertyFilterSection = new StringStringFilterSection<FunctionResource>("Property Equals", (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).Equal(propertyValue).CAST<Resource, FunctionResource>(), (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue).CAST<Resource, FunctionResource>(), "Name", "Value");
 
             propertyFilterSections.Add(propertyFilterSection);
 
@@ -173,7 +161,6 @@
             AddWidget(addPropertyExistenceFilterButton, ++row, 0);
 
             AddWidget(addCapabilityContainsFilterButton, ++row, 0);
-            AddWidget(addCapabilityDoesntContainFilterButton, ++row, 0);
             AddWidget(addCapabilityExistenceFilterButton, ++row, 0);
 
 			firstAvailableColumn = ColumnCount + 1;

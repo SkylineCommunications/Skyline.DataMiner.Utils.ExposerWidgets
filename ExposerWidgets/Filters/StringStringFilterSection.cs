@@ -10,15 +10,9 @@
     /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
     public class StringStringFilterSection<DataMinerObjectType> : FilterSectionTwoInputs<DataMinerObjectType, string, string>, IDataMinerObjectFilter<DataMinerObjectType>
     {
-        /// <summary>
-        /// Custom property name value input widget.
-        /// </summary>
-        protected readonly TextBox propertyNameTextBox = new TextBox();
+        private readonly TextBox firstTextBox = new TextBox();
 
-        /// <summary>
-        /// string value input widget for specified custom property.
-        /// </summary>
-        protected readonly TextBox propertyValueTextBox = new TextBox();
+		private readonly TextBox secondTextBox = new TextBox();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StringStringFilterSection{T}"/>"/> class.
@@ -26,7 +20,7 @@
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="emptyFilter">Filter that will be applied.</param>
 		/// <param name="invertedEmptyFilter">Optional inverted filter.</param>
-		public StringStringFilterSection(string filterName, Func<string, string, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, string, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
+		public StringStringFilterSection(string filterName, Func<string, string, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, string, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null, string firstValueExplanation = null, string secondValueExplanation = null) : base(filterName, emptyFilter, invertedEmptyFilter, firstValueExplanation, secondValueExplanation)
         {
             GenerateUi();
         }
@@ -34,15 +28,15 @@
         /// <summary>
         /// Indicates if provided custom property value is not null or empty.
         /// </summary>
-        public override bool IsValid => !string.IsNullOrEmpty(propertyNameTextBox.Text);
+        public override bool IsValid => !string.IsNullOrEmpty(firstTextBox.Text);
 
         /// <summary>
         /// Gets or sets custom property name value.
         /// </summary>
         public override string FirstValue
         {
-            get => propertyNameTextBox.Text;
-            set => propertyNameTextBox.Text = value;
+            get => firstTextBox.Text;
+            set => firstTextBox.Text = value;
         }
 
         /// <summary>
@@ -50,8 +44,8 @@
         /// </summary>
         public override string SecondValue
         {
-            get => propertyValueTextBox.Text;
-            set => propertyValueTextBox.Text = value;
+            get => secondTextBox.Text;
+            set => secondTextBox.Text = value;
         }
 
         /// <summary>
@@ -71,8 +65,10 @@
         {
             base.GenerateUi();
 
-            AddWidget(propertyNameTextBox, 0, nextAvailableColumn++);
-            AddWidget(propertyValueTextBox, 0, nextAvailableColumn++);
+            if (!string.IsNullOrWhiteSpace(firstValueExplanationLabel.Text)) AddWidget(firstValueExplanationLabel, 0, nextAvailableColumn++);
+            AddWidget(firstTextBox, 0, nextAvailableColumn++);
+			if (!string.IsNullOrWhiteSpace(secondValueExplanationLabel.Text)) AddWidget(secondValueExplanationLabel, 0, nextAvailableColumn++);
+			AddWidget(secondTextBox, 0, nextAvailableColumn++);
         }
 
         /// <summary>
@@ -80,8 +76,8 @@
         /// </summary>
         protected override void HandleDefaultUpdate()
         {
-            propertyNameTextBox.IsEnabled = !IsDefault;
-            propertyValueTextBox.IsEnabled = !IsDefault;
+            firstTextBox.IsEnabled = !IsDefault;
+            secondTextBox.IsEnabled = !IsDefault;
         }
     }
 }

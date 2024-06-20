@@ -48,15 +48,13 @@
         private readonly List<FilterSectionBase<ReservationInstance>> propertyFilterSections = new List<FilterSectionBase<ReservationInstance>>();
         private readonly Button addPropertyFilterButton = new Button("Add Property Filter");
 
-        private readonly ResourceManagerHelper resourceManagerHelper;
+        private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FindReservationsWithFiltersSection"/>"/> class.
-        /// </summary>
-        public FindReservationsWithFiltersSection() : base()
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FindReservationsWithFiltersSection"/>"/> class.
+		/// </summary>
+		public FindReservationsWithFiltersSection() : base()
         {
-			resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
-
 			addResourceFilterButton.Pressed += AddResourceFilterButton_Pressed;
 
             addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;

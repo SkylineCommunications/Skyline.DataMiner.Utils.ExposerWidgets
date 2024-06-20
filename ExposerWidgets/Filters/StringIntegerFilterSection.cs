@@ -13,12 +13,12 @@
         /// <summary>
         /// Custom property input widget.
         /// </summary>
-        protected readonly TextBox propertyNameTextBox = new TextBox();
+        protected readonly TextBox firstValueTextBox = new TextBox();
 
         /// <summary>
         /// Numeric value of custom property input widget.
         /// </summary>
-        protected readonly Numeric propertyValueNumeric = new Numeric { Decimals = 0, StepSize = 1 };
+        protected readonly Numeric secondValueNumeric = new Numeric { Decimals = 0, StepSize = 1 };
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="StringIntegerFilterSection{T}"/>"/> class.
@@ -26,7 +26,9 @@
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="emptyFilter">Filter that will be applied.</param>
 		/// <param name="invertedEmptyFilter">Optional inverted filter.</param>
-		public StringIntegerFilterSection(string filterName, Func<string, int, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, int, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
+		/// <param name="firstValueExplanation"></param>
+		/// <param name="secondValueExplanation"></param>
+		public StringIntegerFilterSection(string filterName, Func<string, int, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, int, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null, string firstValueExplanation = null, string secondValueExplanation = null) : base(filterName, emptyFilter, invertedEmptyFilter, firstValueExplanation, secondValueExplanation)
         {
             GenerateUi();
         }
@@ -34,15 +36,15 @@
         /// <summary>
         /// Indicates if provided custom property value is not null or empty.
         /// </summary>
-        public override bool IsValid => !string.IsNullOrEmpty(propertyNameTextBox.Text);
+        public override bool IsValid => !string.IsNullOrEmpty(firstValueTextBox.Text);
 
         /// <summary>
         /// Gets or sets custom property name value.
         /// </summary>
         public override string FirstValue
         {
-            get => propertyNameTextBox.Text;
-            set => propertyNameTextBox.Text = value;
+            get => firstValueTextBox.Text;
+            set => firstValueTextBox.Text = value;
         }
 
         /// <summary>
@@ -50,8 +52,8 @@
         /// </summary>
         public override int SecondValue
         {
-            get => (int)propertyValueNumeric.Value;
-            set => propertyValueNumeric.Value = value;
+            get => (int)secondValueNumeric.Value;
+            set => secondValueNumeric.Value = value;
         }
 
         /// <summary>
@@ -71,17 +73,19 @@
         {
             base.GenerateUi();
 
-            AddWidget(propertyNameTextBox, 0, nextAvailableColumn++);
-            AddWidget(propertyValueNumeric, 0, nextAvailableColumn++);
-        }
+			if (!string.IsNullOrWhiteSpace(firstValueExplanationLabel.Text)) AddWidget(firstValueExplanationLabel, 0, nextAvailableColumn++);
+			AddWidget(firstValueTextBox, 0, nextAvailableColumn++);
+			if (!string.IsNullOrWhiteSpace(secondValueExplanationLabel.Text)) AddWidget(secondValueExplanationLabel, 0, nextAvailableColumn++);
+			AddWidget(secondValueNumeric, 0, nextAvailableColumn++);
+		}
 
         /// <summary>
         /// Handles filter section default updates.
         /// </summary>
         protected override void HandleDefaultUpdate()
         {
-            propertyNameTextBox.IsEnabled = !IsDefault;
-            propertyValueNumeric.IsEnabled = !IsDefault;
+            firstValueTextBox.IsEnabled = !IsDefault;
+            secondValueNumeric.IsEnabled = !IsDefault;
         }
     }
 }

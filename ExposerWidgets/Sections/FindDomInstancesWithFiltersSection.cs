@@ -4,6 +4,7 @@
 	using Skyline.DataMiner.Automation;
 	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.Sections;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 	using Skyline.DataMiner.Utils.YLE.UI.Filters;
@@ -16,11 +17,15 @@
         private readonly Label moduleId = new Label("Module ID:");
 		private readonly TextBox moduleIdTextBox = new TextBox(string.Empty);
 
-		private readonly FilterSectionBase<DomInstance> idFilterSection = new GuidFilterSection<DomInstance>("Dom Instance ID Equals", x => DomInstanceExposers.DomDefinitionId.Equal(x), x => DomInstanceExposers.DomDefinitionId.NotEqual(x));
+		private readonly FilterSectionBase<DomInstance> idFilterSection = new GuidFilterSection<DomInstance>("Dom Instance ID Equals", x => DomInstanceExposers.Id.Equal(x), x => DomInstanceExposers.Id.NotEqual(x));
 
         private readonly FilterSectionBase<DomInstance> nameFilterSection = new StringFilterSection<DomInstance>("Dom Instance Name Equals", x => DomInstanceExposers.Name.Equal(x), x => DomInstanceExposers.Name.NotEqual(x));
 
         private readonly FilterSectionBase<DomInstance> nameContainsFilterSection = new StringFilterSection<DomInstance>("Dom Instance Name Contains", x => DomInstanceExposers.Name.Contains(x), x => DomInstanceExposers.Name.NotContains(x));
+
+		private readonly FilterSectionBase<DomInstance> definitionIdFilterSection = new GuidFilterSection<DomInstance>("Dom Definition ID Equals", x => DomInstanceExposers.DomDefinitionId.Equal(x), x => DomInstanceExposers.DomDefinitionId.NotEqual(x));
+
+		private readonly FilterSectionBase<DomInstance> statusIdFilterSection = new StringFilterSection<DomInstance>("Dom Status ID Equals", x => DomInstanceExposers.StatusId.Equal(x), x => DomInstanceExposers.StatusId.NotEqual(x));
 
 		private readonly FilterSectionBase<DomInstance> createdAtFromFilterSection = new DateTimeFilterSection<DomInstance>("Dom Instance Created At From", x => DomInstanceExposers.CreatedAt.GreaterThanOrEqual(x));
 
@@ -36,6 +41,9 @@
 		private readonly List<FilterSectionBase<DomInstance>> sectionIdFilterSections = new List<FilterSectionBase<DomInstance>>();
 		private readonly Button addSectionIdFilterButton = new Button("Add Section Filter");
 
+		private readonly List<FilterSectionBase<DomInstance>> fieldValueFilterSections = new List<FilterSectionBase<DomInstance>>();
+		private readonly Button addFieldValueFilterButton = new Button("Add Field Filter");
+
 		private DomHelper domHelper;
 
         /// <summary>
@@ -48,7 +56,22 @@
 			addSectionDefinitionIdFilterButton.Pressed += AddSectionDefinitionIdFilterButton_Pressed;
 
 			addSectionIdFilterButton.Pressed += AddSectionIdFilterButton_Pressed;
+
+			addFieldValueFilterButton.Pressed += AddFieldValueFilterButton_Pressed;
         }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public string DomModuleId => moduleIdTextBox.Text;
+
+		private void AddFieldValueFilterButton_Pressed(object sender, System.EventArgs e)
+		{
+			var fieldValueFilterSection = new StringStringFilterSection<DomInstance>("Field Equals", (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Equal(fieldValue), (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotEqual(fieldValue), "Name", "Value");
+
+			fieldValueFilterSections.Add(fieldValueFilterSection);
+			InvokeRegenerateUi();
+		}
 
 		private void AddSectionIdFilterButton_Pressed(object sender, System.EventArgs e)
 		{
@@ -89,6 +112,10 @@
 
             AddSection(nameContainsFilterSection, new SectionLayout(++row, 0));
 
+            AddSection(definitionIdFilterSection, new SectionLayout(++row, 0));
+
+            AddSection(statusIdFilterSection, new SectionLayout(++row, 0));
+
             AddSection(createdAtFromFilterSection, new SectionLayout(++row, 0));
 
             AddSection(createdAtUntilFilterSection, new SectionLayout(++row, 0));
@@ -107,8 +134,14 @@
 				AddSection(sectionIdFilterSection, new SectionLayout(++row, 0));
 			}
 
+			foreach (var fieldValueFilterSection in fieldValueFilterSections)
+			{
+				AddSection(fieldValueFilterSection, new SectionLayout(++row, 0));
+			}
+
 			AddWidget(addSectionDefinitionIdFilterButton, ++row, 0);
 			AddWidget(addSectionIdFilterButton, ++row, 0);
+			AddWidget(addFieldValueFilterButton, ++row, 0);
 
 			firstAvailableColumn = ColumnCount + 1;
 		}

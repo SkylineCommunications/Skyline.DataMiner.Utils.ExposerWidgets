@@ -2,6 +2,7 @@
 {
 	using System;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	/// <summary>
 	/// Represents filter section with one input.
@@ -12,6 +13,11 @@
     {
         private readonly Func<FilterInputType, FilterElement<DataMinerObjectType>> filterFunctionWithOneInput;
         private readonly Func<FilterInputType, FilterElement<DataMinerObjectType>> invertedFilterFunctionWithOneInput;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected readonly Label valueExplanationLabel = new Label();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterSectionOneInput{T, T}"/>"/> class.
