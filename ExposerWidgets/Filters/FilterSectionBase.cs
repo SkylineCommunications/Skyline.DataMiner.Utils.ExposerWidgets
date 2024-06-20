@@ -17,6 +17,10 @@
         protected int nextAvailableColumn = 0;
 
         private readonly CheckBox filterNameCheckBox;
+
+        /// <summary>
+        /// 
+        /// </summary>
         protected readonly DropDown filterDropDown = new DropDown();
 
         /// <summary>
