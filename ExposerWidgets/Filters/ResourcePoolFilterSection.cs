@@ -6,7 +6,8 @@
     using Skyline.DataMiner.Net.Messages;
     using Skyline.DataMiner.Net.Messages.SLDataGateway;
     using Skyline.DataMiner.Net.ResourceManager.Objects;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
     /// <summary>
     /// Represents filter section for resource pools.
@@ -20,9 +21,9 @@
         /// Initializes a new instance of the <see cref="ResourcePoolFilterSection"/>"/> class.
         /// </summary>
         /// <param name="filterName">Name of filter.</param>
-        /// <param name="emptyFilter">Filter that will be applied.</param>
+        /// <param name="filterFunctions">Filter that will be applied.</param>
         /// <param name="resourcePools">Available resource pools.</param>
-        public ResourcePoolFilterSection(string filterName, Func<Guid, FilterElement<FunctionResource>> emptyFilter, IEnumerable<ResourcePool> resourcePools) : base(filterName, emptyFilter)
+        public ResourcePoolFilterSection(string filterName, Dictionary<Comparers, Func<Guid, FilterElement<FunctionResource>>> filterFunctions, IEnumerable<ResourcePool> resourcePools) : base(filterName, filterFunctions)
         {
             this.resourcePools = resourcePools ?? new List<ResourcePool>();
 

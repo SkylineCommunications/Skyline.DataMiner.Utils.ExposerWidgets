@@ -1,7 +1,9 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
 	using System;
+	using System.Collections.Generic;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	/// <summary>
@@ -19,7 +21,7 @@
 		/// </summary>
 		/// <param name="filterName"></param>
 		/// <param name="filterFunctions"></param>
-		public GuidStringFilterSection(string filterName, params Func<Guid, string, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
+		public GuidStringFilterSection(string filterName, Dictionary<Comparers, Func<Guid, string, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
 		{
 			GenerateUi();
 		}

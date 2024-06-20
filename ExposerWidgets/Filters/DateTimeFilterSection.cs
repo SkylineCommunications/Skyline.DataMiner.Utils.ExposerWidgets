@@ -1,8 +1,10 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
     using System;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using System.Collections.Generic;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
     /// <summary>
     /// Represents filter section with one date-time picker input.
@@ -17,7 +19,7 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter exposers that will be used.</param>
-		public DateTimeFilterSection(string filterName, params Func<DateTime, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
+		public DateTimeFilterSection(string filterName, Dictionary<Comparers, Func<DateTime, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
         {
             GenerateUi();
         }

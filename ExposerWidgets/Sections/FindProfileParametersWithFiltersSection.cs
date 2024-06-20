@@ -7,6 +7,7 @@
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Net.Profiles;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 	using Parameter = Skyline.DataMiner.Net.Profiles.Parameter;
@@ -16,11 +17,25 @@
 	/// </summary>
 	public class FindProfileParametersWithFiltersSection : FindItemsWithFiltersSection<Parameter>
     {
-        private readonly FilterSectionBase<Parameter> idFilterSection = new GuidFilterSection<Parameter>("Profile Parameter ID Equals", x => ParameterExposers.ID.Equal(x), x => ParameterExposers.ID.NotEqual(x));
+        private readonly FilterSectionBase<Parameter> idFilterSection = new GuidFilterSection<Parameter>(
+            "Profile Parameter ID",
+            new Dictionary<Helpers.Comparers, Func<Guid, FilterElement<Parameter>>> 
+            {
+                {Comparers.Equals,  x => ParameterExposers.ID.Equal(x) },
+                {Comparers.NotEquals,  x => ParameterExposers.ID.NotEqual(x) },
+            }
+        );
 
-        private readonly FilterSectionBase<Parameter> nameFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Equals", x => ParameterExposers.Name.Equal(x), x => ParameterExposers.Name.NotEqual(x));
-
-        private readonly FilterSectionBase<Parameter> nameContainsFilterSection = new StringFilterSection<Parameter>("Profile Parameter Name Contains", x => ParameterExposers.Name.Contains(x), x => ParameterExposers.Name.NotContains(x));
+        private readonly FilterSectionBase<Parameter> nameFilterSection = new StringFilterSection<Parameter>(
+            "Profile Parameter Name", 
+            new Dictionary<Comparers, Func<string, FilterElement<Parameter>>> 
+            {
+                {Comparers.Equals, x => ParameterExposers.Name.Equal(x) },
+                {Comparers.NotEquals, x => ParameterExposers.Name.NotEqual(x) },
+                {Comparers.Contains, x => ParameterExposers.Name.Contains(x) },
+                {Comparers.NotContains, x => ParameterExposers.Name.NotContains(x) },
+            }
+        );
 
         private readonly List<FilterSectionBase<Parameter>> discreetFilterSections = new List<FilterSectionBase<Parameter>>();
         private readonly Button addDiscreetFilterButton = new Button("Add Discreet Filter");
@@ -40,7 +55,14 @@
 
         private void AddDiscreetFilterButton_Pressed(object sender, EventArgs e)
         {
-            var discreetFilterSection = new StringFilterSection<Parameter>("Has Discreet", discreet => ParameterExposers.Discretes.Contains(discreet), discreet => ParameterExposers.Discretes.NotContains(discreet));
+            var discreetFilterSection = new StringFilterSection<Parameter>(
+                "Discreet", 
+                new Dictionary<Comparers, Func<string, FilterElement<Parameter>>> 
+                {
+                    {Comparers.Exists,  discreet => ParameterExposers.Discretes.Contains(discreet) },
+                    {Comparers.NotExists,  discreet => ParameterExposers.Discretes.NotContains(discreet) },
+                }
+            );
 
             discreetFilterSections.Add(discreetFilterSection);
 
@@ -57,8 +79,6 @@
             AddSection(idFilterSection, new SectionLayout(++row, 0));
 
             AddSection(nameFilterSection, new SectionLayout(++row, 0));
-
-            AddSection(nameContainsFilterSection, new SectionLayout(++row, 0));
 
             foreach (var discreetFilterSection in discreetFilterSections)
             {

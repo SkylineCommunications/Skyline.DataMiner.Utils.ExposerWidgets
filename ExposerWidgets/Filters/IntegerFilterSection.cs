@@ -1,8 +1,10 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
     using System;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using System.Collections.Generic;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
     /// <summary>
     ///  Represents filter section with one numeric input.
@@ -20,7 +22,7 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter that will be applied.</param>
-		public IntegerFilterSection(string filterName, params Func<int, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
+		public IntegerFilterSection(string filterName, Dictionary<Comparers, Func<int, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
         {
             GenerateUi();
         }

@@ -3,8 +3,8 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using System.Reflection;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	/// <summary>
@@ -14,7 +14,7 @@
 	/// <typeparam name="FilterInputType">Type of filter that is used.</typeparam>
 	public abstract class FilterSectionOneInput<DataMinerObjectType, FilterInputType> : FilterSectionBase<DataMinerObjectType>
     {
-		private readonly List<Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions;
+		private readonly Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions;
 
 		/// <summary>
 		/// 
@@ -26,14 +26,13 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
-		protected FilterSectionOneInput(string filterName, params Func<FilterInputType, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName)
+		protected FilterSectionOneInput(string filterName, Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName)
         {
 			if(filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
 			if(!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
-            this.filterFunctions = filterFunctions.ToList();
+            this.filterFunctions = filterFunctions;
 
-			filterDropDown.Options = filterFunctions.Select(f => f.Method?.Name ?? throw new InvalidOperationException($"Filter '{filterName}' filter function '{f.Method?.Name}'")).OrderBy(name => name).ToList();
-			filterDropDown.Selected = filterFunctions.First().Method.Name;
+			filterDropDown.Options = filterFunctions.Keys.Select(k => k.GetDescription()).OrderBy(name => name).ToList();
 		}
 
         /// <summary>
@@ -41,18 +40,10 @@
         /// </summary>
         public abstract FilterInputType Value { get; set; }
 
-        /// <summary>
-        /// Filter that is created based on input values. Used in getting DataMiner objects in the system.
-        /// </summary>
-        public override FilterElement<DataMinerObjectType> FilterElement
-		{
-			get
-			{
-				var filterFunction = filterFunctions.FirstOrDefault(f => f.Method.Name == filterDropDown.Selected) ?? throw new InvalidOperationException($"Unable to find filter with name {filterDropDown.Selected}");
-
-				return filterFunction(Value);
-			}
-		}
+		/// <summary>
+		/// Filter that is created based on input values. Used in getting DataMiner objects in the system.
+		/// </summary>
+		public override FilterElement<DataMinerObjectType> FilterElement => filterFunctions[filterDropDown.Selected.GetEnumValue<Comparers>()](Value);
 
 		/// <summary>
 		/// Sets default value for filter.

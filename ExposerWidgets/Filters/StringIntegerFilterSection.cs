@@ -1,8 +1,10 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
     using System;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using System.Collections.Generic;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
     /// <summary>
     /// Represents filter section with custom name property and numeric input value of custom property.
@@ -25,7 +27,7 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
-		public StringIntegerFilterSection(string filterName, params Func<string, int, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
+		public StringIntegerFilterSection(string filterName, Dictionary<Comparers, Func<string, int, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
         {
             GenerateUi();
         }

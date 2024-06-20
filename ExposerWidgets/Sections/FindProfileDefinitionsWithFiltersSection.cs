@@ -1,10 +1,12 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
+	using System;
 	using System.Collections.Generic;
 	using Skyline.DataMiner.Automation;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Net.Profiles;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
@@ -13,11 +15,23 @@
 	/// </summary>
 	public class FindProfileDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ProfileDefinition>
     {
-        private readonly FilterSectionBase<ProfileDefinition> idFilterSection = new GuidFilterSection<ProfileDefinition>("Profile Definition ID Equals", x => ProfileDefinitionExposers.ID.Equal(x), x => ProfileDefinitionExposers.ID.NotEqual(x));
+        private readonly FilterSectionBase<ProfileDefinition> idFilterSection = new GuidFilterSection<ProfileDefinition>(
+            "Profile Definition ID",
+            new Dictionary<Comparers, Func<Guid, FilterElement<ProfileDefinition>>> 
+            {
+                {Comparers.Equals, x => ProfileDefinitionExposers.ID.Equal(x) },
+                {Comparers.NotEquals, x => ProfileDefinitionExposers.ID.NotEqual(x) },
+            }
+        );
 
-        private readonly FilterSectionBase<ProfileDefinition> nameFilterSection = new StringFilterSection<ProfileDefinition>("Profile Definition Name Equals", x => ProfileDefinitionExposers.Name.Equal(x), x => ProfileDefinitionExposers.Name.NotEqual(x));
-
-        private readonly FilterSectionBase<ProfileDefinition> nameContainsFilterSection = new StringFilterSection<ProfileDefinition>("Profile Definition Name Contains", x => ProfileDefinitionExposers.Name.Contains(x), x => ProfileDefinitionExposers.Name.NotContains(x));
+        private readonly FilterSectionBase<ProfileDefinition> nameFilterSection = new StringFilterSection<ProfileDefinition>(
+            "Profile Definition Name",
+            new Dictionary<Comparers, Func<string, FilterElement<ProfileDefinition>>> 
+            {
+                {Comparers.Equals, x => ProfileDefinitionExposers.Name.Equal(x) },
+                {Comparers.NotEquals, x => ProfileDefinitionExposers.Name.NotEqual(x) },
+            }
+        );
 
         private readonly ProfileHelper profileHelper;
 
@@ -40,8 +54,6 @@
             AddSection(idFilterSection, new SectionLayout(++row, 0));
 
             AddSection(nameFilterSection, new SectionLayout(++row, 0));
-
-            AddSection(nameContainsFilterSection, new SectionLayout(++row, 0));
 
 			firstAvailableColumn = ColumnCount + 1;
 		}

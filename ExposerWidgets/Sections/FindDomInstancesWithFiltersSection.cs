@@ -1,11 +1,13 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
+	using System;
 	using System.Collections.Generic;
 	using Skyline.DataMiner.Automation;
 	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Net.Sections;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
@@ -13,27 +15,65 @@
 	/// Section for filtering DOM instances.
 	/// </summary>
 	public class FindDomInstancesWithFiltersSection : FindItemsWithFiltersSection<DomInstance>
-    {
-        private readonly Label moduleId = new Label("DOM Module ID:");
+	{
+		private readonly Label moduleId = new Label("DOM Module ID:");
 		private readonly TextBox moduleIdTextBox = new TextBox(string.Empty);
 
-		private readonly FilterSectionBase<DomInstance> idFilterSection = new GuidFilterSection<DomInstance>("DOM Instance ID Equals", x => DomInstanceExposers.Id.Equal(x), x => DomInstanceExposers.Id.NotEqual(x));
+		private readonly FilterSectionBase<DomInstance> idFilterSection = new GuidFilterSection<DomInstance>(
+			"DOM Instance ID", 
+			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
+			{
+				{Comparers.Equals, x => DomInstanceExposers.Id.Equal(x) },
+				{Comparers.NotEquals, x => DomInstanceExposers.Id.NotEqual(x)}, 
+			}
+		);
 
-        private readonly FilterSectionBase<DomInstance> nameFilterSection = new StringFilterSection<DomInstance>("DOM Instance Name Equals", x => DomInstanceExposers.Name.Equal(x), x => DomInstanceExposers.Name.NotEqual(x));
+        private readonly FilterSectionBase<DomInstance> nameFilterSection = new StringFilterSection<DomInstance>(
+			"DOM Instance Name", 
+			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>> 
+			{
+				{Comparers.Equals, x => DomInstanceExposers.Name.Equal(x) },
+				{Comparers.NotEquals, x => DomInstanceExposers.Name.NotEqual(x)},
+				{Comparers.Contains, x => DomInstanceExposers.Name.Contains(x)},
+				{Comparers.NotContains, x => DomInstanceExposers.Name.NotContains(x)},
+			}
+		);
 
-        private readonly FilterSectionBase<DomInstance> nameContainsFilterSection = new StringFilterSection<DomInstance>("DOM Instance Name Contains", x => DomInstanceExposers.Name.Contains(x), x => DomInstanceExposers.Name.NotContains(x));
+		private readonly FilterSectionBase<DomInstance> definitionIdFilterSection = new GuidFilterSection<DomInstance>(
+			"DOM Definition ID",
+			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
+			{
+				{Comparers.Equals, x => DomInstanceExposers.DomDefinitionId.Equal(x) },
+				{Comparers.NotEquals, x => DomInstanceExposers.DomDefinitionId.NotEqual(x) },
+			}
+		);
 
-		private readonly FilterSectionBase<DomInstance> definitionIdFilterSection = new GuidFilterSection<DomInstance>("DOM Definition ID Equals", x => DomInstanceExposers.DomDefinitionId.Equal(x), x => DomInstanceExposers.DomDefinitionId.NotEqual(x));
+		private readonly FilterSectionBase<DomInstance> statusIdFilterSection = new StringFilterSection<DomInstance>(
+			"DOM Status ID",
+			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>>
+			{
+				{Comparers.Equals, x => DomInstanceExposers.StatusId.Equal(x) },
+				{Comparers.NotEquals, x => DomInstanceExposers.StatusId.NotEqual(x) },
+			}
+		);
 
-		private readonly FilterSectionBase<DomInstance> statusIdFilterSection = new StringFilterSection<DomInstance>("DOM Status ID Equals", x => DomInstanceExposers.StatusId.Equal(x), x => DomInstanceExposers.StatusId.NotEqual(x));
+		private readonly FilterSectionBase<DomInstance> createdAtFilterSection = new DateTimeFilterSection<DomInstance>(
+			"DOM Instance Created At",
+			new Dictionary<Comparers, Func<DateTime, FilterElement<DomInstance>>>
+			{
+				{Comparers.GreaterThan, x => DomInstanceExposers.CreatedAt.GreaterThan(x) },
+				{Comparers.LessThan, x => DomInstanceExposers.CreatedAt.LessThan(x) },
+			}
+		);
 
-		private readonly FilterSectionBase<DomInstance> createdAtFromFilterSection = new DateTimeFilterSection<DomInstance>("DOM Instance Created At From", x => DomInstanceExposers.CreatedAt.GreaterThanOrEqual(x));
-
-		private readonly FilterSectionBase<DomInstance> createdAtUntilFilterSection = new DateTimeFilterSection<DomInstance>("DOM Instance Created At Until", x => DomInstanceExposers.CreatedAt.LessThanOrEqual(x));
-
-		private readonly FilterSectionBase<DomInstance> lastModifiedAtFromFilterSection = new DateTimeFilterSection<DomInstance>("DOM Instance Last Modified At From", x => DomInstanceExposers.LastModified.GreaterThanOrEqual(x));
-
-		private readonly FilterSectionBase<DomInstance> lastModifiedAtUntilFilterSection = new DateTimeFilterSection<DomInstance>("DOM Instance Last Modified At Until", x => DomInstanceExposers.LastModified.LessThanOrEqual(x));
+		private readonly FilterSectionBase<DomInstance> lastModifiedAtFilterSection = new DateTimeFilterSection<DomInstance>(
+			"DOM Instance Last Modified At",
+			new Dictionary<Comparers, Func<DateTime, FilterElement<DomInstance>>>
+			{
+				{Comparers.GreaterThan, x => DomInstanceExposers.LastModified.GreaterThan(x) },
+				{Comparers.LessThan, x => DomInstanceExposers.LastModified.LessThan(x) },
+			}
+		);
 
 		private readonly List<FilterSectionBase<DomInstance>> sectionDefinitionIdFilterSections = new List<FilterSectionBase<DomInstance>>();
 		private readonly Button addSectionDefinitionIdFilterButton = new Button("Add Section Definition Filter");
@@ -67,26 +107,48 @@
 		/// </summary>
 		public string DomModuleId => moduleIdTextBox.Text;
 
-		private void AddFieldValueFilterButton_Pressed(object sender, System.EventArgs e)
+		private void AddFieldValueFilterButton_Pressed(object sender, EventArgs e)
 		{
-			var fieldValueFilterSection = new StringStringFilterSection<DomInstance>("Field Equals", (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Equal(fieldValue), (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotEqual(fieldValue));
+			var fieldValueFilterSection = new StringStringFilterSection<DomInstance>(
+				"Field",
+				new Dictionary<Comparers, Func<string, string, FilterElement<DomInstance>>> 
+				{
+					{Comparers.Equals, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Equal(fieldValue) },
+					{Comparers.NotEquals, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotEqual(fieldValue) },
+				}
+			);
 
 			fieldValueFilterSections.Add(fieldValueFilterSection);
+			
 			InvokeRegenerateUi();
 		}
 
-		private void AddSectionIdFilterButton_Pressed(object sender, System.EventArgs e)
+		private void AddSectionIdFilterButton_Pressed(object sender, EventArgs e)
 		{
-			var sectionIdFilterSection = new GuidFilterSection<DomInstance>("Uses Section ID", (sectionId) => DomInstanceExposers.SectionIds.Contains(sectionId), (sectionId) => DomInstanceExposers.SectionIds.NotContains(sectionId));
+			var sectionIdFilterSection = new GuidFilterSection<DomInstance>(
+				"Section ID",
+				new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>> 
+				{
+					{Comparers.Exists, (sectionId) => DomInstanceExposers.SectionIds.Contains(sectionId) },
+					{Comparers.NotExists, (sectionId) => DomInstanceExposers.SectionIds.NotContains(sectionId) }
+				}
+			);
 
 			sectionIdFilterSections.Add(sectionIdFilterSection);
 
 			InvokeRegenerateUi();
 		}
 
-		private void AddSectionDefinitionIdFilterButton_Pressed(object sender, System.EventArgs e)
+		private void AddSectionDefinitionIdFilterButton_Pressed(object sender, EventArgs e)
 		{
-			var sectionDefinitionIdFilterSection = new GuidFilterSection<DomInstance>("Uses Section Definition ID", (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.Contains(sectionDefinitionId), (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.NotContains(sectionDefinitionId));
+			var sectionDefinitionIdFilterSection = new GuidFilterSection<DomInstance>(
+				"Section Definition ID",
+				new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>> 
+				{
+					{Comparers.Exists, (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.Contains(sectionDefinitionId) },
+					{Comparers.NotExists, (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.NotContains(sectionDefinitionId) },
+				}
+			);
 
 			sectionDefinitionIdFilterSections.Add(sectionDefinitionIdFilterSection);
 
@@ -112,19 +174,13 @@
 
             AddSection(nameFilterSection, new SectionLayout(++row, 0));
 
-            AddSection(nameContainsFilterSection, new SectionLayout(++row, 0));
-
             AddSection(definitionIdFilterSection, new SectionLayout(++row, 0));
 
             AddSection(statusIdFilterSection, new SectionLayout(++row, 0));
 
-            AddSection(createdAtFromFilterSection, new SectionLayout(++row, 0));
+            AddSection(createdAtFilterSection, new SectionLayout(++row, 0));
 
-            AddSection(createdAtUntilFilterSection, new SectionLayout(++row, 0));
-
-            AddSection(lastModifiedAtFromFilterSection, new SectionLayout(++row, 0));
-
-            AddSection(lastModifiedAtUntilFilterSection, new SectionLayout(++row, 0));
+            AddSection(lastModifiedAtFilterSection, new SectionLayout(++row, 0));
 
 			foreach (var sectionDefinitionIdFilterSection in sectionDefinitionIdFilterSections)
 			{

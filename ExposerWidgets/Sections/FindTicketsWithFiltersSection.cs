@@ -8,19 +8,38 @@
     using Skyline.DataMiner.Net.Ticketing;
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 
-    /// <summary>
-    /// Section for filtering tickets.
-    /// </summary>
-    public class FindTicketsWithFiltersSection : FindItemsWithFiltersSection<Ticket>
+	/// <summary>
+	/// Section for filtering tickets.
+	/// </summary>
+	public class FindTicketsWithFiltersSection : FindItemsWithFiltersSection<Ticket>
     {
-        private readonly FilterSectionBase<Ticket> ticketIdFilterSection = new StringFilterSection<Ticket>("Ticket ID", x => TicketingExposers.FullID.Equal(x));
+        private readonly FilterSectionBase<Ticket> ticketIdFilterSection = new StringFilterSection<Ticket>(
+            "Ticket ID",
+            new Dictionary<Comparers, Func<string, FilterElement<Ticket>>>
+            {
+                {Comparers.Equals,  x => TicketingExposers.FullID.Equal(x) },
+                {Comparers.NotEquals,  x => TicketingExposers.FullID.NotEqual(x) },
+                {Comparers.Contains,  x => TicketingExposers.FullID.Contains(x) },
+                {Comparers.NotContains,  x => TicketingExposers.FullID.NotContains(x) },
+            });
 
-        private readonly FilterSectionBase<Ticket> ticketCreationDateFromFilterSection = new DateTimeFilterSection<Ticket>("Creation Date From", x => TicketingExposers.CreationDate.GreaterThanOrEqual(x));
+        private readonly FilterSectionBase<Ticket> ticketCreationDateFromFilterSection = new DateTimeFilterSection<Ticket>(
+            "Creation Date", 
+            new Dictionary<Comparers, Func<DateTime, FilterElement<Ticket>>>
+            {
+                {Comparers.GreaterThan, x => TicketingExposers.CreationDate.GreaterThan(x) },
+                {Comparers.LessThan, x => TicketingExposers.CreationDate.LessThan(x) },
+            });
 
-        private readonly FilterSectionBase<Ticket> ticketCreationDateUntilFilterSection = new DateTimeFilterSection<Ticket>("Creation Date Until", x => TicketingExposers.CreationDate.LessThanOrEqual(x));
-
-        private readonly FilterSectionBase<Ticket> ticketDomainFilterSection = new GuidFilterSection<Ticket>("Ticket Domain ID", x => TicketingExposers.ResolverID.Equal(x));
+        private readonly FilterSectionBase<Ticket> ticketDomainFilterSection = new GuidFilterSection<Ticket>(
+            "Ticket Domain ID",
+            new Dictionary<Comparers, Func<Guid, FilterElement<Ticket>>>
+            {
+                {Comparers.Equals, x => TicketingExposers.ResolverID.Equal(x)  },
+                {Comparers.NotEquals, x => TicketingExposers.ResolverID.NotEqual(x) },
+            });
 
         private readonly List<FilterSectionBase<Ticket>> propertyFilterSections = new List<FilterSectionBase<Ticket>>();
 
@@ -53,7 +72,15 @@
         /// <param name="setAsDefault">Indicates if added inputs should be set as default values.</param>
         public void AddStringPropertyValueFilter(string propertyName, string propertyValue = null, bool setAsDefault = false)
         {
-            var propertyFilterSection = new StringStringFilterSection<Ticket>("String Property", (pName, pValue) => TicketingExposers.CustomTicketFields.DictStringField(pName).Equal(pValue));
+            var propertyFilterSection = new StringStringFilterSection<Ticket>(
+                "String Property", 
+                new Dictionary<Comparers, Func<string, string, FilterElement<Ticket>>>
+                {
+                    {Comparers.Equals, (pName, pValue) => TicketingExposers.CustomTicketFields.DictStringField(pName).Equal(pValue) },
+                    {Comparers.NotEquals, (pName, pValue) => TicketingExposers.CustomTicketFields.DictStringField(pName).NotEqual(pValue) },
+                    {Comparers.Contains, (pName, pValue) => TicketingExposers.CustomTicketFields.DictStringField(pName).Contains(pValue) },
+                    {Comparers.NotContains, (pName, pValue) => TicketingExposers.CustomTicketFields.DictStringField(pName).NotContains(pValue)},
+                });
 
             if (setAsDefault)
             {
@@ -79,7 +106,12 @@
         /// <param name="setAsDefault">Indicates if added inputs should be set as default values.</param>
         public void AddEnumPropertyValueFilter(string propertyName, string firstPropertyValue = null, int? secondPropertyValue = null, bool setAsDefault = false)
         {
-            var propertyFilterSection = new TicketEnumFilterSection<Ticket>("Enum Property", (pName, pValue1, pValue2) => TicketingExposers.CustomTicketFields.DictField(pName).Equal($"{pValue1}/{pValue2}"));
+            var propertyFilterSection = new TicketEnumFilterSection<Ticket>(
+                "Enum Property", 
+                new Dictionary<Comparers, Func<string, string, int, FilterElement<Ticket>>>
+                {
+                    {Comparers.Equals, (pName, pValue1, pValue2) => TicketingExposers.CustomTicketFields.DictField(pName).Equal($"{pValue1}/{pValue2}") },
+                });
 
             if (setAsDefault)
             {
@@ -105,7 +137,12 @@
         /// <param name="setAsDefault">Indicates if added inputs should be set as default values.</param>
         public void AddIntegerPropertyValueFilter(string propertyName, int? propertyValue = null, bool setAsDefault = false)
         {
-            var propertyFilterSection = new StringIntegerFilterSection<Ticket>("Integer Property", (pName, pValue) => TicketingExposers.CustomTicketFields.DictField(pName).Equal(pValue));
+            var propertyFilterSection = new StringIntegerFilterSection<Ticket>(
+                "Integer Property",
+                new Dictionary<Comparers, Func<string, int, FilterElement<Ticket>>>
+                {
+                    {Comparers.Equals, (pName, pValue) => TicketingExposers.CustomTicketFields.DictField(pName).Equal(pValue) },
+                });
 
             if (setAsDefault)
             {
@@ -129,7 +166,12 @@
         /// <param name="setAsDefault">Indicates if added inputs should be set as default values.</param>
         public void AddPropertyExistenceFilter(string propertyName, bool setAsDefault = false)
         {
-            var propertyExistenceFilterSection = new StringFilterSection<Ticket>("Property Exists", (pName) => TicketingExposers.CustomTicketFields.DictStringField(pName).NotEqual(string.Empty));
+            var propertyExistenceFilterSection = new StringFilterSection<Ticket>(
+                "Property",
+                new Dictionary<Comparers, Func<string, FilterElement<Ticket>>>
+                {
+                    {Comparers.Exists, (pName) => TicketingExposers.CustomTicketFields.DictStringField(pName).NotEqual("Random value that will never be used") }
+                });
 
             if (setAsDefault)
             {
@@ -212,8 +254,6 @@
             AddSection(ticketIdFilterSection, new SectionLayout(++row, 0));
 
             AddSection(ticketCreationDateFromFilterSection, new SectionLayout(++row, 0));
-
-            AddSection(ticketCreationDateUntilFilterSection, new SectionLayout(++row, 0));
 
             AddSection(ticketDomainFilterSection, new SectionLayout(++row, 0));
 

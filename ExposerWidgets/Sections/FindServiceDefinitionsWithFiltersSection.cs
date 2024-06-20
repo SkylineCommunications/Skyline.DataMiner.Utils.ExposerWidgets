@@ -8,6 +8,7 @@
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Net.ServiceManager.Objects;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
@@ -16,13 +17,30 @@
 	/// </summary>
 	public class FindServiceDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ServiceDefinition>
     {
-        private readonly StringFilterSection<ServiceDefinition> nameFilterSection = new StringFilterSection<ServiceDefinition>("Name Equals", name => ServiceDefinitionExposers.Name.Equal(name), name => ServiceDefinitionExposers.Name.NotEqual(name));
+        private readonly StringFilterSection<ServiceDefinition> nameFilterSection = new StringFilterSection<ServiceDefinition>(
+            "Name",
+            new Dictionary<Comparers, Func<string, FilterElement<ServiceDefinition>>>
+            {
+                {Comparers.Equals, name => ServiceDefinitionExposers.Name.Equal(name) },
+                {Comparers.NotEquals, name => ServiceDefinitionExposers.Name.NotEqual(name) },
+                {Comparers.Contains, name => ServiceDefinitionExposers.Name.Contains(name) },
+                {Comparers.NotContains, name => ServiceDefinitionExposers.Name.NotContains(name) },
+            });
 
-        private readonly StringFilterSection<ServiceDefinition> nameContainsFilterSection = new StringFilterSection<ServiceDefinition>("Name Contains", name => ServiceDefinitionExposers.Name.Contains(name), name => ServiceDefinitionExposers.Name.NotContains(name));
+        private readonly GuidFilterSection<ServiceDefinition> idFilterSection = new GuidFilterSection<ServiceDefinition>(
+            "ID", 
+            new Dictionary<Comparers, Func<Guid, FilterElement<ServiceDefinition>>> 
+            {
+                {Comparers.Equals, id => ServiceDefinitionExposers.ID.Equal(id) },
+                {Comparers.NotEquals, id => ServiceDefinitionExposers.ID.NotEqual(id) },
+            });
 
-        private readonly GuidFilterSection<ServiceDefinition> idFilterSection = new GuidFilterSection<ServiceDefinition>("ID Equals", id => ServiceDefinitionExposers.ID.Equal(id), id => ServiceDefinitionExposers.ID.NotEqual(id));
-
-        private readonly BooleanFilterSection<ServiceDefinition> isTemplateFilterSection = new BooleanFilterSection<ServiceDefinition>("Is Template", boolean => ServiceDefinitionExposers.IsTemplate.Equal(boolean), boolean => ServiceDefinitionExposers.IsTemplate.NotEqual(boolean));
+        private readonly BooleanFilterSection<ServiceDefinition> isTemplateFilterSection = new BooleanFilterSection<ServiceDefinition>(
+            "Is Template",
+            new Dictionary<Comparers, Func<bool, FilterElement<ServiceDefinition>>>
+            {
+                {Comparers.Equals, boolean => ServiceDefinitionExposers.IsTemplate.Equal(boolean) }
+            });
 
         private readonly List<FilterSectionBase<ServiceDefinition>> nodeFunctionIdFilterSections = new List<FilterSectionBase<ServiceDefinition>>();
 
@@ -62,7 +80,13 @@
 
         private void AddNodeFunctionIdFilterButton_Pressed(object sender, EventArgs e)
         {
-            var nodeFunctionIdFilterSection = new GuidFilterSection<ServiceDefinition>("Uses Function ID", guid => ServiceDefinitionExposers.NodeFunctionIDs.Contains(guid), guid => ServiceDefinitionExposers.NodeFunctionIDs.NotContains(guid));
+            var nodeFunctionIdFilterSection = new GuidFilterSection<ServiceDefinition>(
+                "Function ID",
+                new Dictionary<Comparers, Func<Guid, FilterElement<ServiceDefinition>>> 
+                {
+                    {Comparers.Exists,  guid => ServiceDefinitionExposers.NodeFunctionIDs.Contains(guid) },
+                    {Comparers.NotExists, guid => ServiceDefinitionExposers.NodeFunctionIDs.NotContains(guid) },
+                });
 
             nodeFunctionIdFilterSections.Add(nodeFunctionIdFilterSection);
 
@@ -71,7 +95,15 @@
 
         private void AddPropertyFilterButton_Pressed(object sender, EventArgs e)
         {
-            var propertyFilterSection = new StringStringFilterSection<ServiceDefinition>("Property Equals", (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).Equal(propertyValue), (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue));
+            var propertyFilterSection = new StringStringFilterSection<ServiceDefinition>(
+                "Property",
+                new Dictionary<Comparers, Func<string, string, FilterElement<ServiceDefinition>>>
+                {
+                    {Comparers.Equals, (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).Equal(propertyValue) },
+                    {Comparers.NotEquals, (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue) },
+                    {Comparers.Contains, (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).Contains(propertyValue) },
+                    {Comparers.NotContains, (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).NotContains(propertyValue) },
+                });
 
             propertyFilterSections.Add(propertyFilterSection);
 
@@ -110,8 +142,6 @@
 		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddSection(nameFilterSection, new SectionLayout(++row, 0));
-
-            AddSection(nameContainsFilterSection, new SectionLayout(++row, 0));
 
             AddSection(idFilterSection, new SectionLayout(++row, 0));
 

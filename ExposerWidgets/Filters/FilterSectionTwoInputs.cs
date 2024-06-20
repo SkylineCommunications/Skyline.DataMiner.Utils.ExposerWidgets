@@ -1,10 +1,10 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
-    using System;
+	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Skyline.DataMiner.Net.Messages;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	/// <summary>
@@ -17,7 +17,7 @@
 	public abstract class FilterSectionTwoInputs<DataMinerObjectType, FilterInputType1, FilterInputType2> : FilterSectionBase<DataMinerObjectType>
 #pragma warning restore S2436 // Types and methods should not have too many generic parameters
     {
-        private readonly List<Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions;
+        private readonly Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions;
 
 		/// <summary>
 		/// 
@@ -34,28 +34,19 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
-		protected FilterSectionTwoInputs(string filterName, params Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName)
+		protected FilterSectionTwoInputs(string filterName, Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName)
         {
 			if (filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
 			if (!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
-			this.filterFunctions = filterFunctions.ToList();
+			this.filterFunctions = filterFunctions;
 
-			filterDropDown.Options = filterFunctions.Select(f => f.Method?.Name ?? throw new InvalidOperationException($"Filter '{filterName}' filter function '{f.Method?.Name}'")).OrderBy(name => name).ToList();
-			filterDropDown.Selected = filterFunctions.First().Method.Name;
+			filterDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).OrderBy(name => name).ToList();
 		}
 
-        /// <summary>
-        /// Filter that is created based on input values. Used in getting DataMiner objects in the system.
-        /// </summary>
-        public override FilterElement<DataMinerObjectType> FilterElement
-		{
-			get
-			{
-				var filterFunction = filterFunctions.FirstOrDefault(f => f.Method.Name == filterDropDown.Selected) ?? throw new InvalidOperationException($"Unable to find filter with name {filterDropDown.Selected}");
-
-				return filterFunction(FirstValue, SecondValue);
-			}
-		}
+		/// <summary>
+		/// Filter that is created based on input values. Used in getting DataMiner objects in the system.
+		/// </summary>
+		public override FilterElement<DataMinerObjectType> FilterElement => filterFunctions[filterDropDown.Selected.GetEnumValue<Comparers>()](FirstValue, SecondValue);
 
 		/// <summary>
 		/// Gets or sets value of first filter.
