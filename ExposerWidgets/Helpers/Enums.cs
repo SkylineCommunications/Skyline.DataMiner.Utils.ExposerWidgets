@@ -1,12 +1,9 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Helpers
 {
 	using System;
-	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Linq;
 	using System.Reflection;
-	using System.Text;
-	using System.Threading.Tasks;
 
 	/// <summary>
 	/// 
@@ -22,7 +19,7 @@
 		/// <summary>
 		/// 
 		/// </summary>
-		[Description("Does not equal")]
+		[Description("Does Not Equal")]
 		NotEquals,
 
 		/// <summary>
@@ -34,19 +31,19 @@
 		/// <summary>
 		/// 
 		/// </summary>
-		[Description("Does not contain")]
+		[Description("Does Not Contain")]
 		NotContains,
 
 		/// <summary>
 		/// 
 		/// </summary>
-		[Description("Greater than")]
+		[Description("Greater Than")]
 		GreaterThan,
 
 		/// <summary>
 		/// 
 		/// </summary>
-		[Description("Less than")]
+		[Description("Less Than")]
 		LessThan,
 
 		/// <summary>
@@ -58,7 +55,7 @@
 		/// <summary>
 		/// 
 		/// </summary>
-		[Description("Does not exist")]
+		[Description("Does Not Exist")]
 		NotExists,
 	}
 

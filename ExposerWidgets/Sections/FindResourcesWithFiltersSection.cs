@@ -214,11 +214,10 @@
                 AddSection(capabilityFilterSection, new SectionLayout(++row, 0));
             }
 
-            AddWidget(addPropertyFilterButton, ++row, 0);
-            AddWidget(addPropertyExistenceFilterButton, ++row, 0);
-
-            AddWidget(addCapabilityContainsFilterButton, ++row, 0);
-            AddWidget(addCapabilityExistenceFilterButton, ++row, 0);
+            AddWidget(addPropertyFilterButton, ++row, 0, 1, ColumnCount);
+            AddWidget(addPropertyExistenceFilterButton, ++row, 0, 1 , ColumnCount);
+            AddWidget(addCapabilityContainsFilterButton, ++row, 0, 1, ColumnCount);
+            AddWidget(addCapabilityExistenceFilterButton, ++row, 0, 1, ColumnCount);
 
 			firstAvailableColumn = ColumnCount + 1;
 		}

@@ -257,13 +257,13 @@
         /// <param name="row"></param>
         protected void GenerateUi(ref int row)
         {
-            AddWidget(header, ++row, 0, 1, 2);
+            AddWidget(header, ++row, 0, 1, 5);
 
             AddFilterSections(ref row, out int firstAvailablecolumn);
 
             AddWidget(new WhiteSpace(), ++row, 0);
 
-            AddWidget(getItemsBasedOnFiltersButton, ++row, 0);
+            AddWidget(getItemsBasedOnFiltersButton, ++row, 0, 1, 5);
 
             AddWidget(new WhiteSpace(), row + 1, 0);
 

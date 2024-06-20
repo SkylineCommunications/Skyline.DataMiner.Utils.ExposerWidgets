@@ -33,7 +33,7 @@
             
 			this.filterFunctions = filterFunctions;
 
-			filterDropDown.Options = filterFunctions.Keys.Select(k => k.GetDescription()).OrderBy(name => name).ToList();
+			filterDropDown.Options = filterFunctions.Keys.Select(k => k.GetDescription()).ToList();
 		}
 
         /// <summary>

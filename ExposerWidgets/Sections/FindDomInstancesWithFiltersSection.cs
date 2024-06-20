@@ -197,9 +197,9 @@
 				AddSection(fieldValueFilterSection, new SectionLayout(++row, 0));
 			}
 
-			AddWidget(addSectionDefinitionIdFilterButton, ++row, 0);
-			AddWidget(addSectionIdFilterButton, ++row, 0);
-			AddWidget(addFieldValueFilterButton, ++row, 0);
+			AddWidget(addSectionDefinitionIdFilterButton, ++row, 0, 1, ColumnCount);
+			AddWidget(addSectionIdFilterButton, ++row, 0, 1, ColumnCount);
+			AddWidget(addFieldValueFilterButton, ++row, 0, 1, ColumnCount);
 
 			firstAvailableColumn = ColumnCount + 1;
 		}

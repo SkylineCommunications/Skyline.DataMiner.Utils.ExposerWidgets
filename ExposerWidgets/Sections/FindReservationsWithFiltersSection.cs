@@ -211,8 +211,8 @@
                 AddSection(propertyFilterSection, new SectionLayout(++row, 0));
             }
 
-            AddWidget(addPropertyFilterButton, ++row, 0);
-            AddWidget(addResourceFilterButton, ++row, 0);
+            AddWidget(addPropertyFilterButton, ++row, 0, 1, ColumnCount);
+            AddWidget(addResourceFilterButton, ++row, 0, 1, ColumnCount);
 
             firstAvailableColumn = ColumnCount + 1;
         }

@@ -41,7 +41,7 @@
 			
 			this.filterFunctions = filterFunctions;
 
-			filterDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).OrderBy(name => name).ToList();
+			filterDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).ToList();
 		}
 
 		/// <summary>
