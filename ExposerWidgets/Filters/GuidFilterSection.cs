@@ -19,9 +19,8 @@
         /// Initializes a new instance of the <see cref="GuidFilterSection{T}"/>"/> class.
         /// </summary>
         /// <param name="filterName">Name of filter.</param>
-        /// <param name="emptyFilter">Filter that will be applied.</param>
-        /// <param name="invertedEmptyFilter">Optional inverted filter.</param>
-        public GuidFilterSection(string filterName, Func<Guid, FilterElement<DataMinerObjectType>> emptyFilter, Func<Guid, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
+        /// <param name="filterFunctions">Filter that will be applied.</param>
+        public GuidFilterSection(string filterName, params Func<Guid, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
         {
             GenerateUi();
         }

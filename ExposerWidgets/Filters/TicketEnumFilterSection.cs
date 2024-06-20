@@ -29,9 +29,8 @@
 		/// Initializes a new instance of the <see cref="TicketEnumFilterSection{T}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
-		/// <param name="emptyFilter">Filter that will be applied.</param>
-		/// <param name="invertedEmptyFilter">Optional inverted filter.</param>
-		public TicketEnumFilterSection(string filterName, Func<string, string, int, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, string, int, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
+		/// <param name="filterFunctions">Filter that will be applied.</param>
+		public TicketEnumFilterSection(string filterName, params Func<string, string, int, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
         {
             GenerateUi();
         }

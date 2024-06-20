@@ -16,9 +16,8 @@
 		/// Initializes a new instance of the <see cref="BooleanFilterSection{T}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
-		/// <param name="emptyFilter">Filter that will be applied.</param>
-		/// <param name="invertedEmptyFilter">Optional inverted filter.</param>
-		public BooleanFilterSection(string filterName, Func<bool, FilterElement<DataMinerObjectType>> emptyFilter, Func<bool, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName, emptyFilter, invertedEmptyFilter)
+		/// <param name="filterFunctions">Filter that will be applied.</param>
+		public BooleanFilterSection(string filterName, params Func<bool, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
         {
             GenerateUi();
         }
