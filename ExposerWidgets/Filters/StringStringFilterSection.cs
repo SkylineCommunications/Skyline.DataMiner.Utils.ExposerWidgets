@@ -18,9 +18,8 @@
 		/// Initializes a new instance of the <see cref="StringStringFilterSection{T}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
-		/// <param name="emptyFilter">Filter that will be applied.</param>
-		/// <param name="invertedEmptyFilter">Optional inverted filter.</param>
-		public StringStringFilterSection(string filterName, Func<string, string, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, string, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null, string firstValueExplanation = null, string secondValueExplanation = null) : base(filterName, emptyFilter, invertedEmptyFilter, firstValueExplanation, secondValueExplanation)
+		/// <param name="filterFunctions">Filter that will be applied.</param>
+		public StringStringFilterSection(string filterName, params Func<string, string, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
         {
             GenerateUi();
         }

@@ -1,7 +1,9 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
     using System;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 
     /// <summary>
     /// Represents filter section with three inputs.
@@ -14,29 +16,37 @@
     public abstract class FilterSectionThreeInputs<DataMinerObjectType, FilterInputType1, FilterInputType2, FilterInputType3> : FilterSectionBase<DataMinerObjectType>
 #pragma warning restore S2436 // Types and methods should not have too many generic parameters
     {
-        private readonly Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>> filterFunctionWithThreeInputs;
-        private readonly Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>> invertedFilterFunctionWithThreeInputs;
+        private readonly List<Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FilterSectionThreeInputs{T, T, T, T}"/>
-        /// </summary>
-        /// <param name="filterName">Name of filter.</param>
-        /// <param name="emptyFilter">Filter that will be applied.</param>
-        protected FilterSectionThreeInputs(string filterName, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>> emptyFilter, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FilterSectionThreeInputs{T, T, T, T}"/>
+		/// </summary>
+		/// <param name="filterName">Name of filter.</param>
+		/// <param name="filterFunctions"></param>
+		protected FilterSectionThreeInputs(string filterName, params Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName)
         {
-            filterFunctionWithThreeInputs = emptyFilter;
-            invertedFilterFunctionWithThreeInputs = invertedEmptyFilter;
-        }
+			if (filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
+			if (!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
+			this.filterFunctions = filterFunctions.ToList();
+		}
 
         /// <summary>
         /// Filter that is created based on input values. Used in getting DataMiner objects in the system.
         /// </summary>
-        public override FilterElement<DataMinerObjectType> FilterElement => IsInverted ? invertedFilterFunctionWithThreeInputs(FirstValue, SecondValue, ThirdValue) : filterFunctionWithThreeInputs(FirstValue, SecondValue, ThirdValue);
+        public override FilterElement<DataMinerObjectType> FilterElement
+		{
+			get
+			{
+				var filterFunction = filterFunctions.FirstOrDefault(f => f.Method.Name == filterDropDown.Selected) ?? throw new InvalidOperationException($"Unable to find filter with name {filterDropDown.Selected}");
 
-        /// <summary>
-        /// Gets or sets value of first filter.
-        /// </summary>
-        public abstract FilterInputType1 FirstValue { get; set; }
+				return filterFunction(FirstValue, SecondValue, ThirdValue);
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets value of first filter.
+		/// </summary>
+		public abstract FilterInputType1 FirstValue { get; set; }
 
         /// <summary>
         /// Gets or sets value of second filter.
@@ -47,11 +57,6 @@
         /// Gets or sets value of third filter.
         /// </summary>
         public abstract FilterInputType3 ThirdValue { get; set; }
-
-		/// <summary>
-		/// Indicates if this filter section can be inverted.
-		/// </summary>
-		protected override bool Invertible => invertedFilterFunctionWithThreeInputs != null;
 
 		/// <summary>
 		/// Sets default values for filters.

@@ -1,11 +1,6 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
 	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Text;
-	using System.Threading.Tasks;
-	using Skyline.DataMiner.Net.Apps.MigrationManager.Objects;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
@@ -23,11 +18,8 @@
 		/// 
 		/// </summary>
 		/// <param name="filterName"></param>
-		/// <param name="emptyFilter"></param>
-		/// <param name="invertedEmptyFilter"></param>
-		/// <param name="firstValueExplanation"></param>
-		/// <param name="secondValueExplanation"></param>
-		public GuidStringFilterSection(string filterName, Func<Guid, string, FilterElement<DataMinerObjectType>> emptyFilter, Func<Guid, string, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null, string firstValueExplanation = null, string secondValueExplanation = null) : base(filterName, emptyFilter, invertedEmptyFilter, firstValueExplanation, secondValueExplanation)
+		/// <param name="filterFunctions"></param>
+		public GuidStringFilterSection(string filterName, params Func<Guid, string, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
 		{
 			GenerateUi();
 		}

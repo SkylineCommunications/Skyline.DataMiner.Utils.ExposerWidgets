@@ -69,7 +69,7 @@
 
 		private void AddFieldValueFilterButton_Pressed(object sender, System.EventArgs e)
 		{
-			var fieldValueFilterSection = new StringStringFilterSection<DomInstance>("Field Equals", (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Equal(fieldValue), (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotEqual(fieldValue), "Name", "Value");
+			var fieldValueFilterSection = new StringStringFilterSection<DomInstance>("Field Equals", (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Equal(fieldValue), (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotEqual(fieldValue));
 
 			fieldValueFilterSections.Add(fieldValueFilterSection);
 			InvokeRegenerateUi();

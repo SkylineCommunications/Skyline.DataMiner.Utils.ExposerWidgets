@@ -24,11 +24,8 @@
 		/// Initializes a new instance of the <see cref="StringIntegerFilterSection{T}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
-		/// <param name="emptyFilter">Filter that will be applied.</param>
-		/// <param name="invertedEmptyFilter">Optional inverted filter.</param>
-		/// <param name="firstValueExplanation"></param>
-		/// <param name="secondValueExplanation"></param>
-		public StringIntegerFilterSection(string filterName, Func<string, int, FilterElement<DataMinerObjectType>> emptyFilter, Func<string, int, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null, string firstValueExplanation = null, string secondValueExplanation = null) : base(filterName, emptyFilter, invertedEmptyFilter, firstValueExplanation, secondValueExplanation)
+		/// <param name="filterFunctions"></param>
+		public StringIntegerFilterSection(string filterName, params Func<string, int, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName, filterFunctions)
         {
             GenerateUi();
         }

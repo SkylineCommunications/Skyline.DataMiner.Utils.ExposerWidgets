@@ -1,6 +1,8 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
@@ -11,8 +13,7 @@
 	/// <typeparam name="FilterInputType">Type of filter that is used.</typeparam>
 	public abstract class FilterSectionOneInput<DataMinerObjectType, FilterInputType> : FilterSectionBase<DataMinerObjectType>
     {
-        private readonly Func<FilterInputType, FilterElement<DataMinerObjectType>> filterFunctionWithOneInput;
-        private readonly Func<FilterInputType, FilterElement<DataMinerObjectType>> invertedFilterFunctionWithOneInput;
+		private readonly List<Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions;
 
 		/// <summary>
 		/// 
@@ -23,12 +24,15 @@
 		/// Initializes a new instance of the <see cref="FilterSectionOneInput{T, T}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
-		/// <param name="emptyFilter">Filter that will be applied.</param>
-		/// <param name="invertedEmptyFilter"></param>
-		protected FilterSectionOneInput(string filterName, Func<FilterInputType, FilterElement<DataMinerObjectType>> emptyFilter, Func<FilterInputType, FilterElement<DataMinerObjectType>> invertedEmptyFilter = null) : base(filterName)
+		/// <param name="filterFunctions"></param>
+		protected FilterSectionOneInput(string filterName, params Func<FilterInputType, FilterElement<DataMinerObjectType>>[] filterFunctions) : base(filterName)
         {
-            this.filterFunctionWithOneInput = emptyFilter;
-            this.invertedFilterFunctionWithOneInput = invertedEmptyFilter;
+			if(filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
+			if(!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
+            this.filterFunctions = filterFunctions.ToList();
+
+			filterDropDown.Options = filterFunctions.Select(f => f.Method.Name).OrderBy(name => name).ToList();
+			filterDropDown.Selected = filterFunctions.First().Method.Name;
         }
 
         /// <summary>
@@ -39,12 +43,15 @@
         /// <summary>
         /// Filter that is created based on input values. Used in getting DataMiner objects in the system.
         /// </summary>
-        public override FilterElement<DataMinerObjectType> FilterElement => IsInverted ? invertedFilterFunctionWithOneInput(Value) : filterFunctionWithOneInput(Value);
+        public override FilterElement<DataMinerObjectType> FilterElement
+		{
+			get
+			{
+				var filterFunction = filterFunctions.FirstOrDefault(f => f.Method.Name == filterDropDown.Selected) ?? throw new InvalidOperationException($"Unable to find filter with name {filterDropDown.Selected}");
 
-		/// <summary>
-		/// Indicates if this filter section can be inverted.
-		/// </summary>
-		protected override bool Invertible => invertedFilterFunctionWithOneInput != null;
+				return filterFunction(Value);
+			}
+		}
 
 		/// <summary>
 		/// Sets default value for filter.

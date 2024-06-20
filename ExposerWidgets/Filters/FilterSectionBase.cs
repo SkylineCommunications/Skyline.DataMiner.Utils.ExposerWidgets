@@ -17,7 +17,7 @@
         protected int nextAvailableColumn = 0;
 
         private readonly CheckBox filterNameCheckBox;
-        private readonly CheckBox invertFilterCheckBox = new CheckBox("Not");
+        protected readonly DropDown filterDropDown = new DropDown();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilterSectionBase{T}"/>"/> class.
@@ -76,16 +76,6 @@
         public abstract FilterElement<DataMinerObjectType> FilterElement { get; }
 
         /// <summary>
-        /// Indicates if this filter section can be inverted.
-        /// </summary>
-        protected abstract bool Invertible { get; }
-
-        /// <summary>
-        /// Indicates if this filter is inverted.
-        /// </summary>
-        protected bool IsInverted => invertFilterCheckBox.IsChecked;
-
-        /// <summary>
         /// Resets filter values to default.
         /// </summary>
         public abstract void Reset();
@@ -99,15 +89,8 @@
             nextAvailableColumn = 0;
 
             AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
-
-            if (Invertible)
-            {
-                AddWidget(invertFilterCheckBox, 0, nextAvailableColumn++);
-            }
-            else
-            {
-                nextAvailableColumn++;
-            }
+			
+            AddWidget(filterDropDown, 0, nextAvailableColumn++);
 		}
 
 		/// <summary>
