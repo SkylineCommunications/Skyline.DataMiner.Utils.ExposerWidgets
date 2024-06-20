@@ -3,6 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Reflection;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
@@ -31,9 +32,9 @@
 			if(!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
             this.filterFunctions = filterFunctions.ToList();
 
-			filterDropDown.Options = filterFunctions.Select(f => f.Method.Name).OrderBy(name => name).ToList();
+			filterDropDown.Options = filterFunctions.Select(f => f.Method?.Name ?? throw new InvalidOperationException($"Filter '{filterName}' filter function '{f.Method?.Name}'")).OrderBy(name => name).ToList();
 			filterDropDown.Selected = filterFunctions.First().Method.Name;
-        }
+		}
 
         /// <summary>
         /// Value of filter that is being used.

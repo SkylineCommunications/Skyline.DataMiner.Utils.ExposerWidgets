@@ -28,6 +28,9 @@
 			if (filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
 			if (!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
 			this.filterFunctions = filterFunctions.ToList();
+
+			filterDropDown.Options = filterFunctions.Select(f => f.Method?.Name ?? throw new InvalidOperationException($"Filter '{filterName}' filter function '{f.Method?.Name}'")).OrderBy(name => name).ToList();
+			filterDropDown.Selected = filterFunctions.First().Method.Name;
 		}
 
         /// <summary>
