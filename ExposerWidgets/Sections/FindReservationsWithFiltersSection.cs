@@ -142,7 +142,7 @@
             AddSection(reservationIdFilterSection, new SectionLayout(++row, 0));
 
             AddSection(reservationIdIsPartOfFilterSection, new SectionLayout(++row, 0));
-            AddWidget(new Label("Provide ';' separated list of Guids"), ++row, 1);
+            AddWidget(new Label("Provide ';' separated list of Guids"), ++row, reservationIdIsPartOfFilterSection.ColumnCount-1);
 
             AddSection(reservationStartFromFilterSection, new SectionLayout(++row, 0));
 

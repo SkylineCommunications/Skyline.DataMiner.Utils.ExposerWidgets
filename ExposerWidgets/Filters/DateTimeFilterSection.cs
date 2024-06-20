@@ -53,7 +53,7 @@
         {
             base.GenerateUi();
 
-            AddWidget(dateTimePicker, 0, 1);
+            AddWidget(dateTimePicker, 0, nextAvailableColumn++);
         }
 
         /// <summary>
