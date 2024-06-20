@@ -42,7 +42,8 @@
             addPropertyExistenceFilterButton.Pressed += AddPropertyExistenceFilterButton_Pressed;
 
             addPropertyValueFilterButton.Pressed += AddPropertyValueFilterButton_Pressed;
-        }
+			GenerateUi();
+		}
 
         /// <summary>
         /// Adds string input filter for custom properties. 

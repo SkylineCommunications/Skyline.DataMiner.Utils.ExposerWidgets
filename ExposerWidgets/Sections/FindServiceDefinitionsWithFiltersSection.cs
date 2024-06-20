@@ -44,7 +44,8 @@
 			addNodeFunctionIdFilterButton.Pressed += AddNodeFunctionIdFilterButton_Pressed;
 
             addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
-        }
+			GenerateUi();
+		}
 
         /// <summary>
         /// Resets filters in section to default values.

@@ -58,7 +58,8 @@
 			addResourceFilterButton.Pressed += AddResourceFilterButton_Pressed;
 
             addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
-        }
+			GenerateUi();
+		}
 
         /// <summary>
         /// Adds default input filter for custom properties.

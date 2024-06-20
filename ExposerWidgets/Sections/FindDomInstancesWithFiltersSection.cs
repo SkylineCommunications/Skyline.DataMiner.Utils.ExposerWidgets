@@ -58,7 +58,9 @@
 			addSectionIdFilterButton.Pressed += AddSectionIdFilterButton_Pressed;
 
 			addFieldValueFilterButton.Pressed += AddFieldValueFilterButton_Pressed;
-        }
+
+			GenerateUi();
+		}
 
 		/// <summary>
 		/// 

@@ -27,7 +27,8 @@
         public FindFunctionsWithFiltersSection() : base()
         {
             protocolFunctionHelper = new ProtocolFunctionHelper(Engine.SLNet.SendMessages);
-        }
+			GenerateUi();
+		}
 
 		/// <summary>
 		/// Adding filter section in the UI.

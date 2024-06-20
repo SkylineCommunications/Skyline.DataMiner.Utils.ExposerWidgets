@@ -37,7 +37,8 @@
             profileHelper = new ProfileHelper(Engine.SLNet.SendMessages);
 
             addDiscreetFilterButton.Pressed += AddDiscreetFilterButton_Pressed;
-        }
+			GenerateUi();
+		}
 
         private void AddDiscreetFilterButton_Pressed(object sender, EventArgs e)
         {

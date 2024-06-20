@@ -29,7 +29,8 @@
         public FindProfileDefinitionsWithFiltersSection() : base()
         {
             profileHelper = new ProfileHelper(Engine.SLNet.SendMessages);
-        }
+			GenerateUi();
+		}
 
 		/// <summary>
 		/// Adding filter sections on a row specified.

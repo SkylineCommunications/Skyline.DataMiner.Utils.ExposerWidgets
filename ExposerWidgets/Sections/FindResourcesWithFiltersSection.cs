@@ -56,9 +56,11 @@
             addCapabilityContainsFilterButton.Pressed += AddCapabilityContainsFilterButton_Pressed;
 
             addCapabilityExistenceFilterButton.Pressed += AddCapabilityExistenceFilterButton_Pressed;
-        }
 
-        private void AddCapabilityContainsFilterButton_Pressed(object sender, EventArgs e)
+			GenerateUi();
+		}
+
+		private void AddCapabilityContainsFilterButton_Pressed(object sender, EventArgs e)
         {
             var capabilityFilterSection = new GuidStringFilterSection<FunctionResource>("Discrete Capability Contains", (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).Contains(cValue).CAST<Resource, FunctionResource>(), (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).NotContains(cValue).CAST<Resource, FunctionResource>());
 

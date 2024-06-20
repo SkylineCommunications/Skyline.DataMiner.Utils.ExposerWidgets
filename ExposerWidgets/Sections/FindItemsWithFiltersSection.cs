@@ -49,8 +49,6 @@
             selectFirstXItemsButton.Pressed += SelectFirstXItemsButton_Pressed;
 
             selectItemsCheckBoxList.Changed += (o, e) => SelectedItems = GetIndividuallySelectedItems();
-
-            GenerateUi();
         }
 
         /// <summary>
