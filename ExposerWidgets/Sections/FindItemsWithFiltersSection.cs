@@ -20,7 +20,7 @@
         private readonly Button getItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction, Width = 300 };
         private List<DataMinerObjectType> itemsBasedOnFilters = new List<DataMinerObjectType>();
 
-        private readonly Label selectedItemsHeader = new Label("Filter Results") { Style = TextStyle.Heading };
+        private readonly Label selectedItemsHeader = new Label("Filter Results") { Style = TextStyle.Heading, IsVisible = false };
         private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
         private readonly Label amountOfSelectedItemsLabel = new Label(string.Empty);
         private List<CheckBox> selectItemsCheckBoxList = new List<CheckBox>();
@@ -116,6 +116,7 @@
 
             var selectedItems = GetIndividuallySelectedItems();
 
+            selectedItemsHeader.IsVisible = true;
             selectAllButton.IsVisible = selectedItems.Any();
             unselectAllButton.IsVisible = selectedItems.Any();
 
@@ -261,7 +262,7 @@
 
 			foreach (var selectedItemCheckBox in selectItemsCheckBoxList)
 			{
-				AddWidget(selectedItemCheckBox, ++row, column);
+				AddWidget(selectedItemCheckBox, ++row, column, 1, 2);
 			}
 		}
 
