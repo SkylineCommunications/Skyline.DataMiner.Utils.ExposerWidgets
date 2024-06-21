@@ -19,16 +19,15 @@
 		private readonly Label moduleId = new Label("DOM Module ID:");
 		private readonly TextBox moduleIdTextBox = new TextBox(string.Empty);
 
-		private readonly FilterSectionBase<DomInstance> idFilterSection = new GuidFilterSection<DomInstance>(
+		private readonly MultipleFiltersSection<DomInstance> idFilterSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
 			"DOM Instance ID", 
 			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
 			{
 				{Comparers.Equals, x => DomInstanceExposers.Id.Equal(x) },
 				{Comparers.NotEquals, x => DomInstanceExposers.Id.NotEqual(x)}, 
-			}
-		);
+			}));
 
-        private readonly FilterSectionBase<DomInstance> nameFilterSection = new StringFilterSection<DomInstance>(
+        private readonly MultipleFiltersSection<DomInstance> nameFilterSection = new MultipleFiltersSection<DomInstance>(new StringFilterSection<DomInstance>(
 			"DOM Instance Name", 
 			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>> 
 			{
@@ -36,53 +35,67 @@
 				{Comparers.NotEquals, x => DomInstanceExposers.Name.NotEqual(x)},
 				{Comparers.Contains, x => DomInstanceExposers.Name.Contains(x)},
 				{Comparers.NotContains, x => DomInstanceExposers.Name.NotContains(x)},
-			}
-		);
+			}));
 
-		private readonly FilterSectionBase<DomInstance> definitionIdFilterSection = new GuidFilterSection<DomInstance>(
+		private readonly MultipleFiltersSection<DomInstance> definitionIdFilterSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
 			"DOM Definition ID",
 			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
 			{
 				{Comparers.Equals, x => DomInstanceExposers.DomDefinitionId.Equal(x) },
 				{Comparers.NotEquals, x => DomInstanceExposers.DomDefinitionId.NotEqual(x) },
-			}
-		);
+			}));
 
-		private readonly FilterSectionBase<DomInstance> statusIdFilterSection = new StringFilterSection<DomInstance>(
+		private readonly MultipleFiltersSection<DomInstance> statusIdFilterSection = new MultipleFiltersSection<DomInstance>(new StringFilterSection<DomInstance>(
 			"DOM Status ID",
 			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>>
 			{
 				{Comparers.Equals, x => DomInstanceExposers.StatusId.Equal(x) },
 				{Comparers.NotEquals, x => DomInstanceExposers.StatusId.NotEqual(x) },
-			}
-		);
+				{Comparers.Contains, x => DomInstanceExposers.StatusId.Contains(x) },
+				{Comparers.NotContains, x => DomInstanceExposers.StatusId.NotContains(x) },
+			}));
 
-		private readonly FilterSectionBase<DomInstance> createdAtFilterSection = new DateTimeFilterSection<DomInstance>(
+		private readonly MultipleFiltersSection<DomInstance> createdAtFilterSection = new MultipleFiltersSection<DomInstance>(new DateTimeFilterSection<DomInstance>(
 			"DOM Instance Created At",
 			new Dictionary<Comparers, Func<DateTime, FilterElement<DomInstance>>>
 			{
 				{Comparers.GreaterThan, x => DomInstanceExposers.CreatedAt.GreaterThan(x) },
 				{Comparers.LessThan, x => DomInstanceExposers.CreatedAt.LessThan(x) },
-			}
-		);
+			}));
 
-		private readonly FilterSectionBase<DomInstance> lastModifiedAtFilterSection = new DateTimeFilterSection<DomInstance>(
+		private readonly MultipleFiltersSection<DomInstance> lastModifiedAtFilterSection = new MultipleFiltersSection<DomInstance>(new DateTimeFilterSection<DomInstance>(
 			"DOM Instance Last Modified At",
 			new Dictionary<Comparers, Func<DateTime, FilterElement<DomInstance>>>
 			{
 				{Comparers.GreaterThan, x => DomInstanceExposers.LastModified.GreaterThan(x) },
 				{Comparers.LessThan, x => DomInstanceExposers.LastModified.LessThan(x) },
-			}
-		);
+			}));
 
-		private readonly List<FilterSectionBase<DomInstance>> sectionDefinitionIdFilterSections = new List<FilterSectionBase<DomInstance>>();
-		private readonly Button addSectionDefinitionIdFilterButton = new Button("Add Section Definition Filter");
+		private readonly MultipleFiltersSection<DomInstance> sectionDefinitionIdFiltersSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
+			"Section Definition ID",
+			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
+			{
+				{Comparers.IsUsed, (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.Contains(sectionDefinitionId) },
+				{Comparers.IsNotUsed, (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.NotContains(sectionDefinitionId) },
+			}));
 
-		private readonly List<FilterSectionBase<DomInstance>> sectionIdFilterSections = new List<FilterSectionBase<DomInstance>>();
-		private readonly Button addSectionIdFilterButton = new Button("Add Section Filter");
+		private readonly MultipleFiltersSection<DomInstance> sectionIdFiltersSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
+			"Section ID",
+			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
+			{
+				{Comparers.IsUsed, (sectionId) => DomInstanceExposers.SectionIds.Contains(sectionId) },
+				{Comparers.IsNotUsed, (sectionId) => DomInstanceExposers.SectionIds.NotContains(sectionId) }
+			}));
 
-		private readonly List<FilterSectionBase<DomInstance>> fieldValueFilterSections = new List<FilterSectionBase<DomInstance>>();
-		private readonly Button addFieldValueFilterButton = new Button("Add Field Filter");
+		private readonly MultipleFiltersSection<DomInstance> fieldValueFiltersSection = new MultipleFiltersSection<DomInstance>(new StringStringFilterSection<DomInstance>(
+			"Field",
+			new Dictionary<Comparers, Func<string, string, FilterElement<DomInstance>>>
+			{
+				{Comparers.Equals, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Equal(fieldValue) },
+				{Comparers.NotEquals, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotEqual(fieldValue) },
+				{Comparers.Contains, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Contains(fieldValue) },
+				{Comparers.NotContains, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotContains(fieldValue) },
+			}));
 
 		private DomHelper domHelper;
 
@@ -93,11 +106,15 @@
         {
             moduleIdTextBox.FocusLost += ModuleIdTextBox_FocusLost;
 
-			addSectionDefinitionIdFilterButton.Pressed += AddSectionDefinitionIdFilterButton_Pressed;
-
-			addSectionIdFilterButton.Pressed += AddSectionIdFilterButton_Pressed;
-
-			addFieldValueFilterButton.Pressed += AddFieldValueFilterButton_Pressed;
+			idFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			nameFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			definitionIdFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			statusIdFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			sectionDefinitionIdFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			createdAtFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			lastModifiedAtFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			sectionIdFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			fieldValueFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
 
 			GenerateUi();
 		}
@@ -106,54 +123,6 @@
 		/// 
 		/// </summary>
 		public string DomModuleId => moduleIdTextBox.Text;
-
-		private void AddFieldValueFilterButton_Pressed(object sender, EventArgs e)
-		{
-			var fieldValueFilterSection = new StringStringFilterSection<DomInstance>(
-				"Field",
-				new Dictionary<Comparers, Func<string, string, FilterElement<DomInstance>>> 
-				{
-					{Comparers.Equals, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Equal(fieldValue) },
-					{Comparers.NotEquals, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotEqual(fieldValue) },
-				}
-			);
-
-			fieldValueFilterSections.Add(fieldValueFilterSection);
-			
-			InvokeRegenerateUi();
-		}
-
-		private void AddSectionIdFilterButton_Pressed(object sender, EventArgs e)
-		{
-			var sectionIdFilterSection = new GuidFilterSection<DomInstance>(
-				"Section ID",
-				new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>> 
-				{
-					{Comparers.Exists, (sectionId) => DomInstanceExposers.SectionIds.Contains(sectionId) },
-					{Comparers.NotExists, (sectionId) => DomInstanceExposers.SectionIds.NotContains(sectionId) }
-				}
-			);
-
-			sectionIdFilterSections.Add(sectionIdFilterSection);
-
-			InvokeRegenerateUi();
-		}
-
-		private void AddSectionDefinitionIdFilterButton_Pressed(object sender, EventArgs e)
-		{
-			var sectionDefinitionIdFilterSection = new GuidFilterSection<DomInstance>(
-				"Section Definition ID",
-				new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>> 
-				{
-					{Comparers.Exists, (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.Contains(sectionDefinitionId) },
-					{Comparers.NotExists, (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.NotContains(sectionDefinitionId) },
-				}
-			);
-
-			sectionDefinitionIdFilterSections.Add(sectionDefinitionIdFilterSection);
-
-			InvokeRegenerateUi();
-		}
 
 		private void ModuleIdTextBox_FocusLost(object sender, TextBox.TextBoxFocusLostEventArgs e)
         {
@@ -167,39 +136,35 @@
 		/// <param name="firstAvailableColumn"></param>
 		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
-            AddWidget(moduleId, ++row, 0);
-            AddWidget(moduleIdTextBox, row, 2);
+            AddWidget(moduleId, ++row, 1);
+            AddWidget(moduleIdTextBox, row, 3);
 
             AddSection(idFilterSection, new SectionLayout(++row, 0));
+			row += idFilterSection.RowCount;
 
-            AddSection(nameFilterSection, new SectionLayout(++row, 0));
+            AddSection(nameFilterSection, new SectionLayout(row, 0));
+			row += nameFilterSection.RowCount;
 
-            AddSection(definitionIdFilterSection, new SectionLayout(++row, 0));
+			AddSection(definitionIdFilterSection, new SectionLayout(row, 0));
+			row += definitionIdFilterSection.RowCount;
 
-            AddSection(statusIdFilterSection, new SectionLayout(++row, 0));
+			AddSection(statusIdFilterSection, new SectionLayout(row, 0));
+			row += statusIdFilterSection.RowCount;
 
-            AddSection(createdAtFilterSection, new SectionLayout(++row, 0));
+			AddSection(createdAtFilterSection, new SectionLayout(row, 0));
+			row += createdAtFilterSection.RowCount;
 
-            AddSection(lastModifiedAtFilterSection, new SectionLayout(++row, 0));
+			AddSection(lastModifiedAtFilterSection, new SectionLayout(row, 0));
+			row += lastModifiedAtFilterSection.RowCount;
 
-			foreach (var sectionDefinitionIdFilterSection in sectionDefinitionIdFilterSections)
-			{
-				AddSection(sectionDefinitionIdFilterSection, new SectionLayout(++row, 0));
-			}
+			AddSection(sectionDefinitionIdFiltersSection, new SectionLayout(row, 0));
+			row += sectionDefinitionIdFiltersSection.RowCount;
 
-			foreach (var sectionIdFilterSection in sectionIdFilterSections)
-			{
-				AddSection(sectionIdFilterSection, new SectionLayout(++row, 0));
-			}
+			AddSection(sectionIdFiltersSection, new SectionLayout(row, 0));
+			row += sectionIdFiltersSection.RowCount;
 
-			foreach (var fieldValueFilterSection in fieldValueFilterSections)
-			{
-				AddSection(fieldValueFilterSection, new SectionLayout(++row, 0));
-			}
-
-			AddWidget(addSectionDefinitionIdFilterButton, ++row, 0, 1, ColumnCount);
-			AddWidget(addSectionIdFilterButton, ++row, 0, 1, ColumnCount);
-			AddWidget(addFieldValueFilterButton, ++row, 0, 1, ColumnCount);
+			AddSection(fieldValueFiltersSection, new SectionLayout(row, 0));
+			row += fieldValueFiltersSection.RowCount;
 
 			firstAvailableColumn = ColumnCount + 1;
 		}
@@ -249,7 +214,15 @@
 		/// </summary>
 		protected override void RegenerateFilterSections()
 		{
-			//TODO complete
+			idFilterSection.RegenerateUi();
+			nameFilterSection.RegenerateUi();
+			definitionIdFilterSection.RegenerateUi();
+			statusIdFilterSection.RegenerateUi();
+			sectionDefinitionIdFiltersSection.RegenerateUi();
+			createdAtFilterSection.RegenerateUi();
+			lastModifiedAtFilterSection.RegenerateUi();
+			sectionIdFiltersSection.RegenerateUi();
+			fieldValueFiltersSection.RegenerateUi();
 		}
 	}
 }
