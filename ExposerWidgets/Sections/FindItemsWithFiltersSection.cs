@@ -117,6 +117,7 @@
             var selectedItems = GetIndividuallySelectedItems();
 
             selectedItemsHeader.IsVisible = true;
+            amountOfSelectedItemsLabel.IsVisible = selectedItems.Any();
             selectAllButton.IsVisible = selectedItems.Any();
             unselectAllButton.IsVisible = selectedItems.Any();
 
@@ -160,11 +161,11 @@
             return filters;
         }
 
-        /// <summary>
-        /// Checks if all active filters are valid.
-        /// </summary>
-        /// <returns>True if all active filters are valid, false if one or more of them isn't.</returns>
-        protected bool ActiveFiltersAreValid()
+		/// <summary>
+		/// Checks if all active filters are valid.
+		/// </summary>
+		/// <returns>True if all active filters are valid, false if one or more of them isn't.</returns>
+		protected bool ActiveFiltersAreValid()
         {
             var individualFilters = GetIndividualFilters();
 
