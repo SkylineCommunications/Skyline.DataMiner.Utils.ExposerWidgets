@@ -3,10 +3,6 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using System.Text;
-	using System.Threading.Tasks;
-	using Skyline.DataMiner.Net.Dialogs;
-	using Skyline.DataMiner.Net.Messages;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
@@ -47,7 +43,7 @@
 		/// <summary>
 		/// 
 		/// </summary>
-		public bool IsValid => filterSections.Any(f => f.IsValid);
+		public bool IsValid => filterSections.Where(f => f.IsIncluded).Any(f => f.IsValid);
 
 		/// <summary>
 		/// 

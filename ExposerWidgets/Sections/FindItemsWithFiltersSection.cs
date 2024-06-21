@@ -107,7 +107,7 @@
                 itemsBasedOnFilters = FindItemsWithFilters().ToList();
             }
 
-            amountOfMatchingItemsLabel.Text = $"Found {itemsBasedOnFilters.Count} matching {typeof(DataMinerObjectType).Name}s";
+            amountOfMatchingItemsLabel.Text = $"Found {itemsBasedOnFilters.Count} {typeof(DataMinerObjectType).Name}s matching the filters";
 
 			selectItemsCheckBoxList = itemsBasedOnFilters.Select(r => GetItemIdentifier(r)).OrderBy(name => name).Select(name => new CheckBox(name) { IsChecked = true }).ToList();
 			selectItemsCheckBoxList.ForEach(x => x.Changed += (o, e) => SelectedItems = GetIndividuallySelectedItems());
@@ -232,6 +232,8 @@
         /// <param name="row"></param>
         protected void GenerateUi(ref int row)
         {
+            int topRow = row;
+
             AddWidget(header, ++row, 0, 1, 5);
 
             AddFilterSections(ref row, out int firstAvailablecolumn);
@@ -242,12 +244,12 @@
 
             AddWidget(new WhiteSpace(), row + 1, 0);
 
-            AddWidget(amountOfMatchingItemsLabel, 0, firstAvailablecolumn);
-            AddWidget(selectAllButton, 0, firstAvailablecolumn + 1, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(unselectAllButton, 0, firstAvailablecolumn + 2, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(amountOfSelectedItemsLabel, 1, firstAvailablecolumn);
+            AddWidget(amountOfMatchingItemsLabel, topRow + 1, firstAvailablecolumn);
+            AddWidget(selectAllButton, topRow + 2, firstAvailablecolumn, verticalAlignment: VerticalAlignment.Top);
+            AddWidget(unselectAllButton, topRow + 2, firstAvailablecolumn + 1, verticalAlignment: VerticalAlignment.Top);
+            AddWidget(amountOfSelectedItemsLabel, topRow + 3, firstAvailablecolumn);
 
-            int checkboxRow = 1;
+            int checkboxRow = topRow + 3;
             foreach (var selectedItemCheckBox in selectItemsCheckBoxList)
             {
                 AddWidget(selectedItemCheckBox, ++checkboxRow, firstAvailablecolumn);
