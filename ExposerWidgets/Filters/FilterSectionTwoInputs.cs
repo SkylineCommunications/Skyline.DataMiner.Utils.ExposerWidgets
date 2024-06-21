@@ -17,7 +17,7 @@
 	public abstract class FilterSectionTwoInputs<DataMinerObjectType, FilterInputType1, FilterInputType2> : FilterSectionBase<DataMinerObjectType>
 #pragma warning restore S2436 // Types and methods should not have too many generic parameters
     {
-        private readonly Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions;
+        private Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions;
 
 		/// <summary>
 		/// 
@@ -35,13 +35,17 @@
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
 		protected FilterSectionTwoInputs(string filterName, Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName)
-        {
-			if (filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
-			if (!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
-			
-			this.filterFunctions = filterFunctions;
+		{
+			Initialize(filterFunctions);
+		}
 
-			filterDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).ToList();
+		/// <summary>
+		/// Copy constructor
+		/// </summary>
+		/// <param name="other"></param>
+		protected FilterSectionTwoInputs(FilterSectionTwoInputs<DataMinerObjectType, FilterInputType1, FilterInputType2> other) : base(other)
+		{
+			Initialize(other.filterFunctions);
 		}
 
 		/// <summary>
@@ -71,5 +75,15 @@
             FirstValue = value;
             SecondValue = secondValue;
         }
-    }
+
+		private void Initialize(Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions)
+		{
+			if (filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
+			if (!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
+
+			this.filterFunctions = filterFunctions;
+
+			filterDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).ToList();
+		}
+	}
 }

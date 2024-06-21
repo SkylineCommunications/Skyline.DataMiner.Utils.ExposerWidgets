@@ -15,7 +15,7 @@
         /// <summary>
         /// Textbox for Guid input.
         /// </summary>
-        protected readonly TextBox filterContentTextBox = new TextBox();
+        protected readonly TextBox filterContentTextBox = new TextBox() { PlaceHolder = nameof(Guid) };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GuidFilterSection{T}"/>"/> class.
@@ -23,6 +23,15 @@
         /// <param name="filterName">Name of filter.</param>
         /// <param name="filterFunctions">Filter that will be applied.</param>
         public GuidFilterSection(string filterName, Dictionary<Comparers, Func<Guid, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
+        {
+            GenerateUi();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        protected GuidFilterSection(GuidFilterSection<DataMinerObjectType> other) : base(other)
         {
             GenerateUi();
         }
@@ -53,9 +62,18 @@
         }
 
         /// <summary>
-        /// Resets filter to default value.
+        /// 
         /// </summary>
-        public override void Reset()
+        /// <returns></returns>
+		public override FilterSectionBase<DataMinerObjectType> Clone()
+		{
+            return new GuidFilterSection<DataMinerObjectType>(this);
+		}
+
+		/// <summary>
+		/// Resets filter to default value.
+		/// </summary>
+		public override void Reset()
         {
             IsIncluded = false;
             Value = Guid.Empty;

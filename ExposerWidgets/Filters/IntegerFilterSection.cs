@@ -28,6 +28,15 @@
         }
 
         /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="other"></param>
+        protected IntegerFilterSection(IntegerFilterSection<DataMinerObjectType> other) : base(other)
+        {
+            GenerateUi();
+        }
+
+        /// <summary>
         /// Indicates if numeric value provided is valid.
         /// </summary>
         public override bool IsValid => true;
@@ -42,9 +51,18 @@
         }
 
         /// <summary>
-        /// Resets filter to default values.
+        /// 
         /// </summary>
-        public override void Reset()
+        /// <returns></returns>
+		public override FilterSectionBase<DataMinerObjectType> Clone()
+		{
+            return new IntegerFilterSection<DataMinerObjectType>(this);
+		}
+
+		/// <summary>
+		/// Resets filter to default values.
+		/// </summary>
+		public override void Reset()
         {
             IsIncluded = false;
             Value = 0;

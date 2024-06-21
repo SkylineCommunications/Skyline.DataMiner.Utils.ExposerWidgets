@@ -18,23 +18,23 @@
 	/// </summary>
 	public class FindReservationsWithFiltersSection : FindItemsWithFiltersSection<ReservationInstance>
     {
-        private readonly FilterSectionBase<ReservationInstance> reservationIdFilterSection = new GuidFilterSection<ReservationInstance>(
+        private readonly MultipleFiltersSection<ReservationInstance> reservationIdFilterSection = new MultipleFiltersSection<ReservationInstance>(new GuidFilterSection<ReservationInstance>(
             "Reservation ID",
             new Dictionary<Comparers, Func<Guid, FilterElement<ReservationInstance>>> 
             {
                 {Comparers.Equals, x => ReservationInstanceExposers.ID.Equal(x) },
                 {Comparers.NotEquals, x => ReservationInstanceExposers.ID.NotEqual(x) },
-            });
+            }));
 
-        private readonly FilterSectionBase<ReservationInstance> reservationServiceDefinitionIdFilterSection = new GuidFilterSection<ReservationInstance>(
+        private readonly MultipleFiltersSection<ReservationInstance> reservationServiceDefinitionIdFilterSection = new MultipleFiltersSection<ReservationInstance>(new GuidFilterSection<ReservationInstance>(
             "Service Definition ID", 
             new Dictionary<Comparers, Func<Guid, FilterElement<ReservationInstance>>> 
             {
                 {Comparers.Equals, x => ServiceReservationInstanceExposers.ServiceDefinitionID.Equal(x)},
                 {Comparers.NotEquals, x => ServiceReservationInstanceExposers.ServiceDefinitionID.NotEqual(x) },
-            });
+            }));
 
-        private readonly FilterSectionBase<ReservationInstance> reservationNameFilterSection = new StringFilterSection<ReservationInstance>(
+        private readonly MultipleFiltersSection<ReservationInstance> reservationNameFilterSection = new MultipleFiltersSection<ReservationInstance>(new StringFilterSection<ReservationInstance>(
             "Reservation Name",
             new Dictionary<Comparers, Func<string, FilterElement<ReservationInstance>>> 
             {
@@ -42,45 +42,55 @@
 				{Comparers.NotEquals, x => ReservationInstanceExposers.Name.NotEqual(x)},
 				{Comparers.Contains, x => ReservationInstanceExposers.Name.Contains(x)},
 				{Comparers.NotContains, x => ReservationInstanceExposers.Name.NotContains(x)},
-			});
+			}));
 
-        private readonly FilterSectionBase<ReservationInstance> reservationStartFilterSection = new DateTimeFilterSection<ReservationInstance>(
+        private readonly MultipleFiltersSection<ReservationInstance> reservationStartFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
             "Reservation Start",
             new Dictionary<Comparers, Func<DateTime, FilterElement<ReservationInstance>>> 
             {
                 {Comparers.GreaterThan, x => ReservationInstanceExposers.Start.GreaterThan(x) },
                 {Comparers.LessThan, x => ReservationInstanceExposers.Start.LessThan(x) },
-            });
+            }));
 
-		private readonly FilterSectionBase<ReservationInstance> reservationEndFilterSection = new DateTimeFilterSection<ReservationInstance>(
+		private readonly MultipleFiltersSection<ReservationInstance> reservationEndFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
 		   "Reservation End",
 		   new Dictionary<Comparers, Func<DateTime, FilterElement<ReservationInstance>>>
 		   {
 				{Comparers.GreaterThan, x => ReservationInstanceExposers.End.GreaterThan(x) },
 				{Comparers.LessThan, x => ReservationInstanceExposers.End.LessThan(x) },
-		   });
+		   }));
 
-		private readonly FilterSectionBase<ReservationInstance> reservationCreatedAtFilterSection = new DateTimeFilterSection<ReservationInstance>(
+		private readonly MultipleFiltersSection<ReservationInstance> reservationCreatedAtFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
            "Reservation Created At",
            new Dictionary<Comparers, Func<DateTime, FilterElement<ReservationInstance>>>
            {
 				{Comparers.GreaterThan, x => ReservationInstanceExposers.CreatedAt.GreaterThan(x) },
 				{Comparers.LessThan, x => ReservationInstanceExposers.CreatedAt.LessThan(x) },
-           });
+           }));
 
-		private readonly FilterSectionBase<ReservationInstance> reservationLastModifiedAtFilterSection = new DateTimeFilterSection<ReservationInstance>(
+		private readonly MultipleFiltersSection<ReservationInstance> reservationLastModifiedAtFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
            "Reservation Last Modified At",
            new Dictionary<Comparers, Func<DateTime, FilterElement<ReservationInstance>>>
            {
 				{Comparers.GreaterThan, x => ReservationInstanceExposers.LastModifiedAt.GreaterThan(x) },
 				{Comparers.LessThan, x => ReservationInstanceExposers.LastModifiedAt.LessThan(x) },
-           });
+           }));
 
-		private readonly List<FilterSectionBase<ReservationInstance>> resourceFilterSections = new List<FilterSectionBase<ReservationInstance>>();
-        private readonly Button addResourceFilterButton = new Button("Add Resource Filter");
+        private readonly MultipleFiltersSection<ReservationInstance> resourceFiltersSection = new MultipleFiltersSection<ReservationInstance>(new GuidFilterSection<ReservationInstance>(
+            "Resource ID",
+            new Dictionary<Comparers, Func<Guid, FilterElement<ReservationInstance>>>
+            {
+                {Comparers.Exists, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.Contains(resourceId) },
+                {Comparers.NotExists, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.NotContains(resourceId) },
+            }));
 
-        private readonly List<FilterSectionBase<ReservationInstance>> propertyFilterSections = new List<FilterSectionBase<ReservationInstance>>();
-        private readonly Button addPropertyFilterButton = new Button("Add Property Filter");
+        private readonly MultipleFiltersSection<ReservationInstance> propertyFiltersSection = new MultipleFiltersSection<ReservationInstance>(new StringStringFilterSection<ReservationInstance>(
+            "Property",
+            new Dictionary<Comparers, Func<string, string, FilterElement<ReservationInstance>>>
+            {
+                {Comparers.Equals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Equal(propertyValue) },
+                {Comparers.NotEquals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue) },
+            }));
 
         private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
 
@@ -89,33 +99,18 @@
 		/// </summary>
 		public FindReservationsWithFiltersSection() : base()
         {
-			addResourceFilterButton.Pressed += AddResourceFilterButton_Pressed;
+            reservationIdFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+            reservationNameFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+            reservationServiceDefinitionIdFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+            reservationStartFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+            reservationEndFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+            reservationCreatedAtFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+            reservationLastModifiedAtFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+            resourceFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+            propertyFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
 
-            addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
 			GenerateUi();
 		}
-
-        /// <summary>
-        /// Adds default input filter for custom properties.
-        /// </summary>
-        /// <param name="propertyName">Name of property on reservation.</param>
-        /// <param name="propertyValue">Value of added property.</param>
-        public void AddDefaultPropertyFilter(string propertyName, string propertyValue)
-        {
-            var propertyFilterSection = new StringStringFilterSection<ReservationInstance>(
-				"Property",
-				new Dictionary<Comparers, Func<string, string, FilterElement<ReservationInstance>>>
-				{
-					{Comparers.Equals, (propName, propValue) => ReservationInstanceExposers.Properties.DictStringField(propName).Equal(propValue) },
-					{Comparers.NotEquals, (propName, propValue) => ReservationInstanceExposers.Properties.DictStringField(propName).NotEqual(propValue) },
-				});
-
-			propertyFilterSection.SetDefault(propertyName, propertyValue);
-
-            propertyFilterSections.Add(propertyFilterSection);
-
-            InvokeRegenerateUi(); 
-        }
 
         /// <summary>
         /// Resets filters in section to default values.
@@ -126,39 +121,6 @@
             {
                 filterSection.Reset();
             }
-
-            resourceFilterSections.Clear();
-            propertyFilterSections.Clear();
-        }
-
-        private void AddPropertyFilterButton_Pressed(object sender, EventArgs e)
-        {
-            var propertyFilterSection = new StringStringFilterSection<ReservationInstance>(
-                "Property",
-                new Dictionary<Comparers, Func<string, string, FilterElement<ReservationInstance>>> 
-                {
-                    {Comparers.Equals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Equal(propertyValue) },
-                    {Comparers.NotEquals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue) },
-                });
-
-            propertyFilterSections.Add(propertyFilterSection);
-
-            InvokeRegenerateUi();
-        }
-
-        private void AddResourceFilterButton_Pressed(object sender, EventArgs e)
-        {
-            var resourceFilterSection = new GuidFilterSection<ReservationInstance>(
-                "Resource ID",
-                new Dictionary<Comparers, Func<Guid, FilterElement<ReservationInstance>>>
-                {
-                    {Comparers.Exists, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.Contains(resourceId) },
-                    {Comparers.NotExists, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.NotContains(resourceId) },
-                });
-
-            resourceFilterSections.Add(resourceFilterSection);
-
-            InvokeRegenerateUi();
         }
 
         /// <summary>
@@ -201,19 +163,10 @@
             
             AddSection(reservationLastModifiedAtFilterSection, new SectionLayout(++row, 0));
            
-            foreach (var resourceFilterSection in resourceFilterSections)
-            {
-                AddSection(resourceFilterSection, new SectionLayout(++row, 0));
-            }
-
-            foreach (var propertyFilterSection in propertyFilterSections)
-            {
-                AddSection(propertyFilterSection, new SectionLayout(++row, 0));
-            }
-
-            AddWidget(addPropertyFilterButton, ++row, 0, 1, ColumnCount);
-            AddWidget(addResourceFilterButton, ++row, 0, 1, ColumnCount);
-
+            AddSection(resourceFiltersSection, new SectionLayout(++row, 0));
+            
+            AddSection(propertyFiltersSection, new SectionLayout(++row, 0));
+            
             firstAvailableColumn = ColumnCount + 1;
         }
     }

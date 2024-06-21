@@ -17,7 +17,7 @@
 	public abstract class FilterSectionThreeInputs<DataMinerObjectType, FilterInputType1, FilterInputType2, FilterInputType3> : FilterSectionBase<DataMinerObjectType>
 #pragma warning restore S2436 // Types and methods should not have too many generic parameters
     {
-        private readonly Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions;
+        private Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterSectionThreeInputs{T, T, T, T}"/>
@@ -25,13 +25,23 @@
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
 		protected FilterSectionThreeInputs(string filterName, Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName)
-        {
+		{
+			Initialize(filterFunctions);
+		}
+
+		private void Initialize(Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions)
+		{
 			if (filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
 			if (!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
-			
+
 			this.filterFunctions = filterFunctions;
 
 			filterDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).ToList();
+		}
+
+		protected FilterSectionThreeInputs(FilterSectionThreeInputs<DataMinerObjectType, FilterInputType1, FilterInputType2, FilterInputType3> other) : base(other)
+		{
+			Initialize(other.filterFunctions);
 		}
 
         /// <summary>

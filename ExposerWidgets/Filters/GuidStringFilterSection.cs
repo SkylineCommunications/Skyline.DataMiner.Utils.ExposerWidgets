@@ -27,6 +27,15 @@
 		}
 
 		/// <summary>
+		/// Copy constructor
+		/// </summary>
+		/// <param name="other"></param>
+		protected GuidStringFilterSection(GuidStringFilterSection<DataMinerObjectType> other) : base(other)
+		{
+			GenerateUi();
+		}
+
+		/// <summary>
 		/// Indicates if provided guid is valid or not.
 		/// </summary>
 		public override bool IsValid => Guid.TryParse(firstTextBox.Text, out _);
@@ -47,6 +56,15 @@
 		{
 			get => secondTextBox.Text;
 			set => secondTextBox.Text = value;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public override FilterSectionBase<DataMinerObjectType> Clone()
+		{
+			return new GuidStringFilterSection<DataMinerObjectType>(this);
 		}
 
 		/// <summary>

@@ -27,6 +27,15 @@
         }
 
         /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="other"></param>
+        protected StringStringFilterSection(StringStringFilterSection<DataMinerObjectType> other) : base(other)
+        {
+            GenerateUi();
+        }
+
+        /// <summary>
         /// Indicates if provided custom property value is not null or empty.
         /// </summary>
         public override bool IsValid => !string.IsNullOrEmpty(firstTextBox.Text);
@@ -50,9 +59,18 @@
         }
 
         /// <summary>
-        /// Resets filter values to default.
+        /// 
         /// </summary>
-        public override void Reset()
+        /// <returns></returns>
+		public override FilterSectionBase<DataMinerObjectType> Clone()
+		{
+            return new StringStringFilterSection<DataMinerObjectType>(this);
+		}
+
+		/// <summary>
+		/// Resets filter values to default.
+		/// </summary>
+		public override void Reset()
         {
             IsIncluded = false;
             FirstValue = string.Empty;

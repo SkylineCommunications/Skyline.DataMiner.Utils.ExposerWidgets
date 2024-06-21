@@ -14,7 +14,7 @@
 	/// <typeparam name="FilterInputType">Type of filter that is used.</typeparam>
 	public abstract class FilterSectionOneInput<DataMinerObjectType, FilterInputType> : FilterSectionBase<DataMinerObjectType>
     {
-		private readonly Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions;
+		private Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions;
 
 		/// <summary>
 		/// 
@@ -27,19 +27,23 @@
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
 		protected FilterSectionOneInput(string filterName, Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName)
-        {
-			if(filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
-			if(!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
-            
-			this.filterFunctions = filterFunctions;
-
-			filterDropDown.Options = filterFunctions.Keys.Select(k => k.GetDescription()).ToList();
+		{
+			Initialize(filterFunctions);
 		}
 
-        /// <summary>
-        /// Value of filter that is being used.
-        /// </summary>
-        public abstract FilterInputType Value { get; set; }
+		/// <summary>
+		/// Copy constructor
+		/// </summary>
+		/// <param name="other"></param>
+		protected FilterSectionOneInput(FilterSectionOneInput<DataMinerObjectType, FilterInputType> other) : base(other)
+		{
+			Initialize(other.filterFunctions);
+		}
+
+		/// <summary>
+		/// Value of filter that is being used.
+		/// </summary>
+		public abstract FilterInputType Value { get; set; }
 
 		/// <summary>
 		/// Filter that is created based on input values. Used in getting DataMiner objects in the system.
@@ -56,5 +60,15 @@
 
             Value = value;
         }
+
+		private void Initialize(Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions)
+		{
+			if (filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
+			if (!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
+
+			this.filterFunctions = filterFunctions;
+
+			filterDropDown.Options = filterFunctions.Keys.Select(k => k.GetDescription()).ToList();
+		}
 	}
 }

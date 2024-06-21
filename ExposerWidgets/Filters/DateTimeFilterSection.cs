@@ -25,6 +25,15 @@
         }
 
         /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="other"></param>
+        protected DateTimeFilterSection(DateTimeFilterSection<DataMinerObjectType> other) : base(other)
+        {
+            GenerateUi();
+        }
+
+        /// <summary>
         /// Indicates if filter is valid.
         /// </summary>
         public override bool IsValid => true;
@@ -39,9 +48,18 @@
         }
 
         /// <summary>
-        /// Sets value to current date-time and filter as non active.
+        /// Clone
         /// </summary>
-        public override void Reset()
+        /// <returns></returns>
+		public override FilterSectionBase<DataMinerObjectType> Clone()
+		{
+            return new DateTimeFilterSection<DataMinerObjectType>(this);
+		}
+
+		/// <summary>
+		/// Sets value to current date-time and filter as non active.
+		/// </summary>
+		public override void Reset()
         {
             IsIncluded = false;
             Value = DateTime.Now;

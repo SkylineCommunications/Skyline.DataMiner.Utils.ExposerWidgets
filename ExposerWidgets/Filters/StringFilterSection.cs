@@ -28,6 +28,15 @@
         }
 
         /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="other"></param>
+        protected StringFilterSection(StringFilterSection<DataMinerObjectType> other) : base(other)
+        {
+            GenerateUi();
+        }
+
+        /// <summary>
         /// Indicates if provided string value is valid.
         /// </summary>
         public override bool IsValid => true;
@@ -42,9 +51,18 @@
         }
 
         /// <summary>
-        /// Resets filter values to default.
+        /// 
         /// </summary>
-        public override void Reset()
+        /// <returns></returns>
+		public override FilterSectionBase<DataMinerObjectType> Clone()
+		{
+            return new StringFilterSection<DataMinerObjectType>(this);
+		}
+
+		/// <summary>
+		/// Resets filter values to default.
+		/// </summary>
+		public override void Reset()
         {
             IsIncluded = false;
             Value = string.Empty;

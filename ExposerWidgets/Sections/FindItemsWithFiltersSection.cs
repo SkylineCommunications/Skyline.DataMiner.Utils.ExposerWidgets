@@ -227,12 +227,9 @@
         /// </summary>
         /// <returns>Combined filter.</returns>
         /// <exception cref="InvalidOperationException">If there isn't any active filter.</exception>
-        protected ANDFilterElement<DataMinerObjectType> GetCombinedFilterElement(params FilterElement<DataMinerObjectType>[] defaultFilters)
+        protected ANDFilterElement<DataMinerObjectType> GetCombinedFilterElement()
         {
-            var individualActiveFilterElements = new List<FilterElement<DataMinerObjectType>>();
-
-            individualActiveFilterElements.AddRange(defaultFilters);
-            individualActiveFilterElements.AddRange(GetIndividualFilters().Where(filter => filter.IsIncluded).Select(filter => filter.FilterElement));
+            var individualActiveFilterElements = GetIndividualFilters().Where(filter => filter.IsIncluded).Select(filter => filter.FilterElement);
 
             if (!individualActiveFilterElements.Any()) throw new InvalidOperationException("Unable to find any active filters");
 

@@ -106,7 +106,7 @@
         /// <param name="setAsDefault">Indicates if added inputs should be set as default values.</param>
         public void AddEnumPropertyValueFilter(string propertyName, string firstPropertyValue = null, int? secondPropertyValue = null, bool setAsDefault = false)
         {
-            var propertyFilterSection = new TicketEnumFilterSection<Ticket>(
+            var propertyFilterSection = new TicketEnumFilterSection(
                 "Enum Property", 
                 new Dictionary<Comparers, Func<string, string, int, FilterElement<Ticket>>>
                 {

@@ -1,6 +1,7 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using System;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
     /// <summary>
@@ -31,6 +32,15 @@
         {
             this.filterNameCheckBox = new CheckBox(filterName);
         }
+
+        /// <summary>
+        /// Copy constructor.
+        /// </summary>
+        /// <param name="other"></param>
+        protected FilterSectionBase(FilterSectionBase<DataMinerObjectType> other)
+        {
+            this.filterNameCheckBox = new CheckBox(other.filterNameCheckBox.Text);
+        } 
 
         /// <summary>
         /// Gets or sets value of active filter.
@@ -83,6 +93,12 @@
         /// Resets filter values to default.
         /// </summary>
         public abstract void Reset();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public abstract FilterSectionBase<DataMinerObjectType> Clone();
 
         /// <summary>
         /// Generates UI for filter section.

@@ -3,14 +3,14 @@
     using System;
 	using System.Collections.Generic;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.Ticketing;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
     /// <summary>
     ///  Represents filter section with custom name property and two inputs for custom property filtering. First input is string type, second is numeric type.
     /// </summary>
-    /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
-    public class TicketEnumFilterSection<DataMinerObjectType> : FilterSectionThreeInputs<DataMinerObjectType, string, string, int>, IDataMinerObjectFilter<DataMinerObjectType>
+    public class TicketEnumFilterSection : FilterSectionThreeInputs<Ticket, string, string, int>, IDataMinerObjectFilter<Ticket>
     {
         /// <summary>
         /// Custom property input widget.
@@ -28,11 +28,16 @@
         protected readonly Numeric propertyValueNumeric = new Numeric { Decimals = 0, StepSize = 1 };
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TicketEnumFilterSection{T}"/>"/> class.
+		/// Initializes a new instance of the <see cref="TicketEnumFilterSection"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter that will be applied.</param>
-		public TicketEnumFilterSection(string filterName, Dictionary<Comparers, Func<string, string, int, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
+		public TicketEnumFilterSection(string filterName, Dictionary<Comparers, Func<string, string, int, FilterElement<Ticket>>> filterFunctions) : base(filterName, filterFunctions)
+        {
+            GenerateUi();
+        }
+
+        protected TicketEnumFilterSection(TicketEnumFilterSection other) : base(other)
         {
             GenerateUi();
         }
@@ -68,6 +73,15 @@
             get => (int)propertyValueNumeric.Value;
             set => propertyValueNumeric.Value = value;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+		public override FilterSectionBase<Ticket> Clone()
+		{
+            return new TicketEnumFilterSection(this);
+		}
 
 		/// <summary>
 		/// Resets filter values to default.
