@@ -49,14 +49,14 @@
 				{Comparers.NotEquals, (pName, pValue) => TicketingExposers.CustomTicketFields.DictStringField(pName).NotEqual(pValue) },
 				{Comparers.Contains, (pName, pValue) => TicketingExposers.CustomTicketFields.DictStringField(pName).Contains(pValue) },
 				{Comparers.NotContains, (pName, pValue) => TicketingExposers.CustomTicketFields.DictStringField(pName).NotContains(pValue)},
-			}));
+			}, "Name"));
 
         private readonly MultipleFiltersSection<Ticket> integerPropertyFilterSections = new MultipleFiltersSection<Ticket>(new StringIntegerFilterSection<Ticket>(
 			"Property",
 			new Dictionary<Comparers, Func<string, int, FilterElement<Ticket>>>
 			{
 				{Comparers.Equals, (pName, pValue) => TicketingExposers.CustomTicketFields.DictField(pName).Equal(pValue) },
-			}));
+			}, "Name"));
 
         private readonly MultipleFiltersSection<Ticket> enumPropertyFilterSections = new MultipleFiltersSection<Ticket>(new TicketEnumFilterSection(
 			"Property",
