@@ -262,7 +262,7 @@
         {
             int topRow = row;
 
-            AddWidget(header, ++row, 0, 1, 5);
+            AddWidget(header, ++row, 0, 1, 3);
 
             AddFilterSections(ref row, out int firstAvailablecolumn);
 
