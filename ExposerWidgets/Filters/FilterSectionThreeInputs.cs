@@ -39,6 +39,10 @@
 			filterDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).ToList();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="other"></param>
 		protected FilterSectionThreeInputs(FilterSectionThreeInputs<DataMinerObjectType, FilterInputType1, FilterInputType2, FilterInputType3> other) : base(other)
 		{
 			Initialize(other.filterFunctions);

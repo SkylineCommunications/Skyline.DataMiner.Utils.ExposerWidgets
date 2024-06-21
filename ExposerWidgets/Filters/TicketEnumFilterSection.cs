@@ -37,6 +37,10 @@
             GenerateUi();
         }
 
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        /// <param name="other"></param>
         protected TicketEnumFilterSection(TicketEnumFilterSection other) : base(other)
         {
             GenerateUi();

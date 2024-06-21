@@ -102,13 +102,23 @@
 		Passive
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
 	public class ComparerTypeAttribute : Attribute
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="comparerType"></param>
 		public ComparerTypeAttribute(ComparerType comparerType)
 		{
 			ComparerType = comparerType;
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public ComparerType ComparerType { get; set; }
 	}
 

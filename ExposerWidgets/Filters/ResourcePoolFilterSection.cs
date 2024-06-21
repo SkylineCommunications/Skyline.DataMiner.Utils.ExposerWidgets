@@ -68,6 +68,10 @@
         /// </summary>
 		protected override InteractiveWidget InputWidget => resourcePoolDropDown;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
 		public override FilterSectionBase<FunctionResource> Clone()
 		{
             return new ResourcePoolFilterSection(this);
