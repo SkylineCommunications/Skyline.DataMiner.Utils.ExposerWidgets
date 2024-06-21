@@ -3,7 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
     using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using Label = InteractiveAutomationScript.Label;
@@ -19,6 +20,7 @@
         private readonly Button getItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction, Width = 300 };
         private List<DataMinerObjectType> itemsBasedOnFilters = new List<DataMinerObjectType>();
 
+        private readonly Label selectedItemsHeader = new Label("Filter Results") { Style = TextStyle.Heading };
         private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
         private readonly Label amountOfSelectedItemsLabel = new Label(string.Empty);
         private List<CheckBox> selectItemsCheckBoxList = new List<CheckBox>();
@@ -238,23 +240,30 @@
 
             AddFilterSections(ref row, out int firstAvailablecolumn);
 
+            AddWidget(new Label("          "), row, firstAvailablecolumn++);
+
             AddWidget(new WhiteSpace(), ++row, 0);
 
             AddWidget(getItemsBasedOnFiltersButton, ++row, 0, 1, 5);
 
             AddWidget(new WhiteSpace(), row + 1, 0);
 
-            AddWidget(amountOfMatchingItemsLabel, topRow + 1, firstAvailablecolumn);
-            AddWidget(selectAllButton, topRow + 2, firstAvailablecolumn, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(unselectAllButton, topRow + 2, firstAvailablecolumn + 1, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(amountOfSelectedItemsLabel, topRow + 3, firstAvailablecolumn);
-
-            int checkboxRow = topRow + 3;
-            foreach (var selectedItemCheckBox in selectItemsCheckBoxList)
-            {
-                AddWidget(selectedItemCheckBox, ++checkboxRow, firstAvailablecolumn);
-            }
+            AddResultWidgets(topRow, firstAvailablecolumn);
         }
+
+        private void AddResultWidgets(int row, int column)
+        {
+			AddWidget(selectedItemsHeader, ++row, ++column, 1, 5);
+			AddWidget(amountOfMatchingItemsLabel, ++row, column, 1, 2);
+			AddWidget(selectAllButton, ++row, column);
+			AddWidget(unselectAllButton, row, column + 1);
+			AddWidget(amountOfSelectedItemsLabel, ++row, column, 1, 2);
+
+			foreach (var selectedItemCheckBox in selectItemsCheckBoxList)
+			{
+				AddWidget(selectedItemCheckBox, ++row, column);
+			}
+		}
 
         /// <summary>
         /// Method that triggers UI regeneration evenet.

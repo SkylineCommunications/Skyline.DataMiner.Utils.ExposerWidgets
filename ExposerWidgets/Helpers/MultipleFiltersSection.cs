@@ -15,7 +15,7 @@
 	{
 		private readonly List<FilterSectionBase<DataMinerObjectType>> filterSections = new List<FilterSectionBase<DataMinerObjectType>>();
 
-		private readonly Button addMoreFiltersButton = new Button("+ Add More") { Width = 100 };
+		private readonly Button addMoreFiltersButton = new Button("Duplicate") { Width = 100 };
 
 		/// <summary>
 		/// 
