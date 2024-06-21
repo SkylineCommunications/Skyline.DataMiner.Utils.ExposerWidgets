@@ -17,57 +17,65 @@
 	/// </summary>
 	public class FindResourcesWithFiltersSection : FindItemsWithFiltersSection<FunctionResource>
     {
-        private readonly FilterSectionBase<FunctionResource> functionGuidFilterSection = new GuidFilterSection<FunctionResource>(
-            "Function Guid",
+        private readonly MultipleFiltersSection<FunctionResource> functionGuidFilterSection = new MultipleFiltersSection<FunctionResource>(new GuidFilterSection<FunctionResource>(
+            "Function ID",
             new Dictionary<Comparers, Func<Guid, FilterElement<FunctionResource>>>
             {
                 {Comparers.Equals, x => FunctionResourceExposers.FunctionGUID.Equal(x).CAST<Resource, FunctionResource>() },
                 {Comparers.NotEquals, x => FunctionResourceExposers.FunctionGUID.NotEqual(x).CAST<Resource, FunctionResource>() },
-            });
+            }));
 
-        private readonly FilterSectionBase<FunctionResource> resourcePoolFilterSection;
+        private readonly MultipleFiltersSection<FunctionResource> resourcePoolFilterSection;
 
-        private readonly FilterSectionBase<FunctionResource> resourceNameFilterSection = new StringFilterSection<FunctionResource>(
-            "Resource Name",
+        private readonly MultipleFiltersSection<FunctionResource> resourceNameFilterSection = new MultipleFiltersSection<FunctionResource>(new StringFilterSection<FunctionResource>(
+            "Name",
             new Dictionary<Comparers, Func<string, FilterElement<FunctionResource>>>
             {
                 {Comparers.Equals, x => ResourceExposers.Name.Equal(x).CAST<Resource, FunctionResource>()},
                 {Comparers.NotEquals, x => ResourceExposers.Name.NotEqual(x).CAST<Resource, FunctionResource>()},
                 {Comparers.Contains, x => ResourceExposers.Name.Contains(x).CAST<Resource, FunctionResource>()},
                 {Comparers.NotContains, x => ResourceExposers.Name.NotContains(x).CAST<Resource, FunctionResource>()},
-            });
+            }));
 
-        private readonly FilterSectionBase<FunctionResource> resourceIdFilterSection = new GuidFilterSection<FunctionResource>(
-            "Resource ID",
+        private readonly MultipleFiltersSection<FunctionResource> resourceIdFilterSection = new MultipleFiltersSection<FunctionResource>(new GuidFilterSection<FunctionResource>(
+            "ID",
             new Dictionary<Comparers, Func<Guid, FilterElement<FunctionResource>>>
             {
                 {Comparers.Equals, x => ResourceExposers.ID.Equal(x).CAST<Resource, FunctionResource>()},
                 { Comparers.NotEquals, x => ResourceExposers.ID.NotEqual(x).CAST < Resource, FunctionResource >() },
-            });
+            }));
 
-        private readonly FilterSectionBase<FunctionResource> dmaIdFilterSection = new IntegerFilterSection<FunctionResource>(
+        private readonly MultipleFiltersSection<FunctionResource> dmaIdFilterSection = new MultipleFiltersSection<FunctionResource>(new IntegerFilterSection<FunctionResource>(
             "DMA ID",
             new Dictionary<Comparers, Func<int, FilterElement<FunctionResource>>>
             {
                 {Comparers.Equals, x => ResourceExposers.DmaID.Equal(x).CAST<Resource, FunctionResource>()},
                 {Comparers.NotEquals, x => ResourceExposers.DmaID.NotEqual(x).CAST<Resource, FunctionResource>()},
-            });
+            }));
 
-        private readonly FilterSectionBase<FunctionResource> elementIdFilterSection = new IntegerFilterSection<FunctionResource>(
+        private readonly MultipleFiltersSection<FunctionResource> elementIdFilterSection = new MultipleFiltersSection<FunctionResource>(new IntegerFilterSection<FunctionResource>(
             "Element ID",
             new Dictionary<Comparers, Func<int, FilterElement<FunctionResource>>>
             {
                 {Comparers.Equals, x => ResourceExposers.ElementID.Equal(x).CAST<Resource, FunctionResource>()},
                 {Comparers.NotEquals, x => ResourceExposers.ElementID.NotEqual(x).CAST<Resource, FunctionResource>()},
-            });
+            }));
 
-        private readonly List<FilterSectionBase<FunctionResource>> propertyFilterSections = new List<FilterSectionBase<FunctionResource>>();
-        private readonly Button addPropertyFilterButton = new Button("Add Property Filter");
-        private readonly Button addPropertyExistenceFilterButton = new Button("Add Property Existence Filter");
+        private readonly MultipleFiltersSection<FunctionResource> propertyFilterSections = new MultipleFiltersSection<FunctionResource>(new StringStringFilterSection<FunctionResource>(
+			"Property",
+			new Dictionary<Comparers, Func<string, string, FilterElement<FunctionResource>>>
+			{
+				{Comparers.Equals, (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).Equal(propertyValue).CAST<Resource, FunctionResource>() },
+				{Comparers.NotEquals, (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue).CAST<Resource, FunctionResource>() },
+			}));
 
-        private readonly List<FilterSectionBase<FunctionResource>> capabilityFilterSections = new List<FilterSectionBase<FunctionResource>>();
-        private readonly Button addCapabilityContainsFilterButton = new Button("Add 'Capability Contains' Filter");
-        private readonly Button addCapabilityExistenceFilterButton = new Button("Add 'Capability Exists' Filter");
+        private readonly MultipleFiltersSection<FunctionResource> capabilityFilterSections = new MultipleFiltersSection<FunctionResource>(new GuidStringFilterSection<FunctionResource>(
+			"Discrete Capability",
+			new Dictionary<Comparers, Func<Guid, string, FilterElement<FunctionResource>>>
+			{
+				{Comparers.Contains, (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).Contains(cValue).CAST<Resource, FunctionResource>()},
+				{Comparers.NotContains, (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).NotContains(cValue).CAST<Resource, FunctionResource>()},
+			}));
 
         private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
 
@@ -78,93 +86,21 @@
         {
             var resourcePools = resourceManagerHelper.GetResourcePools() ?? new ResourcePool[0];
 
-			resourcePoolFilterSection = new ResourcePoolFilterSection(
+			resourcePoolFilterSection = new MultipleFiltersSection<FunctionResource>(new ResourcePoolFilterSection(
                 "Resource Pool",
                 new Dictionary<Comparers, Func<Guid, FilterElement<FunctionResource>>>
                 {
                     {Comparers.Equals,  x => ResourceExposers.PoolGUIDs.Contains(x).CAST<Resource, FunctionResource>() }
                 }, 
-                resourcePools);
+                resourcePools));
 
-			addPropertyFilterButton.Pressed += AddPropertyFilterButton_Pressed;
-
-            addPropertyExistenceFilterButton.Pressed += AddPropertyExistenceFilterButton_Pressed;
-
-            addCapabilityContainsFilterButton.Pressed += AddCapabilityContainsFilterButton_Pressed;
-
-            addCapabilityExistenceFilterButton.Pressed += AddCapabilityExistenceFilterButton_Pressed;
+			foreach (var section in GetMultipleFiltersSections())
+			{
+				section.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			}
 
 			GenerateUi();
 		}
-
-		private void AddCapabilityContainsFilterButton_Pressed(object sender, EventArgs e)
-        {
-            var capabilityFilterSection = new GuidStringFilterSection<FunctionResource>(
-                "Discrete Capability Contains",
-                new Dictionary<Comparers, Func<Guid, string, FilterElement<FunctionResource>>>
-                {
-                    {Comparers.Exists, (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).Contains(cValue).CAST<Resource, FunctionResource>()},
-                    {Comparers.NotExists, (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).NotContains(cValue).CAST<Resource, FunctionResource>()},
-                });
-
-            capabilityFilterSections.Add(capabilityFilterSection);
-
-            InvokeRegenerateUi();
-        }
-
-        private void AddCapabilityExistenceFilterButton_Pressed(object sender, EventArgs e)
-        {
-            var capabilityExistenceFilterSection = new StringFilterSection<FunctionResource>(
-                "Discrete Capability", 
-                new Dictionary<Comparers, Func<string, FilterElement<FunctionResource>>>
-                {
-                    {Comparers.Exists,  (cId) => ResourceExposers.Capabilities.DiscreteCapability(Guid.Parse(cId)).NotContains("random value").CAST<Resource, FunctionResource>() },
-                });
-
-            capabilityFilterSections.Add(capabilityExistenceFilterSection);
-
-            InvokeRegenerateUi();
-        }
-
-        private void AddPropertyExistenceFilterButton_Pressed(object sender, EventArgs e)
-        {
-            var propertyExistenceFilterSection = new StringFilterSection<FunctionResource>(
-                "Property",
-                new Dictionary<Comparers, Func<string, FilterElement<FunctionResource>>> 
-                {
-                    {Comparers.Exists, (pName) => ResourceExposers.Properties.DictStringField(pName).NotEqual("random value that will never be used as a property value").CAST<Resource, FunctionResource>() }
-                });
-
-            propertyFilterSections.Add(propertyExistenceFilterSection);
-
-            InvokeRegenerateUi();
-        }
-
-        private void AddPropertyFilterButton_Pressed(object sender, EventArgs e)
-        {
-            var propertyFilterSection = new StringStringFilterSection<FunctionResource>(
-                "Property", 
-                new Dictionary<Comparers, Func<string, string, FilterElement<FunctionResource>>>
-                {
-                    {Comparers.Equals, (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).Equal(propertyValue).CAST<Resource, FunctionResource>() },
-                    {Comparers.NotEquals, (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue).CAST<Resource, FunctionResource>() },
-                });
-
-            propertyFilterSections.Add(propertyFilterSection);
-
-            InvokeRegenerateUi();
-        }
-
-        /// <summary>
-        /// Resets filters in section to default values.
-        /// </summary>
-        protected override void ResetFilters()
-        {
-            foreach (var filterSection in GetIndividualFilters())
-            {
-                filterSection.Reset();
-            }
-        }
 
         /// <summary>
         /// Filtering all resources in system based on provided input.
@@ -192,42 +128,31 @@
 		/// <param name="firstAvailableColumn"></param>
 		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
-            AddSection(functionGuidFilterSection, new SectionLayout(++row, 0));
+			AddSection(resourceIdFilterSection, new SectionLayout(row, 0));
+            row += resourceIdFilterSection.RowCount;
 
-            AddSection(resourcePoolFilterSection, new SectionLayout(++row, 0));
+			AddSection(resourceNameFilterSection, new SectionLayout(row, 0));
+            row += resourceNameFilterSection.RowCount;
 
-            AddSection(resourceNameFilterSection, new SectionLayout(++row, 0));
+			AddSection(functionGuidFilterSection, new SectionLayout(row, 0));
+            row += functionGuidFilterSection.RowCount;
 
-            AddSection(resourceIdFilterSection, new SectionLayout(++row, 0));
+            AddSection(resourcePoolFilterSection, new SectionLayout(row, 0));
+			row += resourcePoolFilterSection.RowCount;
 
-            AddSection(dmaIdFilterSection, new SectionLayout(++row, 0));
+			AddSection(dmaIdFilterSection, new SectionLayout(row, 0));
+			row += dmaIdFilterSection.RowCount;
 
-            AddSection(elementIdFilterSection, new SectionLayout(++row, 0));
+			AddSection(elementIdFilterSection, new SectionLayout(row, 0));
+			row += elementIdFilterSection.RowCount;
 
-            foreach (var propertyFilterSection in propertyFilterSections)
-            {
-                AddSection(propertyFilterSection, new SectionLayout(++row, 0));
-            }
+			AddSection(propertyFilterSections, new SectionLayout(row, 0));
+            row += propertyFilterSections.RowCount;
 
-            foreach (var capabilityFilterSection in capabilityFilterSections)
-            {
-                AddSection(capabilityFilterSection, new SectionLayout(++row, 0));
-            }
-
-            AddWidget(addPropertyFilterButton, ++row, 0, 1, ColumnCount);
-            AddWidget(addPropertyExistenceFilterButton, ++row, 0, 1 , ColumnCount);
-            AddWidget(addCapabilityContainsFilterButton, ++row, 0, 1, ColumnCount);
-            AddWidget(addCapabilityExistenceFilterButton, ++row, 0, 1, ColumnCount);
+			AddSection(capabilityFilterSections, new SectionLayout(row, 0));
+			row += capabilityFilterSections.RowCount;
 
 			firstAvailableColumn = ColumnCount + 1;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void RegenerateFilterSections()
-		{
-			//TODO complete
 		}
 	}
 }

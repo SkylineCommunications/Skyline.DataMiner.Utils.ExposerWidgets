@@ -6,7 +6,8 @@
 	using Skyline.DataMiner.Net;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
     using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using Label = InteractiveAutomationScript.Label;
 
     /// <summary>
@@ -69,7 +70,13 @@
         /// <summary>
         /// 
         /// </summary>
-        protected abstract void RegenerateFilterSections();
+        protected virtual void RegenerateFilterSections()
+        {
+			foreach (var section in GetMultipleFiltersSections())
+			{
+				section.RegenerateUi();
+			}
+		}
 
         /// <summary>
         /// Resets all filters to default value.
@@ -83,7 +90,13 @@
         /// <summary>
         /// Resets all filters in section.
         /// </summary>
-        protected abstract void ResetFilters();
+        protected virtual void ResetFilters()
+        {
+			foreach (var section in GetMultipleFiltersSections())
+			{
+				section.Reset();
+			}
+		}
 
         /// <summary>
         /// Finding all objects based on provided filters.
@@ -160,6 +173,17 @@
 
             return filters;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+		protected IEnumerable<MultipleFiltersSection<DataMinerObjectType>> GetMultipleFiltersSections()
+		{
+			var fieldValues = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Select(field => field.GetValue(this)).ToList();
+
+			return fieldValues.OfType<MultipleFiltersSection<DataMinerObjectType>>().ToList();
+		}
 
 		/// <summary>
 		/// Checks if all active filters are valid.

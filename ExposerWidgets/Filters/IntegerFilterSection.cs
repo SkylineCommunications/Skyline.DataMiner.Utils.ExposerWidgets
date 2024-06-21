@@ -22,7 +22,8 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter that will be applied.</param>
-		public IntegerFilterSection(string filterName, Dictionary<Comparers, Func<int, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
+		/// <param name="tooltip"></param>
+		public IntegerFilterSection(string filterName, Dictionary<Comparers, Func<int, FilterElement<DataMinerObjectType>>> filterFunctions, string tooltip = null) : base(filterName, filterFunctions, tooltip)
         {
             GenerateUi();
         }

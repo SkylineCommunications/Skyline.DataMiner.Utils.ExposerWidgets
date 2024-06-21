@@ -102,29 +102,13 @@
 		/// </summary>
 		public FindReservationsWithFiltersSection() : base()
         {
-            reservationIdFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-            reservationNameFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-            reservationServiceDefinitionIdFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-            reservationStartFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-            reservationEndFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-            reservationCreatedAtFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-            reservationLastModifiedAtFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-            resourceFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-            propertyFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			foreach (var section in GetMultipleFiltersSections())
+			{
+				section.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			}
 
 			GenerateUi();
 		}
-
-        /// <summary>
-        /// Resets filters in section to default values.
-        /// </summary>
-        protected override void ResetFilters()
-        {
-            foreach (var filterSection in GetIndividualFilters())
-            {
-                filterSection.Reset();
-            }
-        }
 
         /// <summary>
         /// Filtering all reservation instances in system based on provided input.
@@ -134,22 +118,6 @@
         {
             return resourceManagerHelper.GetReservationInstances(GetCombinedFilterElement()).ToList();
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-		protected override void RegenerateFilterSections()
-		{
-			reservationIdFilterSection.RegenerateUi();
-			reservationNameFilterSection.RegenerateUi();
-			reservationServiceDefinitionIdFilterSection.RegenerateUi();
-			reservationStartFilterSection.RegenerateUi();
-			reservationEndFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			reservationCreatedAtFilterSection.RegenerateUi();
-			reservationLastModifiedAtFilterSection.RegenerateUi();
-			resourceFiltersSection.RegenerateUi();
-			propertyFiltersSection.RegenerateUi();
-		}
 
 		/// <summary>
 		/// Gets name of reservation instance.

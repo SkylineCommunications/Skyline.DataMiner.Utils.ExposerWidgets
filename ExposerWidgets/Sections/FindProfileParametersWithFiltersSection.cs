@@ -17,17 +17,17 @@
 	/// </summary>
 	public class FindProfileParametersWithFiltersSection : FindItemsWithFiltersSection<Parameter>
     {
-        private readonly FilterSectionBase<Parameter> idFilterSection = new GuidFilterSection<Parameter>(
-            "Profile Parameter ID",
-            new Dictionary<Helpers.Comparers, Func<Guid, FilterElement<Parameter>>> 
+        private readonly MultipleFiltersSection<Parameter> idFilterSection = new MultipleFiltersSection<Parameter>(new GuidFilterSection<Parameter>(
+            "ID",
+            new Dictionary<Comparers, Func<Guid, FilterElement<Parameter>>> 
             {
                 {Comparers.Equals,  x => ParameterExposers.ID.Equal(x) },
                 {Comparers.NotEquals,  x => ParameterExposers.ID.NotEqual(x) },
             }
-        );
+        ));
 
-        private readonly FilterSectionBase<Parameter> nameFilterSection = new StringFilterSection<Parameter>(
-            "Profile Parameter Name", 
+        private readonly MultipleFiltersSection<Parameter> nameFilterSection = new MultipleFiltersSection<Parameter>(new StringFilterSection<Parameter>(
+            "Name", 
             new Dictionary<Comparers, Func<string, FilterElement<Parameter>>> 
             {
                 {Comparers.Equals, x => ParameterExposers.Name.Equal(x) },
@@ -35,10 +35,25 @@
                 {Comparers.Contains, x => ParameterExposers.Name.Contains(x) },
                 {Comparers.NotContains, x => ParameterExposers.Name.NotContains(x) },
             }
-        );
+        ));
 
-        private readonly List<FilterSectionBase<Parameter>> discreetFilterSections = new List<FilterSectionBase<Parameter>>();
-        private readonly Button addDiscreetFilterButton = new Button("Add Discreet Filter");
+		private readonly MultipleFiltersSection<Parameter> typeFilterSection = new MultipleFiltersSection<Parameter>(new IntegerFilterSection<Parameter>(
+	        "Type",
+	        new Dictionary<Comparers, Func<int, FilterElement<Parameter>>>
+	        {
+				        {Comparers.Equals, x => ParameterExposers.Type.Equal(x) },
+				        {Comparers.NotEquals, x => ParameterExposers.Type.NotEqual(x) },
+	        }
+            ,$"{Parameter.ParameterType.Undefined}={(int)Parameter.ParameterType.Undefined}\n{nameof(Parameter.ParameterType.Number)}={(int)Parameter.ParameterType.Number}\n{nameof(Parameter.ParameterType.Text)}={(int)Parameter.ParameterType.Text}\n{nameof(Parameter.ParameterType.Discrete)}={(int)Parameter.ParameterType.Discrete}\n"));
+
+		private readonly MultipleFiltersSection<Parameter> discreetFilterSections = new MultipleFiltersSection<Parameter>(new StringFilterSection<Parameter>(
+			"Discreet",
+			new Dictionary<Comparers, Func<string, FilterElement<Parameter>>>
+			{
+				{Comparers.Exists,  discreet => ParameterExposers.Discretes.Contains(discreet) },
+				{Comparers.NotExists,  discreet => ParameterExposers.Discretes.NotContains(discreet) },
+			}
+		));
 
         private readonly ProfileHelper profileHelper;
 
@@ -49,25 +64,13 @@
         {
             profileHelper = new ProfileHelper(Engine.SLNet.SendMessages);
 
-            addDiscreetFilterButton.Pressed += AddDiscreetFilterButton_Pressed;
+			foreach (var section in GetMultipleFiltersSections())
+			{
+				section.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			}
+
 			GenerateUi();
 		}
-
-        private void AddDiscreetFilterButton_Pressed(object sender, EventArgs e)
-        {
-            var discreetFilterSection = new StringFilterSection<Parameter>(
-                "Discreet", 
-                new Dictionary<Comparers, Func<string, FilterElement<Parameter>>> 
-                {
-                    {Comparers.Exists,  discreet => ParameterExposers.Discretes.Contains(discreet) },
-                    {Comparers.NotExists,  discreet => ParameterExposers.Discretes.NotContains(discreet) },
-                }
-            );
-
-            discreetFilterSections.Add(discreetFilterSection);
-
-            InvokeRegenerateUi();
-        }
 
 		/// <summary>
 		/// Adding filter sections on a row specified.
@@ -76,16 +79,17 @@
 		/// <param name="firstAvailableColumn"></param>
 		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
-            AddSection(idFilterSection, new SectionLayout(++row, 0));
+            AddSection(idFilterSection, new SectionLayout(row, 0));
+            row += idFilterSection.RowCount;
 
-            AddSection(nameFilterSection, new SectionLayout(++row, 0));
+            AddSection(nameFilterSection, new SectionLayout(row, 0));
+            row += nameFilterSection.RowCount;
 
-            foreach (var discreetFilterSection in discreetFilterSections)
-            {
-                AddSection(discreetFilterSection, new SectionLayout(++row, 0));
-            }
+			AddSection(typeFilterSection, new SectionLayout(row, 0));
+			row += typeFilterSection.RowCount;
 
-            AddWidget(addDiscreetFilterButton, ++row, 0);
+			AddSection(discreetFilterSections, new SectionLayout(row, 0));
+            row += discreetFilterSections.RowCount;
 
 			firstAvailableColumn = ColumnCount + 1;
 		}
@@ -107,26 +111,5 @@
         {
             return item.Name;
         }
-
-        /// <summary>
-        /// Resets filters in section to default values.
-        /// </summary>
-        protected override void ResetFilters()
-        {
-            foreach (var filterSection in GetIndividualFilters())
-            {
-                filterSection.Reset();
-            }
-
-            discreetFilterSections.Clear();
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void RegenerateFilterSections()
-		{
-			//TODO complete
-		}
 	}
 }

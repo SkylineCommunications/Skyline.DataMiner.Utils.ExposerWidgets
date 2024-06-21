@@ -20,7 +20,7 @@
 		private readonly TextBox moduleIdTextBox = new TextBox(string.Empty);
 
 		private readonly MultipleFiltersSection<DomInstance> idFilterSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
-			"DOM Instance ID", 
+			"ID", 
 			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
 			{
 				{Comparers.Equals, x => DomInstanceExposers.Id.Equal(x) },
@@ -28,7 +28,7 @@
 			}));
 
         private readonly MultipleFiltersSection<DomInstance> nameFilterSection = new MultipleFiltersSection<DomInstance>(new StringFilterSection<DomInstance>(
-			"DOM Instance Name", 
+			"Name", 
 			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>> 
 			{
 				{Comparers.Equals, x => DomInstanceExposers.Name.Equal(x) },
@@ -46,7 +46,7 @@
 			}));
 
 		private readonly MultipleFiltersSection<DomInstance> statusIdFilterSection = new MultipleFiltersSection<DomInstance>(new StringFilterSection<DomInstance>(
-			"DOM Status ID",
+			"Status ID",
 			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>>
 			{
 				{Comparers.Equals, x => DomInstanceExposers.StatusId.Equal(x) },
@@ -56,7 +56,7 @@
 			}));
 
 		private readonly MultipleFiltersSection<DomInstance> createdAtFilterSection = new MultipleFiltersSection<DomInstance>(new DateTimeFilterSection<DomInstance>(
-			"DOM Instance Created At",
+			"Created At",
 			new Dictionary<Comparers, Func<DateTime, FilterElement<DomInstance>>>
 			{
 				{Comparers.GreaterThan, x => DomInstanceExposers.CreatedAt.GreaterThan(x) },
@@ -64,7 +64,7 @@
 			}));
 
 		private readonly MultipleFiltersSection<DomInstance> lastModifiedAtFilterSection = new MultipleFiltersSection<DomInstance>(new DateTimeFilterSection<DomInstance>(
-			"DOM Instance Last Modified At",
+			"Last Modified At",
 			new Dictionary<Comparers, Func<DateTime, FilterElement<DomInstance>>>
 			{
 				{Comparers.GreaterThan, x => DomInstanceExposers.LastModified.GreaterThan(x) },
@@ -106,15 +106,10 @@
         {
             moduleIdTextBox.FocusLost += ModuleIdTextBox_FocusLost;
 
-			idFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			nameFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			definitionIdFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			statusIdFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			sectionDefinitionIdFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			createdAtFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			lastModifiedAtFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			sectionIdFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			fieldValueFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			foreach (var section in GetMultipleFiltersSections())
+			{
+				section.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			}
 
 			GenerateUi();
 		}
@@ -197,32 +192,5 @@
         {
             return item.Name;
         }
-
-        /// <summary>
-        /// Resets filters in section to default values.
-        /// </summary>
-        protected override void ResetFilters()
-        {
-            foreach (var filterSection in GetIndividualFilters())
-            {
-                filterSection.Reset();
-            }
-        }
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void RegenerateFilterSections()
-		{
-			idFilterSection.RegenerateUi();
-			nameFilterSection.RegenerateUi();
-			definitionIdFilterSection.RegenerateUi();
-			statusIdFilterSection.RegenerateUi();
-			sectionDefinitionIdFiltersSection.RegenerateUi();
-			createdAtFilterSection.RegenerateUi();
-			lastModifiedAtFilterSection.RegenerateUi();
-			sectionIdFiltersSection.RegenerateUi();
-			fieldValueFiltersSection.RegenerateUi();
-		}
 	}
 }
