@@ -90,6 +90,8 @@
             {
                 {Comparers.Equals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Equal(propertyValue) },
                 {Comparers.NotEquals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue) },
+                {Comparers.Contains, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Contains(propertyValue) },
+                {Comparers.NotContains, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotContains(propertyValue) },
             }, "Name", "Value"));
 
         private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
