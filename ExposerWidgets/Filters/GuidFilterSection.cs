@@ -46,7 +46,7 @@
 				bool valid = Guid.TryParse(filterContentTextBox.Text, out _);
 
                 filterContentTextBox.ValidationState = valid ? Automation.UIValidationState.Valid : Automation.UIValidationState.Invalid;
-                filterContentTextBox.ValidationText = "Provide a valid GUID";
+                filterContentTextBox.ValidationText = $"Provide a valid {nameof(Guid)}";
 
                 return valid;
 			}

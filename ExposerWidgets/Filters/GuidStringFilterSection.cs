@@ -46,7 +46,18 @@
 		/// <summary>
 		/// Indicates if provided guid is valid or not.
 		/// </summary>
-		public override bool IsValid => Guid.TryParse(firstTextBox.Text, out _);
+		public override bool IsValid
+		{
+			get
+			{
+				bool valid = Guid.TryParse(firstTextBox.Text, out _);
+
+				firstTextBox.ValidationState = valid ? Automation.UIValidationState.Valid : Automation.UIValidationState.Invalid;
+				firstTextBox.ValidationText = $"Provide a valid {nameof(Guid)}";
+
+				return valid;
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets custom property name value.
