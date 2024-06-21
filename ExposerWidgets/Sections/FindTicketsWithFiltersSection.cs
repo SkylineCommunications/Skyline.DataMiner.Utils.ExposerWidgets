@@ -109,7 +109,7 @@
 		/// <param name="firstAvailableColumn"></param>
 		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
-            AddSection(ticketIdFilterSection, new SectionLayout(row, 0));
+            AddSection(ticketIdFilterSection, new SectionLayout(++row, 0));
 			row += ticketIdFilterSection.RowCount;
 
 			AddSection(ticketCreationDateFilterSection, new SectionLayout(row, 0));

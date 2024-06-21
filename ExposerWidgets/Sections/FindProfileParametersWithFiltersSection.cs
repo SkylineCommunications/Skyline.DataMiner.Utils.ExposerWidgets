@@ -79,7 +79,7 @@
 		/// <param name="firstAvailableColumn"></param>
 		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
-            AddSection(idFilterSection, new SectionLayout(row, 0));
+            AddSection(idFilterSection, new SectionLayout(++row, 0));
             row += idFilterSection.RowCount;
 
             AddSection(nameFilterSection, new SectionLayout(row, 0));

@@ -274,14 +274,7 @@
 
             AddWidget(new WhiteSpace(), row + 1, 0);
 
-            try
-            {
-				AddResultWidgets(topRow, new[] { firstAvailablecolumn, 3 }.Max());
-			}
-            catch(Exception ex)
-            {
-                throw new InvalidOperationException($"Exception while adding result widgets: {ex}");
-            }
+            AddResultWidgets(topRow, firstAvailablecolumn);
 		}
 
         private void AddResultWidgets(int row, int column)
