@@ -63,7 +63,7 @@
 			new Dictionary<Comparers, Func<string, string, int, FilterElement<Ticket>>>
 			{
 				{Comparers.Equals, (pName, pValue1, pValue2) => TicketingExposers.CustomTicketFields.DictField(pName).Equal($"{pValue1}/{pValue2}") },
-			}));
+			}, "Name", "Enum display value", "Enter the enum display value and the enum integer value"));
 
         private readonly TicketingGatewayHelper ticketingHelper;
 

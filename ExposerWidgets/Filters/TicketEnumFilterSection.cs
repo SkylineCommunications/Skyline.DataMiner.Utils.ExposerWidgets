@@ -32,8 +32,14 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter that will be applied.</param>
-		public TicketEnumFilterSection(string filterName, Dictionary<Comparers, Func<string, string, int, FilterElement<Ticket>>> filterFunctions) : base(filterName, filterFunctions)
+		/// <param name="firstExplanationLabel"></param>
+		/// <param name="secondExplanationLabel"></param>
+		/// <param name="tooltip"></param>
+		public TicketEnumFilterSection(string filterName, Dictionary<Comparers, Func<string, string, int, FilterElement<Ticket>>> filterFunctions, string firstExplanationLabel = null, string secondExplanationLabel = null, string tooltip = null) : base(filterName, filterFunctions, tooltip)
         {
+            propertyNameTextBox.PlaceHolder = firstExplanationLabel ?? string.Empty;
+			propertyValueTextBox.PlaceHolder = secondExplanationLabel ?? string.Empty;
+
             GenerateUi();
         }
 
@@ -81,7 +87,22 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
+		protected override InteractiveWidget FirstInputWidget => propertyNameTextBox;
+		
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override InteractiveWidget SecondInputWidget => propertyValueTextBox;
+		
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override InteractiveWidget ThirdInputWidget => propertyValueNumeric;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public override FilterSectionBase<Ticket> Clone()
 		{
             return new TicketEnumFilterSection(this);
@@ -96,18 +117,6 @@
             FirstValue = string.Empty;
             SecondValue = string.Empty;
             ThirdValue = 0;
-        }
-
-        /// <summary>
-        /// Generates filter section UI.
-        /// </summary>
-        protected override void GenerateUi()
-        {
-            base.GenerateUi();
-
-            AddWidget(propertyNameTextBox, 0, nextAvailableColumn++);
-            AddWidget(propertyValueTextBox, 0, nextAvailableColumn++);
-            AddWidget(propertyValueNumeric, 1, nextAvailableColumn);
         }
 
         /// <summary>

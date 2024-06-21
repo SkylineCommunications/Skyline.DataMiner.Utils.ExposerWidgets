@@ -23,7 +23,8 @@
 		/// <param name="filterFunctions"></param>
 		/// <param name="firstValueExplanation"></param>
 		/// <param name="secondValueExplanation"></param>
-		public GuidStringFilterSection(string filterName, Dictionary<Comparers, Func<Guid, string, FilterElement<DataMinerObjectType>>> filterFunctions, string firstValueExplanation = null, string secondValueExplanation = null) : base(filterName, filterFunctions)
+		/// <param name="tooltip"></param>
+		public GuidStringFilterSection(string filterName, Dictionary<Comparers, Func<Guid, string, FilterElement<DataMinerObjectType>>> filterFunctions, string firstValueExplanation = null, string secondValueExplanation = null, string tooltip = null) : base(filterName, filterFunctions, tooltip)
 		{
 			firstTextBox.PlaceHolder = firstValueExplanation ?? string.Empty;
 			secondTextBox.PlaceHolder = secondValueExplanation ?? string.Empty;

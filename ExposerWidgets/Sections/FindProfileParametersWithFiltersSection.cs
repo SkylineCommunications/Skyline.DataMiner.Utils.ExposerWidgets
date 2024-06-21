@@ -52,8 +52,7 @@
 			{
 				{Comparers.Exists,  discreet => ParameterExposers.Discretes.Contains(discreet) },
 				{Comparers.NotExists,  discreet => ParameterExposers.Discretes.NotContains(discreet) },
-			}
-		));
+			}, "Value"));
 
         private readonly ProfileHelper profileHelper;
 

@@ -58,7 +58,7 @@
 				{Comparers.NotEquals, (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue) },
 				{Comparers.Contains, (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).Contains(propertyValue) },
 				{Comparers.NotContains, (propertyName, propertyValue) => ServiceDefinitionExposers.Properties.DictStringField(propertyName).NotContains(propertyValue) },
-			}));
+			}, "Name", "Value"));
 
         private readonly ServiceManagerHelper serviceManagerHelper = new ServiceManagerHelper();
 

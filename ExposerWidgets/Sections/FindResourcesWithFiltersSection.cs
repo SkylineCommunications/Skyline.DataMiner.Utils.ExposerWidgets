@@ -67,7 +67,7 @@
 			{
 				{Comparers.Equals, (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).Equal(propertyValue).CAST<Resource, FunctionResource>() },
 				{Comparers.NotEquals, (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue).CAST<Resource, FunctionResource>() },
-			}));
+			}, "Name", "Value"));
 
         private readonly MultipleFiltersSection<FunctionResource> capabilityFilterSections = new MultipleFiltersSection<FunctionResource>(new GuidStringFilterSection<FunctionResource>(
 			"Discrete Capability",
@@ -75,7 +75,7 @@
 			{
 				{Comparers.Contains, (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).Contains(cValue).CAST<Resource, FunctionResource>()},
 				{Comparers.NotContains, (cId, cValue) => ResourceExposers.Capabilities.DiscreteCapability(cId).NotContains(cValue).CAST<Resource, FunctionResource>()},
-			}));
+			}, "Guid", "Value", "ID of the capability is ID of the Profile Parameter"));
 
         private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
 

@@ -5,6 +5,7 @@
 	using System.Linq;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	/// <summary>
 	/// Represents filter section with three inputs.
@@ -24,7 +25,7 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
-		protected FilterSectionThreeInputs(string filterName, Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName)
+		protected FilterSectionThreeInputs(string filterName, Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions, string tooltip = null) : base(filterName, tooltip)
 		{
 			Initialize(filterFunctions);
 		}
@@ -69,6 +70,21 @@
         public abstract FilterInputType3 ThirdValue { get; set; }
 
 		/// <summary>
+		/// 
+		/// </summary>
+		protected abstract InteractiveWidget FirstInputWidget { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected abstract InteractiveWidget SecondInputWidget { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected abstract InteractiveWidget ThirdInputWidget { get; }
+
+		/// <summary>
 		/// Sets default values for filters.
 		/// </summary>
 		/// <param name="value">Default value for first filter.</param>
@@ -82,6 +98,32 @@
             SecondValue = secondValue;
             ThirdValue = thirdValue;
         }
-    }
+
+		protected override void GenerateUi()
+		{
+			Clear();
+
+			nextAvailableColumn = 0;
+
+			AddWidget(tooltipLabel, 0, nextAvailableColumn++);
+
+			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
+
+			if (filterFunctions.First().Key.GetComparerType() == ComparerType.Active)
+			{
+				AddWidget(FirstInputWidget, 0, nextAvailableColumn++);
+				AddWidget(filterDropDown, 0, nextAvailableColumn++);
+				AddWidget(SecondInputWidget, 0, nextAvailableColumn);
+				AddWidget(ThirdInputWidget, 1, nextAvailableColumn++);
+			}
+			else
+			{
+				AddWidget(FirstInputWidget, 0, nextAvailableColumn++);
+				AddWidget(SecondInputWidget, 0, nextAvailableColumn);
+				AddWidget(ThirdInputWidget, 1, nextAvailableColumn++);
+				AddWidget(filterDropDown, 0, nextAvailableColumn++);
+			}
+		}
+	}
 
 }
