@@ -37,6 +37,9 @@
         /// <param name="other"></param>
         protected StringStringFilterSection(StringStringFilterSection<DataMinerObjectType> other) : base(other)
         {
+            firstTextBox.PlaceHolder = other.firstTextBox.PlaceHolder;
+            secondTextBox.PlaceHolder = other.secondTextBox.PlaceHolder;
+
             GenerateUi();
         }
 

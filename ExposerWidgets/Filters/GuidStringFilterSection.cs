@@ -37,6 +37,9 @@
 		/// <param name="other"></param>
 		protected GuidStringFilterSection(GuidStringFilterSection<DataMinerObjectType> other) : base(other)
 		{
+			firstTextBox.PlaceHolder = other.firstTextBox.PlaceHolder;
+			secondTextBox.PlaceHolder = other.secondTextBox.PlaceHolder;
+
 			GenerateUi();
 		}
 

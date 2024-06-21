@@ -90,7 +90,7 @@
             {
                 {Comparers.Equals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Equal(propertyValue) },
                 {Comparers.NotEquals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue) },
-            }));
+            }, "Name", "Value"));
 
         private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
 

@@ -41,7 +41,9 @@
         /// <param name="other"></param>
         protected StringIntegerFilterSection(StringIntegerFilterSection<DataMinerObjectType> other) : base(other)
         {
-            GenerateUi();
+			firstValueTextBox.PlaceHolder = other.firstValueTextBox.PlaceHolder;
+
+			GenerateUi();
         }
 
         /// <summary>
