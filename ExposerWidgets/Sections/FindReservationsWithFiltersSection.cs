@@ -166,24 +166,33 @@
 		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddSection(reservationNameFilterSection, new SectionLayout(++row, 0));
+            row += reservationNameFilterSection.RowCount;
 
             AddSection(reservationIdFilterSection, new SectionLayout(++row, 0));
+			row += reservationIdFilterSection.RowCount;
 
 			AddSection(reservationServiceDefinitionIdFilterSection, new SectionLayout(++row, 0));
+			row += reservationServiceDefinitionIdFilterSection.RowCount;
 
 			AddSection(reservationStartFilterSection, new SectionLayout(++row, 0));
+			row += reservationStartFilterSection.RowCount;
 
-            AddSection(reservationEndFilterSection, new SectionLayout(++row, 0));
+			AddSection(reservationEndFilterSection, new SectionLayout(++row, 0));
+			row += reservationEndFilterSection.RowCount;
 
-            AddSection(reservationCreatedAtFilterSection, new SectionLayout(++row, 0));
-            
-            AddSection(reservationLastModifiedAtFilterSection, new SectionLayout(++row, 0));
-           
-            AddSection(resourceFiltersSection, new SectionLayout(++row, 0));
-            
-            AddSection(propertyFiltersSection, new SectionLayout(++row, 0));
-            
-            firstAvailableColumn = ColumnCount + 1;
+			AddSection(reservationCreatedAtFilterSection, new SectionLayout(++row, 0));
+			row += reservationCreatedAtFilterSection.RowCount;
+
+			AddSection(reservationLastModifiedAtFilterSection, new SectionLayout(++row, 0));
+			row += reservationLastModifiedAtFilterSection.RowCount;
+
+			AddSection(resourceFiltersSection, new SectionLayout(++row, 0));
+			row += resourceFiltersSection.RowCount;
+
+			AddSection(propertyFiltersSection, new SectionLayout(++row, 0));
+			row += propertyFiltersSection.RowCount;
+
+			firstAvailableColumn = ColumnCount + 1;
         }
     }
 }

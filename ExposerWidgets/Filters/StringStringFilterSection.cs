@@ -90,9 +90,12 @@
         /// </summary>
         protected override void GenerateUi()
         {
-            base.GenerateUi();
+			Clear();
+			nextAvailableColumn = 0;
 
-            AddWidget(firstTextBox, 0, nextAvailableColumn++);
+			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
+			AddWidget(firstTextBox, 0, nextAvailableColumn++);
+			AddWidget(filterDropDown, 0, nextAvailableColumn++);
 			AddWidget(secondTextBox, 0, nextAvailableColumn++);
         }
 
