@@ -21,11 +21,9 @@
 
         private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
         private readonly Label amountOfSelectedItemsLabel = new Label(string.Empty);
-        private readonly CheckBoxList selectItemsCheckBoxList = new CheckBoxList();
+        private List<CheckBox> selectItemsCheckBoxList = new List<CheckBox>();
         private readonly Button selectAllButton = new Button("Select All");
         private readonly Button unselectAllButton = new Button("Unselect All");
-        private readonly Numeric selectFirstXItemsNumeric = new Numeric { Decimals = 0, StepSize = 1, Minimum = 0 };
-        private readonly Button selectFirstXItemsButton = new Button("Select First X");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindItemsWithFiltersSection{T}"/>"/> class.
@@ -36,45 +34,21 @@
 
             selectAllButton.Pressed += (o, e) =>
             {
-                selectItemsCheckBoxList.CheckAll();
+                selectItemsCheckBoxList.ForEach(x => x.IsChecked = true);
                 SelectedItems = GetIndividuallySelectedItems();
             };
 
             unselectAllButton.Pressed += (o, e) =>
             {
-                selectItemsCheckBoxList.UncheckAll();
+                selectItemsCheckBoxList.ForEach(x => x.IsChecked = false);
                 SelectedItems = GetIndividuallySelectedItems();
             };
-
-            selectFirstXItemsButton.Pressed += SelectFirstXItemsButton_Pressed;
-
-            selectItemsCheckBoxList.Changed += (o, e) => SelectedItems = GetIndividuallySelectedItems();
         }
 
         /// <summary>
         /// Event triggered when we need to regenerate UI.
         /// </summary>
         public event EventHandler RegenerateUiRequired;
-
-        private void SelectFirstXItemsButton_Pressed(object sender, EventArgs e)
-        {
-            int counter = 0;
-            foreach (var option in selectItemsCheckBoxList.Options.ToList())
-            {
-                if (counter < (int)selectFirstXItemsNumeric.Value)
-                {
-                    selectItemsCheckBoxList.Check(option);
-                }
-                else
-                {
-                    selectItemsCheckBoxList.Uncheck(option);
-                }
-
-                counter++;
-            }
-
-            SelectedItems = GetIndividuallySelectedItems();
-        }
 
         /// <summary>
         /// Gets list of selected DataMiner objects.
@@ -90,6 +64,9 @@
             GenerateUi();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected abstract void RegenerateFilterSections();
 
         /// <summary>
@@ -130,26 +107,24 @@
                 itemsBasedOnFilters = FindItemsWithFilters().ToList();
             }
 
-            int previousAmountOfOptions = selectItemsCheckBoxList.Options.Count();
-
             amountOfMatchingItemsLabel.Text = $"Found {itemsBasedOnFilters.Count} matching {typeof(DataMinerObjectType).Name}s";
 
-            selectItemsCheckBoxList.SetOptions(itemsBasedOnFilters.Select(r => GetItemIdentifier(r)).OrderBy(name => name).ToList());
-            selectItemsCheckBoxList.CheckAll();
+			selectItemsCheckBoxList = itemsBasedOnFilters.Select(r => GetItemIdentifier(r)).OrderBy(name => name).Select(name => new CheckBox(name) { IsChecked = true }).ToList();
+			selectItemsCheckBoxList.ForEach(x => x.Changed += (o, e) => SelectedItems = GetIndividuallySelectedItems());
 
-            var selectedResources = GetIndividuallySelectedItems();
+            var selectedItems = GetIndividuallySelectedItems();
 
-            selectAllButton.IsVisible = selectedResources.Any();
-            unselectAllButton.IsVisible = selectedResources.Any();
+            selectAllButton.IsVisible = selectedItems.Any();
+            unselectAllButton.IsVisible = selectedItems.Any();
 
-            if (selectItemsCheckBoxList.Options.Count() != previousAmountOfOptions) InvokeRegenerateUi();
+            InvokeRegenerateUi();
 
-            return selectedResources;       
+            return selectedItems;       
         }
 
         private IEnumerable<DataMinerObjectType> GetIndividuallySelectedItems()
         {
-            var selectedResourceNames = selectItemsCheckBoxList.Checked;
+            var selectedResourceNames = selectItemsCheckBoxList.Where(x => x.IsChecked).Select(x => x.Text);
 
             var selectedResources = itemsBasedOnFilters.Where(r => selectedResourceNames.Contains(GetItemIdentifier(r))).ToList();
 
@@ -271,9 +246,12 @@
             AddWidget(selectAllButton, 0, firstAvailablecolumn + 1, verticalAlignment: VerticalAlignment.Top);
             AddWidget(unselectAllButton, 0, firstAvailablecolumn + 2, verticalAlignment: VerticalAlignment.Top);
             AddWidget(amountOfSelectedItemsLabel, 1, firstAvailablecolumn);
-            AddWidget(selectFirstXItemsNumeric, 1, firstAvailablecolumn + 1, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(selectFirstXItemsButton, 1, firstAvailablecolumn + 2, verticalAlignment: VerticalAlignment.Top);
-            AddWidget(selectItemsCheckBoxList, 2, firstAvailablecolumn, selectItemsCheckBoxList.Options.Any() ? selectItemsCheckBoxList.Options.Count() : 1, 1, verticalAlignment: VerticalAlignment.Top);
+
+            int checkboxRow = 1;
+            foreach (var selectedItemCheckBox in selectItemsCheckBoxList)
+            {
+                AddWidget(selectedItemCheckBox, ++checkboxRow, firstAvailablecolumn);
+            }
         }
 
         /// <summary>
