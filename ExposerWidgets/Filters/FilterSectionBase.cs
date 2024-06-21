@@ -41,6 +41,7 @@
         {
             this.filterNameCheckBox = new CheckBox(filterName);
             tooltipLabel.Tooltip = tooltip ?? string.Empty;
+            tooltipLabel.IsVisible = !string.IsNullOrWhiteSpace(tooltipLabel.Tooltip);
         }
 
         /// <summary>
