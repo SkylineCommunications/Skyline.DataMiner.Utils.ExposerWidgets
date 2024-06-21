@@ -22,8 +22,8 @@
         private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
         private readonly Label amountOfSelectedItemsLabel = new Label(string.Empty);
         private List<CheckBox> selectItemsCheckBoxList = new List<CheckBox>();
-        private readonly Button selectAllButton = new Button("Select All");
-        private readonly Button unselectAllButton = new Button("Unselect All");
+        private readonly Button selectAllButton = new Button("Select All") { Width = 100 };
+        private readonly Button unselectAllButton = new Button("Unselect All") { Width = 100 };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindItemsWithFiltersSection{T}"/>"/> class.

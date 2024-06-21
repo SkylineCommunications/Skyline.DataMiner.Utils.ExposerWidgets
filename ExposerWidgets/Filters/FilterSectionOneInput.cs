@@ -75,6 +75,11 @@
 
 			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
 
+			if (!string.IsNullOrWhiteSpace(tooltipLabel.Tooltip))
+			{
+				AddWidget(tooltipLabel, 0, nextAvailableColumn++);
+			}
+
 			if (filterFunctions.First().Key.GetComparerType() == ComparerType.Active)
 			{
 				AddWidget(filterDropDown, 0, nextAvailableColumn++);
@@ -84,11 +89,6 @@
 			{
 				AddWidget(InputWidget, 0, nextAvailableColumn++);
 				AddWidget(filterDropDown, 0, nextAvailableColumn++);
-			}
-
-			if (!string.IsNullOrWhiteSpace(tooltipLabel.Tooltip))
-			{
-				AddWidget(tooltipLabel, 0, nextAvailableColumn++);
 			}
 		}
 
