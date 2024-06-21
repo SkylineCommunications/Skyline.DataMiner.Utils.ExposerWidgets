@@ -14,14 +14,22 @@
 	/// <typeparam name="FilterInputType">Type of filter that is used.</typeparam>
 	public abstract class FilterSectionOneInput<DataMinerObjectType, FilterInputType> : FilterSectionBase<DataMinerObjectType>
     {
+		/// <summary>
+		/// 
+		/// </summary>
 		private Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected abstract InteractiveWidget InputWidget { get; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterSectionOneInput{T, T}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
-		protected FilterSectionOneInput(string filterName, Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName)
+		protected FilterSectionOneInput(string filterName, Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions, string tooltip = null) : base(filterName, tooltip)
 		{
 			Initialize(filterFunctions);
 		}
@@ -55,6 +63,34 @@
 
             Value = value;
         }
+
+		/// <summary>
+		/// Generates UI for Guid filter section.
+		/// </summary>
+		protected override void GenerateUi()
+		{
+			Clear();
+
+			nextAvailableColumn = 0;
+
+			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
+
+			if (filterFunctions.First().Key.GetComparerType() == ComparerType.Active)
+			{
+				AddWidget(filterDropDown, 0, nextAvailableColumn++);
+				AddWidget(InputWidget, 0, nextAvailableColumn++);
+			}
+			else
+			{
+				AddWidget(InputWidget, 0, nextAvailableColumn++);
+				AddWidget(filterDropDown, 0, nextAvailableColumn++);
+			}
+
+			if (!string.IsNullOrWhiteSpace(tooltipLabel.Tooltip))
+			{
+				AddWidget(tooltipLabel, 0, nextAvailableColumn++);
+			}
+		}
 
 		private void Initialize(Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions)
 		{

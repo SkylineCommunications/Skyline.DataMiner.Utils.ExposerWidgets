@@ -53,7 +53,12 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
+		protected override InteractiveWidget InputWidget => filterContentNumeric;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new IntegerFilterSection<DataMinerObjectType>(this);
@@ -66,16 +71,6 @@
         {
             IsIncluded = false;
             Value = 0;
-        }
-
-        /// <summary>
-        /// Generates UI section of numeric filter.
-        /// </summary>
-        protected override void GenerateUi()
-        {
-            base.GenerateUi();
-
-            AddWidget(filterContentNumeric, 0, nextAvailableColumn++);
         }
 
         /// <summary>

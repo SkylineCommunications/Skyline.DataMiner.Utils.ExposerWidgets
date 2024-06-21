@@ -2,6 +2,7 @@
 {
     using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
@@ -16,17 +17,14 @@
         /// Textbox for Guid input.
         /// </summary>
         protected readonly TextBox filterContentTextBox = new TextBox() { PlaceHolder = nameof(Guid) };
-		private readonly bool filterDropDownFirst;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="GuidFilterSection{T}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter that will be applied.</param>
-		public GuidFilterSection(string filterName, Dictionary<Comparers, Func<Guid, FilterElement<DataMinerObjectType>>> filterFunctions, bool filterDropDownFirst = true) : base(filterName, filterFunctions)
+		public GuidFilterSection(string filterName, Dictionary<Comparers, Func<Guid, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
         {
-			this.filterDropDownFirst = filterDropDownFirst;
-
 			GenerateUi();
 		}
 
@@ -67,7 +65,12 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
+		protected override InteractiveWidget InputWidget => filterContentTextBox;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new GuidFilterSection<DataMinerObjectType>(this);
@@ -80,28 +83,6 @@
         {
             IsIncluded = false;
             Value = Guid.Empty;
-        }
-
-        /// <summary>
-        /// Generates UI for Guid filter section.
-        /// </summary>
-        protected override void GenerateUi()
-        {
-			Clear();
-			nextAvailableColumn = 0;
-
-			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
-
-            if (filterDropDownFirst)
-            {
-				AddWidget(filterDropDown, 0, nextAvailableColumn++);
-				AddWidget(filterContentTextBox, 0, nextAvailableColumn++);
-			}
-            else
-            {
-				AddWidget(filterContentTextBox, 0, nextAvailableColumn++);
-				AddWidget(filterDropDown, 0, nextAvailableColumn++);
-			}
         }
 
         /// <summary>

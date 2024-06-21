@@ -28,12 +28,19 @@
         protected readonly DropDown filterDropDown = new DropDown();
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FilterSectionBase{T}"/>"/> class.
+        /// 
         /// </summary>
-        /// <param name="filterName">Name of filter.</param>
-        protected FilterSectionBase(string filterName)
+        protected readonly Label tooltipLabel = new Label("ⓘ") { Style = TextStyle.Title };
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FilterSectionBase{T}"/>"/> class.
+		/// </summary>
+		/// <param name="filterName">Name of filter.</param>
+		/// <param name="tooltip"></param>
+		protected FilterSectionBase(string filterName, string tooltip = null)
         {
             this.filterNameCheckBox = new CheckBox(filterName);
+            tooltipLabel.Tooltip = tooltip ?? string.Empty;
         }
 
         /// <summary>

@@ -63,6 +63,11 @@
             set => resourcePoolDropDown.Selected = resourcePools.Single(pool => pool.ID == value).Name;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+		protected override InteractiveWidget InputWidget => resourcePoolDropDown;
+
 		public override FilterSectionBase<FunctionResource> Clone()
 		{
             return new ResourcePoolFilterSection(this);
@@ -81,16 +86,6 @@
         /// Gets selected resource pool.
         /// </summary>
         private ResourcePool SelectedResourcePool => resourcePools.SingleOrDefault(pool => pool.Name == resourcePoolDropDown.Selected);
-
-        /// <summary>
-        /// Generates resource pool filter section UI.
-        /// </summary>
-        protected override void GenerateUi()
-        {
-            base.GenerateUi();
-
-            AddWidget(resourcePoolDropDown, 0, nextAvailableColumn++);
-        }
 
         /// <summary>
         /// Handles default resource pool filter update.

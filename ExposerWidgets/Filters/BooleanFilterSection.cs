@@ -50,7 +50,12 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
+		protected override InteractiveWidget InputWidget => filterValueCheckBox;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new BooleanFilterSection<DataMinerObjectType>(this);
@@ -71,16 +76,6 @@
         protected override void HandleDefaultUpdate()
         {
             filterValueCheckBox.IsEnabled = !IsDefault;
-        }
-
-        /// <summary>
-        /// Generates UI of checkbox filter section.
-        /// </summary>
-        protected override void GenerateUi()
-        {
-            base.GenerateUi();
-
-            AddWidget(filterValueCheckBox, 0, nextAvailableColumn++);
         }
     }
 }

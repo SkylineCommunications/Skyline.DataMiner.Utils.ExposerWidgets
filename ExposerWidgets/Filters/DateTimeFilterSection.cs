@@ -48,9 +48,14 @@
         }
 
         /// <summary>
-        /// Clone
+        /// 
         /// </summary>
-        /// <returns></returns>
+		protected override InteractiveWidget InputWidget => dateTimePicker;
+
+		/// <summary>
+		/// Clone
+		/// </summary>
+		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new DateTimeFilterSection<DataMinerObjectType>(this);
@@ -63,16 +68,6 @@
         {
             IsIncluded = false;
             Value = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Generates UI of date-time filter section.
-        /// </summary>
-        protected override void GenerateUi()
-        {
-            base.GenerateUi();
-
-            AddWidget(dateTimePicker, 0, nextAvailableColumn++);
         }
 
         /// <summary>

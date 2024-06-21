@@ -42,7 +42,8 @@
 				{Comparers.NotEquals, x => ReservationInstanceExposers.Name.NotEqual(x)},
 				{Comparers.Contains, x => ReservationInstanceExposers.Name.Contains(x)},
 				{Comparers.NotContains, x => ReservationInstanceExposers.Name.NotContains(x)},
-			}));
+			},
+			"Example tooltip"));
 
         private readonly MultipleFiltersSection<ReservationInstance> reservationStartFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
             "Reservation Start",
@@ -82,8 +83,7 @@
             {
                 {Comparers.IsUsed, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.Contains(resourceId) },
                 {Comparers.IsNotUsed, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.NotContains(resourceId) },
-            },
-            false));
+            }));
 
         private readonly MultipleFiltersSection<ReservationInstance> propertyFiltersSection = new MultipleFiltersSection<ReservationInstance>(new StringStringFilterSection<ReservationInstance>(
             "Property",
