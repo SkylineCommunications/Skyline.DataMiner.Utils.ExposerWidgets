@@ -72,7 +72,17 @@
         /// <summary>
         /// 
         /// </summary>
-        /// <returns></returns>
+		protected override InteractiveWidget FirstInputWidget => firstValueTextBox;
+
+        /// <summary>
+        /// 
+        /// </summary>
+		protected override InteractiveWidget SecondInputWidget => secondValueNumeric;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new StringIntegerFilterSection<DataMinerObjectType>(this);
@@ -87,20 +97,6 @@
             FirstValue = string.Empty;
             SecondValue = 0;
         }
-
-        /// <summary>
-        /// Generates filter section UI.
-        /// </summary>
-        protected override void GenerateUi()
-        {
-			Clear();
-			nextAvailableColumn = 0;
-
-			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
-			AddWidget(firstValueTextBox, 0, nextAvailableColumn++);
-			AddWidget(filterDropDown, 0, nextAvailableColumn++);
-			AddWidget(secondValueNumeric, 0, nextAvailableColumn++);
-		}
 
         /// <summary>
         /// Handles filter section default updates.

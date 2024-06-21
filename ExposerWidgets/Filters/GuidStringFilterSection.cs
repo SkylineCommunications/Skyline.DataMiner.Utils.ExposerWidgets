@@ -80,6 +80,16 @@
 		/// <summary>
 		/// 
 		/// </summary>
+		protected override InteractiveWidget FirstInputWidget => firstTextBox;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override InteractiveWidget SecondInputWidget => secondTextBox;
+
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
@@ -94,20 +104,6 @@
 			IsIncluded = false;
 			FirstValue = Guid.Empty;
 			SecondValue = string.Empty;
-		}
-
-		/// <summary>
-		/// Generates filter section UI.
-		/// </summary>
-		protected override void GenerateUi()
-		{
-			Clear();
-			nextAvailableColumn = 0;
-
-			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
-			AddWidget(firstTextBox, 0, nextAvailableColumn++);
-			AddWidget(filterDropDown, 0, nextAvailableColumn++);
-			AddWidget(secondTextBox, 0, nextAvailableColumn++);
 		}
 
 		/// <summary>

@@ -55,6 +55,16 @@
         public abstract FilterInputType2 SecondValue { get; set; }
 
 		/// <summary>
+		/// 
+		/// </summary>
+		protected abstract InteractiveWidget FirstInputWidget { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected abstract InteractiveWidget SecondInputWidget { get; }
+
+		/// <summary>
 		/// Sets default values for filters.
 		/// </summary>
 		/// <param name="value">Default value for first filter.</param>
@@ -66,6 +76,33 @@
             FirstValue = value;
             SecondValue = secondValue;
         }
+
+		/// <summary>
+		/// Generates UI for Guid filter section.
+		/// </summary>
+		protected override void GenerateUi()
+		{
+			Clear();
+
+			nextAvailableColumn = 0;
+
+			AddWidget(tooltipLabel, 0, nextAvailableColumn++);
+
+			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
+
+			if (filterFunctions.First().Key.GetComparerType() == ComparerType.Active)
+			{
+				AddWidget(FirstInputWidget, 0, nextAvailableColumn++);
+				AddWidget(filterDropDown, 0, nextAvailableColumn++);
+				AddWidget(SecondInputWidget, 0, nextAvailableColumn++);
+			}
+			else
+			{
+				AddWidget(FirstInputWidget, 0, nextAvailableColumn++);
+				AddWidget(SecondInputWidget, 0, nextAvailableColumn++);
+				AddWidget(filterDropDown, 0, nextAvailableColumn++);
+			}
+		}
 
 		private void Initialize(Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions)
 		{
