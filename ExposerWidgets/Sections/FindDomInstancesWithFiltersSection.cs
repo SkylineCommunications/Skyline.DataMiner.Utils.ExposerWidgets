@@ -243,5 +243,13 @@
                 filterSection.Reset();
             }
         }
-    }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void RegenerateFilterSections()
+		{
+			//TODO complete
+		}
+	}
 }

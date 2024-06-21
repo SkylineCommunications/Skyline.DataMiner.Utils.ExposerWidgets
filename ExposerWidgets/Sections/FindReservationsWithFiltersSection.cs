@@ -133,11 +133,27 @@
         }
 
         /// <summary>
-        /// Gets name of reservation instance.
+        /// 
         /// </summary>
-        /// <param name="item">Reservation instance for which we want to retrieve name.</param>
-        /// <returns>Name of reservation instance.</returns>
-        protected override string GetItemIdentifier(ReservationInstance item)
+		protected override void RegenerateFilterSections()
+		{
+			reservationIdFilterSection.RegenerateUi();
+			reservationNameFilterSection.RegenerateUi();
+			reservationServiceDefinitionIdFilterSection.RegenerateUi();
+			reservationStartFilterSection.RegenerateUi();
+			reservationEndFilterSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			reservationCreatedAtFilterSection.RegenerateUi();
+			reservationLastModifiedAtFilterSection.RegenerateUi();
+			resourceFiltersSection.RegenerateUi();
+			propertyFiltersSection.RegenerateUi();
+		}
+
+		/// <summary>
+		/// Gets name of reservation instance.
+		/// </summary>
+		/// <param name="item">Reservation instance for which we want to retrieve name.</param>
+		/// <returns>Name of reservation instance.</returns>
+		protected override string GetItemIdentifier(ReservationInstance item)
         {
             return item.Name;
         }

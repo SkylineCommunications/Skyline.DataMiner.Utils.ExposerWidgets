@@ -19,15 +19,6 @@
     {
         private Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected readonly Label firstValueExplanationLabel = new Label();
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected readonly Label secondValueExplanationLabel = new Label();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterSectionTwoInputs{T, T, T}"/>

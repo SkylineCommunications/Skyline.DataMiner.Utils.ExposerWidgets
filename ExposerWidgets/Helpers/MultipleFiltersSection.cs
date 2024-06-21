@@ -66,15 +66,18 @@
 
 			filterSections.Add(newFilterSection);
 
-			GenerateUi();
 			RegenerateUiRequired?.Invoke(this, EventArgs.Empty);
+		}
+
+		public void RegenerateUi()
+		{
+			GenerateUi();
 		}
 
 		private void AddMoreFiltersButton_Pressed(object sender, EventArgs e)
 		{
 			filterSections.Add(filterSections.First().Clone());
 
-			GenerateUi();
 			RegenerateUiRequired?.Invoke(this, EventArgs.Empty);
 		}
 

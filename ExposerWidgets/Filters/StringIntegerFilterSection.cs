@@ -27,8 +27,11 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
-		public StringIntegerFilterSection(string filterName, Dictionary<Comparers, Func<string, int, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
+		/// <param name="firstValueExplanation"></param>
+		public StringIntegerFilterSection(string filterName, Dictionary<Comparers, Func<string, int, FilterElement<DataMinerObjectType>>> filterFunctions, string firstValueExplanation = null) : base(filterName, filterFunctions)
         {
+            firstValueTextBox.PlaceHolder = firstValueExplanation ?? string.Empty;
+
             GenerateUi();
         }
 
@@ -90,9 +93,7 @@
         {
             base.GenerateUi();
 
-			if (!string.IsNullOrWhiteSpace(firstValueExplanationLabel.Text)) AddWidget(firstValueExplanationLabel, 0, nextAvailableColumn++);
 			AddWidget(firstValueTextBox, 0, nextAvailableColumn++);
-			if (!string.IsNullOrWhiteSpace(secondValueExplanationLabel.Text)) AddWidget(secondValueExplanationLabel, 0, nextAvailableColumn++);
 			AddWidget(secondValueNumeric, 0, nextAvailableColumn++);
 		}
 

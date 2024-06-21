@@ -119,6 +119,14 @@
             }
 
             discreetFilterSections.Clear();
-        }
-    }
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void RegenerateFilterSections()
+		{
+			//TODO complete
+		}
+	}
 }

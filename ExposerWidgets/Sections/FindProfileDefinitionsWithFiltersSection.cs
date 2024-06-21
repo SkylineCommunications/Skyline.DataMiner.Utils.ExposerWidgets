@@ -81,7 +81,15 @@
         /// </summary>
         protected override void ResetFilters()
         {
-            // nothing
-        }
-    }
+			// nothing
+		}      
+        
+        /// <summary>
+		/// 
+		/// </summary>
+		protected override void RegenerateFilterSections()
+		{
+			//TODO complete
+		}
+	}
 }

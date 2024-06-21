@@ -21,8 +21,13 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter that will be applied.</param>
-		public StringStringFilterSection(string filterName, Dictionary<Comparers, Func<string, string, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
+		/// <param name="firstValueExplanation"></param>
+		/// <param name="secondValueExplanation"></param>
+		public StringStringFilterSection(string filterName, Dictionary<Comparers, Func<string, string, FilterElement<DataMinerObjectType>>> filterFunctions, string firstValueExplanation = null, string secondValueExplanation = null) : base(filterName, filterFunctions)
         {
+            firstTextBox.PlaceHolder = firstValueExplanation ?? string.Empty;
+            secondTextBox.PlaceHolder = secondValueExplanation ?? string.Empty;
+
             GenerateUi();
         }
 
@@ -84,9 +89,7 @@
         {
             base.GenerateUi();
 
-            if (!string.IsNullOrWhiteSpace(firstValueExplanationLabel.Text)) AddWidget(firstValueExplanationLabel, 0, nextAvailableColumn++);
             AddWidget(firstTextBox, 0, nextAvailableColumn++);
-			if (!string.IsNullOrWhiteSpace(secondValueExplanationLabel.Text)) AddWidget(secondValueExplanationLabel, 0, nextAvailableColumn++);
 			AddWidget(secondTextBox, 0, nextAvailableColumn++);
         }
 

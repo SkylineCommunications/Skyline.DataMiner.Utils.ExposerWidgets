@@ -163,5 +163,13 @@
 
 			firstAvailableColumn = ColumnCount + 1;
 		}
-    }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected override void RegenerateFilterSections()
+		{
+			//TODO complete
+		}
+	}
 }

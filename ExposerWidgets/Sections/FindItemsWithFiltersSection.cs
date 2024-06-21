@@ -16,7 +16,7 @@
     {
         private readonly Label header = new Label($"Find {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Heading };
 
-        private readonly Button getItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction };
+        private readonly Button getItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction, Width = 300 };
         private List<DataMinerObjectType> itemsBasedOnFilters = new List<DataMinerObjectType>();
 
         private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
@@ -86,8 +86,11 @@
         /// </summary>
         public void RegenerateUi()
         {
+            RegenerateFilterSections();
             GenerateUi();
         }
+
+        protected abstract void RegenerateFilterSections();
 
         /// <summary>
         /// Resets all filters to default value.
