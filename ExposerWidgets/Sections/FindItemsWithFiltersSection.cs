@@ -270,7 +270,7 @@
 
             AddWidget(new WhiteSpace(), ++row, 0);
 
-            AddWidget(getItemsBasedOnFiltersButton, ++row, 0, 1, 5);
+            AddWidget(getItemsBasedOnFiltersButton, ++row, 0, 1, 3);
 
             AddWidget(new WhiteSpace(), row + 1, 0);
 

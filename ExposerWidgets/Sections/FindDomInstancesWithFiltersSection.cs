@@ -17,7 +17,7 @@
 	public class FindDomInstancesWithFiltersSection : FindItemsWithFiltersSection<DomInstance>
 	{
 		private readonly Label moduleId = new Label("DOM Module ID:");
-		private readonly TextBox moduleIdTextBox = new TextBox(string.Empty);
+		private readonly TextBox moduleIdTextBox = new TextBox(string.Empty) { PlaceHolder = nameof(Guid)};
 
 		private readonly MultipleFiltersSection<DomInstance> idFilterSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
 			"ID", 
@@ -95,7 +95,7 @@
 				{Comparers.NotEquals, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotEqual(fieldValue) },
 				{Comparers.Contains, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Contains(fieldValue) },
 				{Comparers.NotContains, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotContains(fieldValue) },
-			}));
+			},"Name", "Value"));
 
 		private DomHelper domHelper;
 
