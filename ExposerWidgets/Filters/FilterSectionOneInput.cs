@@ -17,11 +17,6 @@
 		private Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions;
 
 		/// <summary>
-		/// 
-		/// </summary>
-		protected readonly Label valueExplanationLabel = new Label();
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterSectionOneInput{T, T}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>

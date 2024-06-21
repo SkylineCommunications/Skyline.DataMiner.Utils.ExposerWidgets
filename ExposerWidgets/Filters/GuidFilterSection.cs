@@ -16,16 +16,19 @@
         /// Textbox for Guid input.
         /// </summary>
         protected readonly TextBox filterContentTextBox = new TextBox() { PlaceHolder = nameof(Guid) };
+		private readonly bool filterDropDownFirst;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="GuidFilterSection{T}"/>"/> class.
-        /// </summary>
-        /// <param name="filterName">Name of filter.</param>
-        /// <param name="filterFunctions">Filter that will be applied.</param>
-        public GuidFilterSection(string filterName, Dictionary<Comparers, Func<Guid, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="GuidFilterSection{T}"/>"/> class.
+		/// </summary>
+		/// <param name="filterName">Name of filter.</param>
+		/// <param name="filterFunctions">Filter that will be applied.</param>
+		public GuidFilterSection(string filterName, Dictionary<Comparers, Func<Guid, FilterElement<DataMinerObjectType>>> filterFunctions, bool filterDropDownFirst = true) : base(filterName, filterFunctions)
         {
-            GenerateUi();
-        }
+			this.filterDropDownFirst = filterDropDownFirst;
+
+			GenerateUi();
+		}
 
         /// <summary>
         /// 
@@ -84,9 +87,21 @@
         /// </summary>
         protected override void GenerateUi()
         {
-            base.GenerateUi();
+			Clear();
+			nextAvailableColumn = 0;
 
-            AddWidget(filterContentTextBox, 0, nextAvailableColumn++);
+			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
+
+            if (filterDropDownFirst)
+            {
+				AddWidget(filterDropDown, 0, nextAvailableColumn++);
+				AddWidget(filterContentTextBox, 0, nextAvailableColumn++);
+			}
+            else
+            {
+				AddWidget(filterContentTextBox, 0, nextAvailableColumn++);
+				AddWidget(filterDropDown, 0, nextAvailableColumn++);
+			}
         }
 
         /// <summary>

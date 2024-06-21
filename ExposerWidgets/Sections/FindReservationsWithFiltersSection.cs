@@ -77,12 +77,13 @@
            }));
 
         private readonly MultipleFiltersSection<ReservationInstance> resourceFiltersSection = new MultipleFiltersSection<ReservationInstance>(new GuidFilterSection<ReservationInstance>(
-            "Resource ID",
+            "Resource",
             new Dictionary<Comparers, Func<Guid, FilterElement<ReservationInstance>>>
             {
-                {Comparers.Exists, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.Contains(resourceId) },
-                {Comparers.NotExists, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.NotContains(resourceId) },
-            }));
+                {Comparers.IsUsed, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.Contains(resourceId) },
+                {Comparers.IsNotUsed, (resourceId) => ReservationInstanceExposers.ResourceIDsInReservationInstance.NotContains(resourceId) },
+            },
+            false));
 
         private readonly MultipleFiltersSection<ReservationInstance> propertyFiltersSection = new MultipleFiltersSection<ReservationInstance>(new StringStringFilterSection<ReservationInstance>(
             "Property",

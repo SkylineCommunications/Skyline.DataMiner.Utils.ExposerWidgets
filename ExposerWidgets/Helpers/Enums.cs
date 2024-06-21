@@ -57,6 +57,18 @@
 		/// </summary>
 		[Description("Does Not Exist")]
 		NotExists,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("Is Used")]
+		IsUsed,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("Is Not Used")]
+		IsNotUsed,
 	}
 
 	/// <summary>
