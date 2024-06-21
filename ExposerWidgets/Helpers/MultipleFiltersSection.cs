@@ -15,7 +15,7 @@
 	{
 		private readonly List<FilterSectionBase<DataMinerObjectType>> filterSections = new List<FilterSectionBase<DataMinerObjectType>>();
 
-		private readonly Button addMoreFiltersButton = new Button("Duplicate") { Width = 100 };
+		private readonly Button duplicateFilterButton = new Button("Duplicate") { Width = 100 };
 
 		/// <summary>
 		/// 
@@ -25,7 +25,7 @@
 		{
 			filterSections.Add(filterSectionBase);
 
-			addMoreFiltersButton.Pressed += AddMoreFiltersButton_Pressed;
+			duplicateFilterButton.Pressed += AddMoreFiltersButton_Pressed;
 
 			GenerateUi();
 		}
@@ -83,12 +83,12 @@
 			int row = -1;
 
 			AddSection(filterSections.First(), new SectionLayout(++row, 0));
-			AddWidget(addMoreFiltersButton, row, filterSections.First().ColumnCount);
+			AddWidget(duplicateFilterButton, row, filterSections.First().ColumnCount);
 			row += filterSections.First().RowCount;
 
 			foreach (var filterSection in filterSections.Skip(1))
 			{
-				AddSection(filterSection, new SectionLayout(++row, 0));
+				AddSection(filterSection, new SectionLayout(row, 0));
 				row += filterSection.RowCount;
 			}
 		}
