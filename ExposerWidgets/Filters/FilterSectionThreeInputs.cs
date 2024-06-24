@@ -105,7 +105,7 @@
 
 			nextAvailableColumn = 0;
 
-			AddWidget(tooltipLabel, 0, nextAvailableColumn++);
+			if (!string.IsNullOrWhiteSpace(tooltipLabel.Tooltip)) AddWidget(tooltipLabel, 0, nextAvailableColumn++, verticalAlignment: VerticalAlignment.Top);
 
 			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
 
