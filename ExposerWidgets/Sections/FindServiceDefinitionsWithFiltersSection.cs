@@ -96,7 +96,7 @@
         /// </summary>
         /// <param name="item">Service definition for which we want to retrieve name.</param>
         /// <returns>Name of service definition.</returns>
-        protected override string GetItemIdentifier(ServiceDefinition item)
+        protected override string IdentifyItem(ServiceDefinition item)
         {
             return item.Name;
         }

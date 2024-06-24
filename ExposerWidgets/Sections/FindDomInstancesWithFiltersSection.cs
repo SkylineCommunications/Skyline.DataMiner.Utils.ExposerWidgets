@@ -214,7 +214,7 @@
         /// Retrieves name of dom instance.
         /// </summary>
         /// <returns>Name of dom instance.</returns>
-        protected override string GetItemIdentifier(DomInstance item)
+        protected override string IdentifyItem(DomInstance item)
         {
             return item.Name;
         }

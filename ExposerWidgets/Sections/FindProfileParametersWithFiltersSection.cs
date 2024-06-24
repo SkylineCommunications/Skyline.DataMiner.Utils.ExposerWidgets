@@ -106,7 +106,7 @@
         /// Retrieves name of profile parameter.
         /// </summary>
         /// <returns>Name of profile parameter.</returns>
-        protected override string GetItemIdentifier(Parameter item)
+        protected override string IdentifyItem(Parameter item)
         {
             return item.Name;
         }

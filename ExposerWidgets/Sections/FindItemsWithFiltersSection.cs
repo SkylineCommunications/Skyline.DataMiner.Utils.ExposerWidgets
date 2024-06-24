@@ -1,52 +1,45 @@
 ﻿namespace Skyline.DataMiner.Utils.YLE.UI.Filters
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-	using Skyline.DataMiner.Net;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Sections;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-    using Label = InteractiveAutomationScript.Label;
+	using Label = InteractiveAutomationScript.Label;
 
-    /// <summary>
-    /// Section for selecting base info about filtering.
-    /// </summary>
-    /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
-    public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : Section
+	/// <summary>
+	/// Section for selecting base info about filtering.
+	/// </summary>
+	/// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
+	public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : Section
     {
         private readonly Label header = new Label($"Find {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Heading };
 
         private readonly Button getItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction, Width = 300 };
         private List<DataMinerObjectType> itemsBasedOnFilters = new List<DataMinerObjectType>();
 
-        private readonly Label selectedItemsHeader = new Label("Filter Results") { Style = TextStyle.Heading, IsVisible = false };
-        private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
-        private readonly Label amountOfSelectedItemsLabel = new Label(string.Empty);
-        private List<CheckBox> selectItemsCheckBoxList = new List<CheckBox>();
-        private readonly Button selectAllButton = new Button("Select All") { Width = 100, IsVisible = false };
-        private readonly Button unselectAllButton = new Button("Unselect All") { Width = 100, IsVisible = false };
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FindItemsWithFiltersSection{T}"/>"/> class.
         /// </summary>
         protected FindItemsWithFiltersSection()
         {
-            getItemsBasedOnFiltersButton.Pressed += (s, e) => SelectedItems = GetItemsBasedOnFilters();
+            ResultsSection = new ResultsSection<DataMinerObjectType>((DataMinerObjectType obj) => IdentifyItem(obj));
+            ResultsSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
 
-            selectAllButton.Pressed += (o, e) =>
+            getItemsBasedOnFiltersButton.Pressed += (s, e) =>
             {
-                selectItemsCheckBoxList.ForEach(x => x.IsChecked = true);
-                SelectedItems = GetIndividuallySelectedItems();
-            };
-
-            unselectAllButton.Pressed += (o, e) =>
-            {
-                selectItemsCheckBoxList.ForEach(x => x.IsChecked = false);
-                SelectedItems = GetIndividuallySelectedItems();
-            };
+                ResultsSection.LoadNewItems(GetItemsBasedOnFilters());
+                DataMinerObjectsRetrievedBasedOnFilters?.Invoke(this, EventArgs.Empty);
+            };      
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ResultsSection<DataMinerObjectType> ResultsSection { get; protected set; }
 
         /// <summary>
         /// Event triggered when we need to regenerate UI.
@@ -54,9 +47,14 @@
         public event EventHandler RegenerateUiRequired;
 
         /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler DataMinerObjectsRetrievedBasedOnFilters;
+
+        /// <summary>
         /// Gets list of selected DataMiner objects.
         /// </summary>
-        public IEnumerable<DataMinerObjectType> SelectedItems { get; private set; } = new List<DataMinerObjectType>();
+        public IEnumerable<DataMinerObjectType> SelectedItems => ResultsSection.SelectedItems;
 
         /// <summary>
         /// Regenerates section UI.
@@ -76,6 +74,8 @@
 			{
 				section.RegenerateUi();
 			}
+
+            ResultsSection.RegenerateUi();
 		}
 
         /// <summary>
@@ -84,8 +84,9 @@
         public void ResetFiltersAndSelectedItems()
         {
             ResetFilters();
-            SelectedItems = GetItemsBasedOnFilters();
-        }
+			ResultsSection.LoadNewItems(GetItemsBasedOnFilters());
+			DataMinerObjectsRetrievedBasedOnFilters?.Invoke(this, EventArgs.Empty);
+		}
 
         /// <summary>
         /// Resets all filters in section.
@@ -109,7 +110,7 @@
         /// </summary>
         /// <param name="item">Object for which ID is being retrieved.</param>
         /// <returns>ID of an object.</returns>
-        protected abstract string GetItemIdentifier(DataMinerObjectType item);
+        protected abstract string IdentifyItem(DataMinerObjectType item);
 
         private IEnumerable<DataMinerObjectType> GetItemsBasedOnFilters()
         {           
@@ -122,32 +123,7 @@
                 itemsBasedOnFilters = FindItemsWithFilters().ToList();
             }
 
-            amountOfMatchingItemsLabel.Text = $"Found {itemsBasedOnFilters.Count} {typeof(DataMinerObjectType).Name}s matching the filters";
-
-			selectItemsCheckBoxList = itemsBasedOnFilters.Select(r => GetItemIdentifier(r)).OrderBy(name => name).Select(name => new CheckBox(name) { IsChecked = true }).ToList();
-			selectItemsCheckBoxList.ForEach(x => x.Changed += (o, e) => SelectedItems = GetIndividuallySelectedItems());
-
-            var selectedItems = GetIndividuallySelectedItems();
-
-            selectedItemsHeader.IsVisible = true;
-            amountOfSelectedItemsLabel.IsVisible = selectedItems.Any();
-            selectAllButton.IsVisible = selectedItems.Any();
-            unselectAllButton.IsVisible = selectedItems.Any();
-
-            InvokeRegenerateUi();
-
-            return selectedItems;       
-        }
-
-        private IEnumerable<DataMinerObjectType> GetIndividuallySelectedItems()
-        {
-            var selectedResourceNames = selectItemsCheckBoxList.Where(x => x.IsChecked).Select(x => x.Text);
-
-            var selectedResources = itemsBasedOnFilters.Where(r => selectedResourceNames.Contains(GetItemIdentifier(r))).ToList();
-
-            amountOfSelectedItemsLabel.Text = $"Selected {selectedResources.Count} {typeof(DataMinerObjectType).Name}s";
-
-            return selectedResources;
+            return itemsBasedOnFilters;
         }
 
 		/// <summary>
@@ -260,13 +236,9 @@
         /// <param name="row"></param>
         protected void GenerateUi(ref int row)
         {
-            int topRow = row;
-
             AddWidget(header, ++row, 0, 1, 3);
 
             AddFilterSections(ref row, out int firstAvailablecolumn);
-
-            AddWidget(new Label("          "), row, firstAvailablecolumn++);
 
             AddWidget(new WhiteSpace(), ++row, 0);
 
@@ -274,21 +246,7 @@
 
             AddWidget(new WhiteSpace(), row + 1, 0);
 
-            AddResultWidgets(topRow, firstAvailablecolumn);
-		}
-
-        private void AddResultWidgets(int row, int column)
-        {
-			AddWidget(selectedItemsHeader, ++row, ++column, 1, 5);
-			AddWidget(amountOfMatchingItemsLabel, ++row, column, 1, 2);
-			AddWidget(selectAllButton, ++row, column);
-			AddWidget(unselectAllButton, row, column + 1);
-			AddWidget(amountOfSelectedItemsLabel, ++row, column, 1, 2);
-
-			foreach (var selectedItemCheckBox in selectItemsCheckBoxList)
-			{
-				AddWidget(selectedItemCheckBox, ++row, column, 1, 2);
-			}
+            AddSection(ResultsSection, new SectionLayout(++row, 0));
 		}
 
         /// <summary>

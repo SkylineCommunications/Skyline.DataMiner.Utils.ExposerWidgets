@@ -97,7 +97,7 @@
         /// </summary>
         /// <param name="item">Ticket for which we want to retrieve name.</param>
         /// <returns>Name of ticket.</returns>
-        protected override string GetItemIdentifier(Ticket item)
+        protected override string IdentifyItem(Ticket item)
         {
             return item.ID.ToString();
         }

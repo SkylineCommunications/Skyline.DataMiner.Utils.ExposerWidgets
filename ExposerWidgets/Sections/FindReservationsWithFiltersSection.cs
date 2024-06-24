@@ -142,7 +142,7 @@
 		/// </summary>
 		/// <param name="item">Reservation instance for which we want to retrieve name.</param>
 		/// <returns>Name of reservation instance.</returns>
-		protected override string GetItemIdentifier(ReservationInstance item)
+		protected override string IdentifyItem(ReservationInstance item)
         {
             return item.Name;
         }

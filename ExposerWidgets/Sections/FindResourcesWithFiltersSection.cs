@@ -205,7 +205,7 @@
         /// </summary>
         /// <param name="item">Resource for which we want to retrieve name.</param>
         /// <returns>Name of resource.</returns>
-        protected override string GetItemIdentifier(Resource item)
+        protected override string IdentifyItem(Resource item)
         {
             return item.Name;
         }

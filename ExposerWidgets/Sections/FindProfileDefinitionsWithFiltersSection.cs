@@ -151,7 +151,7 @@
         /// Retrieves name of profile definition.
         /// </summary>
         /// <returns>Name of profile definition.</returns>
-        protected override string GetItemIdentifier(ProfileDefinition item)
+        protected override string IdentifyItem(ProfileDefinition item)
         {
             return item.Name;
         }
