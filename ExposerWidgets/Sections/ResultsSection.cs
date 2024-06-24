@@ -130,7 +130,7 @@
 
 			AddWidget(amountOfSelectedItemsLabel, ++row, 1, 1, 2);
 
-			AddWidget(selectItemsCheckBoxList, ++row, 1, 1, 3);
+			AddWidget(selectItemsCheckBoxList, ++row, 1, 1, 5);
 		}
 	}
 }

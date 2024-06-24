@@ -239,7 +239,7 @@
 
             AddFilterSections(ref row, out int firstAvailablecolumn);
 
-			AddWidget(new WhiteSpace(), row + 1, 0);
+			AddWidget(new WhiteSpace(), ++row, 0);
 
 			AddWidget(findItemsBasedOnFiltersButton, ++row, 0, 1, 5);
 
