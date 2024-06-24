@@ -44,7 +44,7 @@
 				        {Comparers.Equals, x => ParameterExposers.Type.Equal(x) },
 				        {Comparers.NotEquals, x => ParameterExposers.Type.NotEqual(x) },
 	        }
-            ,$"{Parameter.ParameterType.Undefined}={(int)Parameter.ParameterType.Undefined}\n{nameof(Parameter.ParameterType.Number)}={(int)Parameter.ParameterType.Number}\n{nameof(Parameter.ParameterType.Text)}={(int)Parameter.ParameterType.Text}\n{nameof(Parameter.ParameterType.Discrete)}={(int)Parameter.ParameterType.Discrete}\n"));
+            , string.Join("\n", Enum.GetValues(typeof(Parameter.ParameterType)).Cast<Parameter.ParameterType>().Select(x => $"{x}={(int)x}"))));
 
 		private readonly MultipleFiltersSection<Parameter> discreetFilterSections = new MultipleFiltersSection<Parameter>(new StringFilterSection<Parameter>(
 			"Discreet",

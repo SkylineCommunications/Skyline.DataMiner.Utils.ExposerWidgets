@@ -19,7 +19,7 @@
 	public class FindReservationsWithFiltersSection : FindItemsWithFiltersSection<ReservationInstance>
     {
         private readonly MultipleFiltersSection<ReservationInstance> reservationIdFilterSection = new MultipleFiltersSection<ReservationInstance>(new GuidFilterSection<ReservationInstance>(
-            "Reservation ID",
+            "ID",
             new Dictionary<Comparers, Func<Guid, FilterElement<ReservationInstance>>> 
             {
                 {Comparers.Equals, x => ReservationInstanceExposers.ID.Equal(x) },
@@ -35,7 +35,7 @@
             }));
 
         private readonly MultipleFiltersSection<ReservationInstance> reservationNameFilterSection = new MultipleFiltersSection<ReservationInstance>(new StringFilterSection<ReservationInstance>(
-            "Reservation Name",
+            "Name",
             new Dictionary<Comparers, Func<string, FilterElement<ReservationInstance>>> 
             {
 				{Comparers.Equals, x => ReservationInstanceExposers.Name.Equal(x) },
@@ -46,7 +46,7 @@
 			"Example tooltip value"));
 
         private readonly MultipleFiltersSection<ReservationInstance> reservationStartFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
-            "Reservation Start",
+            "Start",
             new Dictionary<Comparers, Func<DateTime, FilterElement<ReservationInstance>>> 
             {
                 {Comparers.GreaterThan, x => ReservationInstanceExposers.Start.GreaterThan(x) },
@@ -54,7 +54,7 @@
             }));
 
 		private readonly MultipleFiltersSection<ReservationInstance> reservationEndFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
-		   "Reservation End",
+		   "End",
 		   new Dictionary<Comparers, Func<DateTime, FilterElement<ReservationInstance>>>
 		   {
 				{Comparers.GreaterThan, x => ReservationInstanceExposers.End.GreaterThan(x) },
@@ -62,7 +62,7 @@
 		   }));
 
 		private readonly MultipleFiltersSection<ReservationInstance> reservationCreatedAtFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
-           "Reservation Created At",
+           "Created At",
            new Dictionary<Comparers, Func<DateTime, FilterElement<ReservationInstance>>>
            {
 				{Comparers.GreaterThan, x => ReservationInstanceExposers.CreatedAt.GreaterThan(x) },
@@ -70,7 +70,7 @@
            }));
 
 		private readonly MultipleFiltersSection<ReservationInstance> reservationLastModifiedAtFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
-           "Reservation Last Modified At",
+           "Last Modified At",
            new Dictionary<Comparers, Func<DateTime, FilterElement<ReservationInstance>>>
            {
 				{Comparers.GreaterThan, x => ReservationInstanceExposers.LastModifiedAt.GreaterThan(x) },

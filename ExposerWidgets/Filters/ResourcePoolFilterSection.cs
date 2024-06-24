@@ -1,18 +1,17 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Skyline.DataMiner.Net.Messages;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Net.ResourceManager.Objects;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Net.Messages;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
-    /// <summary>
-    /// Represents filter section for resource pools.
-    /// </summary>
-    public class ResourcePoolFilterSection : FilterSectionOneInput<FunctionResource, Guid>, IDataMinerObjectFilter<FunctionResource>
+	/// <summary>
+	/// Represents filter section for resource pools.
+	/// </summary>
+	public class ResourcePoolFilterSection : FilterSectionOneInput<Resource, Guid>, IDataMinerObjectFilter<Resource>
     {
         private IEnumerable<ResourcePool> resourcePools;
         private DropDown resourcePoolDropDown;
@@ -23,7 +22,7 @@
         /// <param name="filterName">Name of filter.</param>
         /// <param name="filterFunctions">Filter that will be applied.</param>
         /// <param name="resourcePools">Available resource pools.</param>
-        public ResourcePoolFilterSection(string filterName, Dictionary<Comparers, Func<Guid, FilterElement<FunctionResource>>> filterFunctions, IEnumerable<ResourcePool> resourcePools) : base(filterName, filterFunctions)
+        public ResourcePoolFilterSection(string filterName, Dictionary<Comparers, Func<Guid, FilterElement<Resource>>> filterFunctions, IEnumerable<ResourcePool> resourcePools) : base(filterName, filterFunctions)
         {
             Initialize(resourcePools);
 
@@ -72,7 +71,7 @@
         /// 
         /// </summary>
         /// <returns></returns>
-		public override FilterSectionBase<FunctionResource> Clone()
+		public override FilterSectionBase<Resource> Clone()
 		{
             return new ResourcePoolFilterSection(this);
 		}
