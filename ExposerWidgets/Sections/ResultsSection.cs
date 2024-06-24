@@ -12,10 +12,9 @@
 	public class ResultsSection<DataMinerObjectType> : Section
 	{
 		private readonly CollapseButton collapseButton = new CollapseButton() { CollapseText = "-", ExpandText = "+", Width = 44 };
-		private readonly Label selectedItemsHeader = new Label("Results") { Style = TextStyle.Title, IsVisible = false };
+		private readonly Label resultsHeader = new Label("Results") { Style = TextStyle.Title, IsVisible = false };
 		private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
 		private readonly Label amountOfSelectedItemsLabel = new Label(string.Empty);
-		private List<CheckBox> selectItemsCheckBoxList = new List<CheckBox>();
 		private readonly CheckBoxList selectItemsCheckBoxList2 = new CheckBoxList() { Height = 500 };
 		private readonly Button selectAllButton = new Button("Select All") { Width = 100, IsVisible = false };
 		private readonly Button unselectAllButton = new Button("Unselect All") { Width = 100, IsVisible = false };
@@ -37,14 +36,12 @@
 
 			selectAllButton.Pressed += (o, e) =>
 			{
-				selectItemsCheckBoxList.ForEach(x => x.IsChecked = true);
 				selectItemsCheckBoxList2.CheckAll();
 				SetAmountOfSelectedItemsMessage();
 			};
 
 			unselectAllButton.Pressed += (o, e) =>
 			{
-				selectItemsCheckBoxList.ForEach(x => x.IsChecked = false);
 				selectItemsCheckBoxList2.UncheckAll();
 				SetAmountOfSelectedItemsMessage();
 			};
@@ -54,12 +51,11 @@
 		{
 			amountOfMatchingItemsLabel.IsVisible = !collapseButton.IsCollapsed;
 
-			selectedItemsHeader.IsVisible = !collapseButton.IsCollapsed;
+			resultsHeader.IsVisible = !collapseButton.IsCollapsed;
 			amountOfSelectedItemsLabel.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
 			selectAllButton.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
 			unselectAllButton.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
 
-			selectItemsCheckBoxList.ForEach(x => x.IsVisible = !collapseButton.IsCollapsed);
 			selectItemsCheckBoxList2.IsVisible = !collapseButton.IsCollapsed;
 		}
 
@@ -91,9 +87,6 @@
 
 			amountOfMatchingItemsLabel.Text = $"Found {allItems.Count} {typeof(DataMinerObjectType).Name}s matching the filters";
 
-			selectItemsCheckBoxList = allItems.Select(r => identifyItemFunction(r)).OrderBy(name => name).Select(name => new CheckBox(name) { IsChecked = true }).ToList();
-			selectItemsCheckBoxList.ForEach(x => x.Changed += (o, e) => SetAmountOfSelectedItemsMessage());
-
 			selectItemsCheckBoxList2.SetOptions(allItems.Select(r => identifyItemFunction(r)).OrderBy(name => name));
 			selectItemsCheckBoxList2.CheckAll();
 			selectItemsCheckBoxList2.Changed += (s, e) => SetAmountOfSelectedItemsMessage();
@@ -110,7 +103,7 @@
 
 		private IEnumerable<DataMinerObjectType> GetIndividuallySelectedItems()
 		{
-			var selectedItemNames = selectItemsCheckBoxList.Where(x => x.IsChecked).Select(x => x.Text);
+			var selectedItemNames = selectItemsCheckBoxList2.Checked;
 
 			var selectedItems = allItems.Where(r => selectedItemNames.Contains(identifyItemFunction(r))).ToList();
 
@@ -124,21 +117,18 @@
 			Clear();
 
 			int row = -1;
-			int column = -1;
 
-			AddWidget(collapseButton, ++row, ++column);
-			AddWidget(selectedItemsHeader, row, ++column, 1, 5);
-			AddWidget(amountOfMatchingItemsLabel, ++row, column, 1, 2);
-			AddWidget(selectAllButton, ++row, column);
-			AddWidget(unselectAllButton, row, column + 1);
-			AddWidget(amountOfSelectedItemsLabel, ++row, column, 1, 2);
+			AddWidget(collapseButton, ++row, 0);
+			AddWidget(resultsHeader, row, 1, 1, 5);
 
-			foreach (var selectedItemCheckBox in selectItemsCheckBoxList)
-			{
-				AddWidget(selectedItemCheckBox, ++row, column, 1, 2);
-			}
+			AddWidget(amountOfMatchingItemsLabel, ++row, 1, 1, 2);
 
-			AddWidget(selectItemsCheckBoxList2, ++row, 5);
+			AddWidget(selectAllButton, ++row, 1);
+			AddWidget(unselectAllButton, row, 2);
+
+			AddWidget(amountOfSelectedItemsLabel, ++row, 1, 1, 2);
+
+			AddWidget(selectItemsCheckBoxList2, ++row, 0);
 		}
 	}
 }

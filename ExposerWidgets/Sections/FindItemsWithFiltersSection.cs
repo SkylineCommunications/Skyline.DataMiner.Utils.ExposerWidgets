@@ -8,7 +8,6 @@
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Sections;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-	using Label = InteractiveAutomationScript.Label;
 
 	/// <summary>
 	/// Section for selecting base info about filtering.
@@ -16,10 +15,10 @@
 	/// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
 	public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : Section
     {
-        private readonly Label header = new Label($"Find {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Heading };
+		private readonly CollapseButton collapseButton = new CollapseButton() { CollapseText = "-", ExpandText = "+", Width = 44 };
+		private readonly Label header = new Label($"Find {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Title };
 
-        private readonly Button getItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction, Width = 300 };
-        private List<DataMinerObjectType> itemsBasedOnFilters = new List<DataMinerObjectType>();
+        private readonly Button findItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction, Width = 300 };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindItemsWithFiltersSection{T}"/>"/> class.
@@ -29,8 +28,12 @@
             ResultsSection = new ResultsSection<DataMinerObjectType>((DataMinerObjectType obj) => IdentifyItem(obj));
             ResultsSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
 
-            getItemsBasedOnFiltersButton.Pressed += (s, e) =>
+            collapseButton.Pressed += (s, e) => UpdateWidgetsVisibility();
+
+            findItemsBasedOnFiltersButton.Pressed += (s, e) =>
             {
+                collapseButton.IsCollapsed = true;
+                UpdateWidgetsVisibility();
                 ResultsSection.LoadNewItems(GetItemsBasedOnFilters());
                 DataMinerObjectsRetrievedBasedOnFilters?.Invoke(this, EventArgs.Empty);
             };      
@@ -116,14 +119,12 @@
         {           
             if (!OneOrMoreFiltersAreActive() || !ActiveFiltersAreValid())
             {
-                itemsBasedOnFilters = new List<DataMinerObjectType>();
+                return new List<DataMinerObjectType>();
             }
             else
             {
-                itemsBasedOnFilters = FindItemsWithFilters().ToList();
+                return FindItemsWithFilters().ToList();
             }
-
-            return itemsBasedOnFilters;
         }
 
 		/// <summary>
@@ -236,13 +237,14 @@
         /// <param name="row"></param>
         protected void GenerateUi(ref int row)
         {
-            AddWidget(header, ++row, 0, 1, 3);
+            AddWidget(collapseButton, ++row, 0);
+            AddWidget(header, row, 1, 1, 3);
 
             AddFilterSections(ref row, out int firstAvailablecolumn);
 
             AddWidget(new WhiteSpace(), ++row, 0);
 
-            AddWidget(getItemsBasedOnFiltersButton, ++row, 0, 1, 3);
+            AddWidget(findItemsBasedOnFiltersButton, ++row, 0, 1, 3);
 
             AddWidget(new WhiteSpace(), row + 1, 0);
 
@@ -256,5 +258,15 @@
         {
             RegenerateUiRequired?.Invoke(this, EventArgs.Empty);
         }
-    }
+
+		private void UpdateWidgetsVisibility()
+		{
+			foreach (var section in GetMultipleFiltersSections())
+			{
+				section.IsVisible = !collapseButton.IsCollapsed;
+			}
+
+            findItemsBasedOnFiltersButton.IsVisible = !collapseButton.IsCollapsed;
+		}
+	}
 }
