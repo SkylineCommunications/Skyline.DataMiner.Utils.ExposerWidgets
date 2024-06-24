@@ -8,6 +8,7 @@
 	using Skyline.DataMiner.Net.Messages;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Net.ResourceManager.Objects;
+	using Skyline.DataMiner.Net.Serialization;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
@@ -59,6 +60,23 @@
 		   {
 				{Comparers.GreaterThan, x => ReservationInstanceExposers.End.GreaterThan(x) },
 				{Comparers.LessThan, x => ReservationInstanceExposers.End.LessThan(x) },
+		   }));
+
+		private readonly MultipleFiltersSection<ReservationInstance> statusFilterSection = new MultipleFiltersSection<ReservationInstance>(new IntegerFilterSection<ReservationInstance>(
+		   "Status",
+		   new Dictionary<Comparers, Func<int, FilterElement<ReservationInstance>>>
+		   {
+				{Comparers.Equals, x => ReservationInstanceExposers.Status.Equal(x) },
+				{Comparers.NotEquals, x => ReservationInstanceExposers.Status.NotEqual(x) },
+		   }, 
+		   string.Join("\n", Enum.GetValues(typeof(ReservationStatus)).Cast<ReservationStatus>().Select(x => $"{x}={(int)x}"))));
+
+		private readonly MultipleFiltersSection<ReservationInstance> hostingAgentIdFilterSection = new MultipleFiltersSection<ReservationInstance>(new IntegerFilterSection<ReservationInstance>(
+		   "Hosting Agent ID",
+		   new Dictionary<Comparers, Func<int, FilterElement<ReservationInstance>>>
+		   {
+				{Comparers.Equals, x => ReservationInstanceExposers.HostingAgentID.Equal(x) },
+				{Comparers.NotEquals, x => ReservationInstanceExposers.HostingAgentID.NotEqual(x) },
 		   }));
 
 		private readonly MultipleFiltersSection<ReservationInstance> reservationCreatedAtFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
@@ -150,6 +168,12 @@
 
 			AddSection(reservationEndFilterSection, new SectionLayout(row, 0));
 			row += reservationEndFilterSection.RowCount;
+
+			AddSection(statusFilterSection, new SectionLayout(row, 0));
+			row += statusFilterSection.RowCount;
+
+			AddSection(hostingAgentIdFilterSection, new SectionLayout(row, 0));
+			row += hostingAgentIdFilterSection.RowCount;
 
 			AddSection(reservationCreatedAtFilterSection, new SectionLayout(row, 0));
 			row += reservationCreatedAtFilterSection.RowCount;
