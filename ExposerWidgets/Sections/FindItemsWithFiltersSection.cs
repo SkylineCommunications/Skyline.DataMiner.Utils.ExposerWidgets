@@ -243,7 +243,7 @@
 
 			AddWidget(findItemsBasedOnFiltersButton, ++row, 1, 1, 3, horizontalAlignment:HorizontalAlignment.Left);
 
-			AddSection(ResultsSection, new SectionLayout(++row, 0));
+			AddSection(resultsSection, new SectionLayout(++row, 0));
 		}
 
         /// <summary>
