@@ -71,6 +71,26 @@
 				{Comparers.LessThan, x => DomInstanceExposers.LastModified.LessThan(x) },
 			}));
 
+		private readonly MultipleFiltersSection<DomInstance> lastModifiedByFilterSection = new MultipleFiltersSection<DomInstance>(new StringFilterSection<DomInstance>(
+			"Last Modified By",
+			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>>
+			{
+					{Comparers.Equals, x => DomInstanceExposers.LastModifiedBy.Equal(x) },
+					{Comparers.NotEquals, x => DomInstanceExposers.LastModifiedBy.NotEqual(x) },
+					{Comparers.Contains, x => DomInstanceExposers.LastModifiedBy.Contains(x) },
+					{Comparers.NotContains, x => DomInstanceExposers.LastModifiedBy.NotContains(x) },
+			}));
+
+		private readonly MultipleFiltersSection<DomInstance> createdByFilterSection = new MultipleFiltersSection<DomInstance>(new StringFilterSection<DomInstance>(
+			"Created By",
+			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>>
+			{
+					{Comparers.Equals, x => DomInstanceExposers.CreatedBy.Equal(x) },
+					{Comparers.NotEquals, x => DomInstanceExposers.CreatedBy.NotEqual(x) },
+					{Comparers.Contains, x => DomInstanceExposers.CreatedBy.Contains(x) },
+					{Comparers.NotContains, x => DomInstanceExposers.CreatedBy.NotContains(x) },
+			}));
+
 		private readonly MultipleFiltersSection<DomInstance> sectionDefinitionIdFiltersSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
 			"Section Definition ID",
 			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
@@ -149,8 +169,14 @@
 			AddSection(createdAtFilterSection, new SectionLayout(row, 0));
 			row += createdAtFilterSection.RowCount;
 
+			AddSection(createdByFilterSection, new SectionLayout(row, 0));
+			row += createdByFilterSection.RowCount;
+
 			AddSection(lastModifiedAtFilterSection, new SectionLayout(row, 0));
 			row += lastModifiedAtFilterSection.RowCount;
+
+			AddSection(lastModifiedByFilterSection, new SectionLayout(row, 0));
+			row += lastModifiedByFilterSection.RowCount;
 
 			AddSection(sectionDefinitionIdFiltersSection, new SectionLayout(row, 0));
 			row += sectionDefinitionIdFiltersSection.RowCount;
