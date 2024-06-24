@@ -238,13 +238,13 @@
         protected void GenerateUi(ref int row)
         {
             AddWidget(collapseButton, ++row, 0);
-            AddWidget(header, row, 1, 1, 3);
+            AddWidget(header, row, 1, 1, 4);
 
             AddFilterSections(ref row, out int firstAvailablecolumn);
 
 			AddWidget(new WhiteSpace(), row + 1, 0);
 
-			AddWidget(findItemsBasedOnFiltersButton, ++row, 0, 1, 3);
+			AddWidget(findItemsBasedOnFiltersButton, ++row, 1, 1, 3, horizontalAlignment:HorizontalAlignment.Left);
 
 			AddSection(ResultsSection, new SectionLayout(++row, 0));
 		}

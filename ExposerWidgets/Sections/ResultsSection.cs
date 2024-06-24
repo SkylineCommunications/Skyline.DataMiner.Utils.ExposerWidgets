@@ -126,7 +126,7 @@
 			AddWidget(amountOfMatchingItemsLabel, ++row, 1, 1, 2);
 
 			AddWidget(selectAllButton, ++row, 1);
-			AddWidget(unselectAllButton, row, 2);
+			AddWidget(unselectAllButton, row, 2, horizontalAlignment: HorizontalAlignment.Left);
 
 			AddWidget(amountOfSelectedItemsLabel, ++row, 1, 1, 2);
 
