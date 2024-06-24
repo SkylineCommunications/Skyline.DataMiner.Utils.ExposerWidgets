@@ -20,13 +20,15 @@
 
         private readonly Button findItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction, Width = 300 };
 
+        private readonly ResultsSection<DataMinerObjectType> resultsSection;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FindItemsWithFiltersSection{T}"/>"/> class.
         /// </summary>
         protected FindItemsWithFiltersSection()
         {
-            ResultsSection = new ResultsSection<DataMinerObjectType>((DataMinerObjectType obj) => IdentifyItem(obj));
-            ResultsSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+            resultsSection = new ResultsSection<DataMinerObjectType>((DataMinerObjectType obj) => IdentifyItem(obj));
+			resultsSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
 
             collapseButton.Pressed += (s, e) => UpdateWidgetsVisibility();
 
@@ -34,15 +36,10 @@
             {
                 collapseButton.IsCollapsed = true;
                 UpdateWidgetsVisibility();
-                ResultsSection.LoadNewItems(GetItemsBasedOnFilters());
+				resultsSection.LoadNewItems(GetItemsBasedOnFilters());
                 DataMinerObjectsRetrievedBasedOnFilters?.Invoke(this, EventArgs.Empty);
             };      
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ResultsSection<DataMinerObjectType> ResultsSection { get; protected set; }
 
         /// <summary>
         /// Event triggered when we need to regenerate UI.
@@ -57,7 +54,7 @@
         /// <summary>
         /// Gets list of selected DataMiner objects.
         /// </summary>
-        public IEnumerable<DataMinerObjectType> SelectedItems => ResultsSection.SelectedItems;
+        public IEnumerable<DataMinerObjectType> SelectedItems => resultsSection.SelectedItems;
 
         /// <summary>
         /// Regenerates section UI.
@@ -78,7 +75,7 @@
 				section.RegenerateUi();
 			}
 
-            ResultsSection.RegenerateUi();
+			resultsSection.RegenerateUi();
 		}
 
         /// <summary>
@@ -87,7 +84,7 @@
         public void ResetFiltersAndSelectedItems()
         {
             ResetFilters();
-			ResultsSection.LoadNewItems(GetItemsBasedOnFilters());
+			resultsSection.LoadNewItems(GetItemsBasedOnFilters());
 			DataMinerObjectsRetrievedBasedOnFilters?.Invoke(this, EventArgs.Empty);
 		}
 
