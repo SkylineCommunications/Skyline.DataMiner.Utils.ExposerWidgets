@@ -126,11 +126,11 @@
 			AddWidget(amountOfMatchingItemsLabel, ++row, 1, 1, 2);
 
 			AddWidget(selectAllButton, ++row, 1);
-			AddWidget(unselectAllButton, row, 2, horizontalAlignment: HorizontalAlignment.Left);
+			AddWidget(unselectAllButton, row, 2);
 
 			AddWidget(amountOfSelectedItemsLabel, ++row, 1, 1, 2);
 
-			AddWidget(selectItemsCheckBoxList, ++row, 1, 1, 10);
+			AddWidget(selectItemsCheckBoxList, ++row, 1, 1, 3);
 		}
 	}
 }

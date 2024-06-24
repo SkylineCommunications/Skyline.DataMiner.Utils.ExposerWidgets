@@ -241,7 +241,7 @@
 
 			AddWidget(new WhiteSpace(), row + 1, 0);
 
-			AddWidget(findItemsBasedOnFiltersButton, ++row, 1, 1, 3, horizontalAlignment:HorizontalAlignment.Left);
+			AddWidget(findItemsBasedOnFiltersButton, ++row, 0, 1, 5);
 
 			AddSection(resultsSection, new SectionLayout(++row, 0));
 		}
