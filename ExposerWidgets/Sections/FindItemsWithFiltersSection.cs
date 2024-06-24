@@ -242,9 +242,11 @@
 
             AddFilterSections(ref row, out int firstAvailablecolumn);
 
-            AddWidget(findItemsBasedOnFiltersButton, ++row, 0, 1, 3);
+			AddWidget(new WhiteSpace(), row + 1, 0);
 
-            AddSection(ResultsSection, new SectionLayout(++row, 0));
+			AddWidget(findItemsBasedOnFiltersButton, ++row, 0, 1, 3);
+
+			AddSection(ResultsSection, new SectionLayout(++row, 0));
 		}
 
         /// <summary>

@@ -92,6 +92,7 @@
 
 			SetAmountOfSelectedItemsMessage();
 
+			resultsHeader.IsVisible = true;
 			collapseButton.IsCollapsed = false;
 			UpdateWidgetVisibility();
 			RegenerateUiRequired?.Invoke(this, EventArgs.Empty);
@@ -129,7 +130,7 @@
 
 			AddWidget(amountOfSelectedItemsLabel, ++row, 1, 1, 2);
 
-			AddWidget(selectItemsCheckBoxList, ++row, 0, 1, 10);
+			AddWidget(selectItemsCheckBoxList, ++row, 1, 1, 10);
 		}
 	}
 }

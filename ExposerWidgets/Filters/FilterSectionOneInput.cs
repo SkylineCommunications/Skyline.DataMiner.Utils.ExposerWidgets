@@ -72,21 +72,25 @@
 		{
 			Clear();
 
-			nextAvailableColumn = 0;
+			int column = -1;
 
-			if (!string.IsNullOrWhiteSpace(tooltipLabel.Tooltip)) AddWidget(tooltipLabel, 0, nextAvailableColumn++, verticalAlignment: VerticalAlignment.Top);
+			if (!string.IsNullOrWhiteSpace(tooltipLabel.Tooltip)) AddWidget(tooltipLabel, 0, ++column, verticalAlignment: VerticalAlignment.Top);
+			else ++column;
 
-			AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
+			AddWidget(filterNameCheckBox, 0, ++column, 1, 3);
+			column += 3;
 
 			if (filterFunctions.First().Key.GetComparerType() == ComparerType.Active)
 			{
-				AddWidget(filterDropDown, 0, nextAvailableColumn++);
-				AddWidget(InputWidget, 0, nextAvailableColumn++);
+				AddWidget(filterDropDown, 0, column, 1, 3);
+				column += 3;
+				AddWidget(InputWidget, 0, column, 1, 3);
 			}
 			else
 			{
-				AddWidget(InputWidget, 0, nextAvailableColumn++);
-				AddWidget(filterDropDown, 0, nextAvailableColumn++);
+				AddWidget(InputWidget, 0, column, 1, 3);
+				column += 3;
+				AddWidget(filterDropDown, 0, column, 1, 3);
 			}
 		}
 

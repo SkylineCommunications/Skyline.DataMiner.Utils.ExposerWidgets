@@ -13,11 +13,6 @@
         private bool isDefault;
 
         /// <summary>
-        /// Indicates how many columns this section already used.
-        /// </summary>
-        protected int nextAvailableColumn = 0;
-
-        /// <summary>
         /// 
         /// </summary>
         protected readonly CheckBox filterNameCheckBox;
@@ -116,11 +111,10 @@
         protected virtual void GenerateUi()
         {
             Clear();
-            nextAvailableColumn = 0;
 
-            AddWidget(filterNameCheckBox, 0, nextAvailableColumn++);
+            AddWidget(filterNameCheckBox, 0, 0);
 			
-            AddWidget(filterDropDown, 0, nextAvailableColumn++);
+            AddWidget(filterDropDown, 0, 1);
 		}
 
 		/// <summary>
