@@ -23,8 +23,10 @@
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter that will be applied.</param>
 		/// <param name="tooltip"></param>
-		public StringFilterSection(string filterName, Dictionary<Comparers, Func<string, FilterElement<DataMinerObjectType>>> filterFunctions, string tooltip = null) : base(filterName, filterFunctions, tooltip)
+		public StringFilterSection(string filterName, Dictionary<Comparers, Func<string, FilterElement<DataMinerObjectType>>> filterFunctions, string tooltip = null, string explanation = null) : base(filterName, filterFunctions, tooltip)
         {
+            filterContentTextBox.PlaceHolder = explanation ?? string.Empty;
+
             GenerateUi();
         }
 

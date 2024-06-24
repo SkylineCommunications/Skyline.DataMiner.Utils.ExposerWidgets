@@ -116,7 +116,7 @@
 		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
         {
             AddWidget(moduleId, ++row, 1);
-            AddWidget(moduleIdTextBox, row, 3);
+            AddWidget(moduleIdTextBox, row, 4);
 
             AddSection(idFilterSection, new SectionLayout(++row, 0));
 			row += idFilterSection.RowCount;

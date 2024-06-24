@@ -46,13 +46,13 @@
 	        }
             , string.Join("\n", Enum.GetValues(typeof(Parameter.ParameterType)).Cast<Parameter.ParameterType>().Select(x => $"{x}={(int)x}"))));
 
-		private readonly MultipleFiltersSection<Parameter> discreetFilterSections = new MultipleFiltersSection<Parameter>(new StringFilterSection<Parameter>(
-			"Discreet",
-			new Dictionary<Comparers, Func<string, FilterElement<Parameter>>>
-			{
-				{Comparers.Exists,  discreet => ParameterExposers.Discretes.Contains(discreet) },
-				{Comparers.NotExists,  discreet => ParameterExposers.Discretes.NotContains(discreet) },
-			}, "Value"));
+        private readonly MultipleFiltersSection<Parameter> discreetFilterSections = new MultipleFiltersSection<Parameter>(new StringFilterSection<Parameter>(
+            "Discreet",
+            new Dictionary<Comparers, Func<string, FilterElement<Parameter>>>
+            {
+                {Comparers.Exists,  discreet => ParameterExposers.Discretes.Contains(discreet) },
+                {Comparers.NotExists,  discreet => ParameterExposers.Discretes.NotContains(discreet) },
+            }, explanation: "Value"));
 
         private readonly ProfileHelper profileHelper;
 
