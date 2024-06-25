@@ -20,7 +20,12 @@ See the screenshot below for more details.
 
 1. **Executing the query** with the included filters can be done using the button at the bottom. Marked in the screenshot below with number 5.
 
+> [!IMPORTANT]  
+> All included filters will be combined with an AND operation. There is currently no way of adding OR filters.
+
 ![configuring filters](Filters.png "Configuring Filters")
+
+
 
 ### Finetuning results
 
