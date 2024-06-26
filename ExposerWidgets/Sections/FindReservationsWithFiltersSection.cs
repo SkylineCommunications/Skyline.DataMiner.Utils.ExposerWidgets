@@ -43,8 +43,7 @@
 				{Comparers.NotEquals, x => ReservationInstanceExposers.Name.NotEqual(x)},
 				{Comparers.Contains, x => ReservationInstanceExposers.Name.Contains(x)},
 				{Comparers.NotContains, x => ReservationInstanceExposers.Name.NotContains(x)},
-			},
-			"Example tooltip value"));
+			}));
 
         private readonly MultipleFiltersSection<ReservationInstance> reservationStartFilterSection = new MultipleFiltersSection<ReservationInstance>(new DateTimeFilterSection<ReservationInstance>(
             "Start",
