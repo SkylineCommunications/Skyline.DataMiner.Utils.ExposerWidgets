@@ -28,6 +28,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Skyline.DataMiner.Utils.InteractiveAutomationScriptToolkit" Version="6.0.6" />
+	  <PackageReference Include="Skyline.DataMiner.Utils.InteractiveAutomationScriptToolkit" Version="7.0.5" />
 	</ItemGroup>
 </Project>
