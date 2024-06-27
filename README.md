@@ -29,7 +29,7 @@ The "DataMiner Integration Studio" Visual Studio extension is required for devel
 See [Installing DataMiner Integration Studio](https://aka.dataminer.services/DisInstallation)
 
 > [!IMPORTANT]  
-> The sections provided by this Nuget can currently only be used in automation scripts that use the [InteractiveAutomationScriptToolkit](https://github.com/SkylineCommunications/Skyline.DataMiner.Utils.InteractiveAutomationScriptToolkit) range 6.0.X.
+> The sections provided by this Nuget can currently only be used in automation scripts that use the [InteractiveAutomationScriptToolkit](https://github.com/SkylineCommunications/Skyline.DataMiner.Utils.InteractiveAutomationScriptToolkit) range 6.0.X, which requires DataMiner version 10.3.1 or higher.
 
 ## User Guide
 
