@@ -51,35 +51,18 @@
             set => filterContentNumeric.Value = value;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// The widget that allows the user to input a value for the filter.
+		/// </summary>
 		protected override InteractiveWidget InputWidget => filterContentNumeric;
 
 		/// <summary>
-		/// 
+		/// Creates a clone of the current instance.
 		/// </summary>
 		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new IntegerFilterSection<DataMinerObjectType>(this);
 		}
-
-		/// <summary>
-		/// Resets filter to default values.
-		/// </summary>
-		public override void Reset()
-        {
-            IsIncluded = false;
-            Value = 0;
-        }
-
-        /// <summary>
-        /// Handles default update of filter.
-        /// </summary>
-        protected override void HandleDefaultUpdate()
-        {
-            filterContentNumeric.IsEnabled = !IsDefault;
-        }
     }
 }

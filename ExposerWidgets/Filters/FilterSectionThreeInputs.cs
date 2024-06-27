@@ -25,23 +25,14 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions"></param>
+		/// <param name="tooltip"></param>
 		protected FilterSectionThreeInputs(string filterName, Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions, string tooltip = null) : base(filterName, tooltip)
 		{
 			Initialize(filterFunctions);
 		}
 
-		private void Initialize(Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions)
-		{
-			if (filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
-			if (!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
-
-			this.filterFunctions = filterFunctions;
-
-			filterDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).ToList();
-		}
-
 		/// <summary>
-		/// 
+		/// Copy constructor
 		/// </summary>
 		/// <param name="other"></param>
 		protected FilterSectionThreeInputs(FilterSectionThreeInputs<DataMinerObjectType, FilterInputType1, FilterInputType2, FilterInputType3> other) : base(other)
@@ -52,7 +43,7 @@
         /// <summary>
         /// Filter that is created based on input values. Used in getting DataMiner objects in the system.
         /// </summary>
-        public override FilterElement<DataMinerObjectType> FilterElement => filterFunctions[filterDropDown.Selected.GetEnumValue<Comparers>()](FirstValue, SecondValue, ThirdValue);
+        public override FilterElement<DataMinerObjectType> FilterElement => filterFunctions[comparerDropDown.Selected.GetEnumValue<Comparers>()](FirstValue, SecondValue, ThirdValue);
 
 		/// <summary>
 		/// Gets or sets value of first filter.
@@ -70,35 +61,23 @@
         public abstract FilterInputType3 ThirdValue { get; set; }
 
 		/// <summary>
-		/// 
+		/// The first widget that allows the user to input a value for the filter.
 		/// </summary>
 		protected abstract InteractiveWidget FirstInputWidget { get; }
 
 		/// <summary>
-		/// 
+		/// The second widget that allows the user to input a value for the filter.
 		/// </summary>
 		protected abstract InteractiveWidget SecondInputWidget { get; }
 
 		/// <summary>
-		/// 
+		/// The third widget that allows the user to input a value for the filter.
 		/// </summary>
 		protected abstract InteractiveWidget ThirdInputWidget { get; }
 
 		/// <summary>
-		/// Sets default values for filters.
+		/// Adds the widget to the Section.
 		/// </summary>
-		/// <param name="value">Default value for first filter.</param>
-		/// <param name="secondValue">Default value for second filter.</param>
-		/// <param name="thirdValue">Default value for third filter.</param>
-		public void SetDefault(FilterInputType1 value, FilterInputType2 secondValue, FilterInputType3 thirdValue)
-        {
-            IsDefault = true;
-
-            FirstValue = value;
-            SecondValue = secondValue;
-            ThirdValue = thirdValue;
-        }
-
 		protected override void GenerateUi()
 		{
 			Clear();
@@ -108,7 +87,7 @@
 			if (!string.IsNullOrWhiteSpace(tooltipLabel.Tooltip)) AddWidget(tooltipLabel, 0, ++column, verticalAlignment: VerticalAlignment.Top);
 			else ++column;
 
-			AddWidget(filterNameCheckBox, 0, ++column, 1, 3);
+			AddWidget(isIncludedCheckBox, 0, ++column, 1, 3);
 			column += 3;
 
 			if (filterFunctions.First().Key.GetComparerType() == ComparerType.Active)
@@ -116,7 +95,7 @@
 				AddWidget(FirstInputWidget, 0, column, 1, 3);
 				column += 3;
 
-				AddWidget(filterDropDown, 0, column, 1, 3);
+				AddWidget(comparerDropDown, 0, column, 1, 3);
 				column += 3;
 
 				AddWidget(SecondInputWidget, 0, column, 1, 3);
@@ -131,9 +110,18 @@
 				AddWidget(ThirdInputWidget, 1, column, 1, 3);
 				column += 3;
 
-				AddWidget(filterDropDown, 0, column, 1, 3);
+				AddWidget(comparerDropDown, 0, column, 1, 3);
 			}
 		}
-	}
 
+		private void Initialize(Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterInputType3, FilterElement<DataMinerObjectType>>> filterFunctions)
+		{
+			if (filterFunctions is null) throw new ArgumentNullException(nameof(filterFunctions));
+			if (!filterFunctions.Any()) throw new ArgumentException("Collection is empty", nameof(filterFunctions));
+
+			this.filterFunctions = filterFunctions;
+
+			comparerDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).ToList();
+		}
+	}
 }

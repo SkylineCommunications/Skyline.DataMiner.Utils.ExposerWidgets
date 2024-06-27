@@ -40,14 +40,6 @@
 			GenerateUi();
 		}
 
-		private void Initialize(IEnumerable<ResourcePool> resourcePools)
-		{
-			this.resourcePools = resourcePools ?? new List<ResourcePool>();
-
-			var resourcePoolOptions = resourcePools.Select(p => p.Name).OrderBy(name => name).ToList();
-			resourcePoolDropDown = new DropDown(resourcePoolOptions, resourcePoolOptions[0]) { IsDisplayFilterShown = true };
-		}
-
 		/// <summary>
 		/// Indicates if selected pool is valid.
 		/// </summary>
@@ -62,40 +54,28 @@
             set => resourcePoolDropDown.Selected = resourcePools.Single(pool => pool.ID == value).Name;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// The widget that allows the user to input a value for the filter.
+		/// </summary>
 		protected override InteractiveWidget InputWidget => resourcePoolDropDown;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+		private ResourcePool SelectedResourcePool => resourcePools.SingleOrDefault(pool => pool.Name == resourcePoolDropDown.Selected);
+
+		/// <summary>
+		/// Creates a clone of the current instance.
+		/// </summary>
+		/// <returns></returns>
 		public override FilterSectionBase<Resource> Clone()
 		{
             return new ResourcePoolFilterSection(this);
 		}
 
-		/// <summary>
-		/// Resets resource pool filter to default value.
-		/// </summary>
-		public override void Reset()
-        {
-            IsIncluded = false;
-            Value = resourcePools.First().ID;
-        }
+		private void Initialize(IEnumerable<ResourcePool> resourcePools)
+		{
+			this.resourcePools = resourcePools ?? new List<ResourcePool>();
 
-        /// <summary>
-        /// Gets selected resource pool.
-        /// </summary>
-        private ResourcePool SelectedResourcePool => resourcePools.SingleOrDefault(pool => pool.Name == resourcePoolDropDown.Selected);
-
-        /// <summary>
-        /// Handles default resource pool filter update.
-        /// </summary>
-        protected override void HandleDefaultUpdate()
-        {
-            resourcePoolDropDown.IsEnabled = !IsDefault;
-        }
-    }
+			var resourcePoolOptions = resourcePools.Select(p => p.Name).OrderBy(name => name).ToList();
+			resourcePoolDropDown = new DropDown(resourcePoolOptions, resourcePoolOptions[0]) { IsDisplayFilterShown = true };
+		}
+	}
 }

@@ -47,35 +47,18 @@
             set => dateTimePicker.DateTime = value;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// The widget that allows the user to input a value for the filter.
+		/// </summary>
 		protected override InteractiveWidget InputWidget => dateTimePicker;
 
 		/// <summary>
-		/// Clone
+		/// Creates a clone of the current instance.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A clone of the current instance. Values that we're set by user interaction are cleared.</returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new DateTimeFilterSection<DataMinerObjectType>(this);
 		}
-
-		/// <summary>
-		/// Sets value to current date-time and filter as non active.
-		/// </summary>
-		public override void Reset()
-        {
-            IsIncluded = false;
-            Value = DateTime.Now;
-        }
-
-        /// <summary>
-        /// Handles default update of date-time filter.
-        /// </summary>
-        protected override void HandleDefaultUpdate()
-        {
-            dateTimePicker.IsEnabled = !IsDefault;
-        }
     }
 }

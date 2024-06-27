@@ -1,19 +1,19 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-	using System;
-	using System.Collections.Generic;
-	using Skyline.DataMiner.Automation;
-	using Skyline.DataMiner.Net.Messages.SLDataGateway;
-	using Skyline.DataMiner.Net.Profiles;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
-	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-	using Skyline.DataMiner.Utils.YLE.UI.Filters;
+    using System;
+    using System.Collections.Generic;
+    using Skyline.DataMiner.Automation;
+    using Skyline.DataMiner.Net.Messages.SLDataGateway;
+    using Skyline.DataMiner.Net.Profiles;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+    using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-	/// <summary>
-	/// Section for filtering profile definitions.
-	/// </summary>
-	public class FindProfileDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ProfileDefinition>
+    /// <summary>
+    /// Section for filtering profile definitions.
+    /// </summary>
+    public class FindProfileDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ProfileDefinition>
     {
         private readonly MultipleFiltersSection<ProfileDefinition> idFilterSection = new MultipleFiltersSection<ProfileDefinition>(new GuidFilterSection<ProfileDefinition>(
             "ID",
@@ -108,8 +108,7 @@
 		/// Adding filter sections on a row specified.
 		/// </summary>
 		/// <param name="row">Row position where new section should appear.</param>
-		/// <param name="firstAvailableColumn"></param>
-		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
+		protected override void AddFilterSections(ref int row)
         {
             AddSection(idFilterSection, new SectionLayout(++row, 0));
             row += idFilterSection.RowCount;
@@ -134,8 +133,6 @@
 
 			AddSection(parameterFilterSection, new SectionLayout(row, 0));
 			row += parameterFilterSection.RowCount;
-
-			firstAvailableColumn = ColumnCount + 1;
 		}
 
         /// <summary>

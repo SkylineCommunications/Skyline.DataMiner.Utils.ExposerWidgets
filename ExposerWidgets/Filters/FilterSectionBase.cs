@@ -1,29 +1,26 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
-	using System;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
-    /// <summary>
-    /// Represents base filter section with one checkbox input.
-    /// </summary>
-    /// <typeparam name="DataMinerObjectType">Type of object that is being filtered.</typeparam>
-    public abstract class FilterSectionBase<DataMinerObjectType> : Section, IDataMinerObjectFilter<DataMinerObjectType>
+	/// <summary>
+	/// The base class for each individual filter.
+	/// </summary>
+	/// <typeparam name="DataMinerObjectType">Type of object that is being filtered.</typeparam>
+	public abstract class FilterSectionBase<DataMinerObjectType> : Section, IDataMinerObjectFilter<DataMinerObjectType>
     {
-        private bool isDefault;
-
         /// <summary>
-        /// 
+        /// Checkbox showing the name of the property to which the filter applies and indicating whether the filter should be included or not.
         /// </summary>
-        protected readonly CheckBox filterNameCheckBox;
+        protected readonly CheckBox isIncludedCheckBox;
 
         /// <summary>
-        /// 
+        /// DropDown containing the different comparer options.
         /// </summary>
-        protected readonly DropDown filterDropDown = new DropDown();
+        protected readonly DropDown comparerDropDown = new DropDown();
 
         /// <summary>
-        /// 
+        /// Optional tooltip icon. Will be hidden when no tooltip is defined.
         /// </summary>
         protected readonly Label tooltipLabel = new Label("ⓘ") { Style = TextStyle.Title };
 
@@ -34,7 +31,7 @@
 		/// <param name="tooltip"></param>
 		protected FilterSectionBase(string filterName, string tooltip = null)
         {
-            this.filterNameCheckBox = new CheckBox(filterName);
+            this.isIncludedCheckBox = new CheckBox(filterName);
             tooltipLabel.Tooltip = tooltip ?? string.Empty;
         }
 
@@ -44,63 +41,26 @@
         /// <param name="other"></param>
         protected FilterSectionBase(FilterSectionBase<DataMinerObjectType> other)
         {
-            this.filterNameCheckBox = new CheckBox(other.filterNameCheckBox.Text);
+            this.isIncludedCheckBox = new CheckBox(other.isIncludedCheckBox.Text);
         } 
 
         /// <summary>
-        /// Gets or sets value of active filter.
+        /// Gets a value indicating if the filter should be included in the query or not.
         /// </summary>
-        public bool IsIncluded
-        {
-            get => filterNameCheckBox.IsChecked;
-            protected set => filterNameCheckBox.IsChecked = value;
-        }
+        public bool IsIncluded => isIncludedCheckBox.IsChecked;
+
+		/// <summary>
+		/// Gets a value indicating if the filter is valid or not.
+		/// </summary>
+		public abstract bool IsValid { get; }
 
         /// <summary>
-        /// Gets and sets enable status of filter.
-        /// </summary>
-        public new bool IsEnabled
-        {
-            get => base.IsEnabled;
-            set
-            {
-                base.IsEnabled = value;
-                HandleEnabledUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets of default filter value.
-        /// </summary>
-        public bool IsDefault
-        {
-            get => isDefault;
-            protected set
-            {
-                isDefault = value;
-                filterNameCheckBox.IsChecked = value;
-                filterNameCheckBox.IsEnabled = !value;
-                HandleDefaultUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Indicates if the filter is valid.
-        /// </summary>
-        public abstract bool IsValid { get; }
-
-        /// <summary>
-        /// Filter that is created based on input values. Used in getting DataMiner objects in the system.
+        /// Gets a the actual filter based on input values. Will be used to query DataMiner objects in the system.
         /// </summary>
         public abstract FilterElement<DataMinerObjectType> FilterElement { get; }
 
         /// <summary>
-        /// Resets filter values to default.
-        /// </summary>
-        public abstract void Reset();
-
-        /// <summary>
-        /// 
+        /// Creates a clone of this FilterSection.
         /// </summary>
         /// <returns></returns>
         public abstract FilterSectionBase<DataMinerObjectType> Clone();
@@ -112,23 +72,9 @@
         {
             Clear();
 
-            AddWidget(filterNameCheckBox, 0, 0);
+            AddWidget(isIncludedCheckBox, 0, 0);
 			
-            AddWidget(filterDropDown, 0, 1);
+            AddWidget(comparerDropDown, 0, 1);
 		}
-
-		/// <summary>
-		/// Handles default update of filter.
-		/// </summary>
-		protected abstract void HandleDefaultUpdate();
-
-        private void HandleEnabledUpdate()
-        {
-            bool filterIsChecked = IsIncluded;
-
-            HandleDefaultUpdate();
-
-            filterNameCheckBox.IsChecked = filterIsChecked || IsDefault;
-        }
     }
 }

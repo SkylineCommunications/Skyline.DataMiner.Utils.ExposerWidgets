@@ -22,10 +22,5 @@
         /// Gets filter created based on input values of filter.
         /// </summary>
         FilterElement<DataMinerObjectType> FilterElement { get; }
-
-        /// <summary>
-        /// Resets filter values to default values.
-        /// </summary>
-        void Reset();
     }
 }

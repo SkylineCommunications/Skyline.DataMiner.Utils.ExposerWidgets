@@ -1,19 +1,18 @@
 ﻿namespace Skyline.DataMiner.Utils.YLE.UI.Filters
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Skyline.DataMiner.Net.Messages.SLDataGateway;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Sections;
-	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Skyline.DataMiner.Net.Messages.SLDataGateway;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Sections;
+    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
-	/// <summary>
-	/// Section for selecting base info about filtering.
-	/// </summary>
-	/// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
-	public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : Section
+    /// <summary>
+    /// Section for selecting base info about filtering.
+    /// </summary>
+    /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
+    public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : Section
     {
 		private readonly CollapseButton collapseButton = new CollapseButton() { CollapseText = "-", ExpandText = "+", Width = 44 };
 		private readonly Label header = new Label($"Find {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Title };
@@ -47,7 +46,7 @@
         public event EventHandler RegenerateUiRequired;
 
         /// <summary>
-        /// 
+        /// An event raised when DataMiner objects have been retrieved based on the filters.
         /// </summary>
         public event EventHandler DataMinerObjectsRetrievedBasedOnFilters;
 
@@ -66,7 +65,7 @@
         }
 
         /// <summary>
-        /// 
+        /// Re-adds all widgets to the section.
         /// </summary>
         protected virtual void RegenerateFilterSections()
         {
@@ -76,27 +75,6 @@
 			}
 
 			resultsSection.RegenerateUi();
-		}
-
-        /// <summary>
-        /// Resets all filters to default value.
-        /// </summary>
-        public void ResetFiltersAndSelectedItems()
-        {
-            ResetFilters();
-			resultsSection.LoadNewItems(GetItemsBasedOnFilters());
-			DataMinerObjectsRetrievedBasedOnFilters?.Invoke(this, EventArgs.Empty);
-		}
-
-        /// <summary>
-        /// Resets all filters in section.
-        /// </summary>
-        protected virtual void ResetFilters()
-        {
-			foreach (var section in GetMultipleFiltersSections())
-			{
-				section.Reset();
-			}
 		}
 
         /// <summary>
@@ -128,8 +106,7 @@
 		/// Adding filter section to UI.
 		/// </summary>
 		/// <param name="row">Row on which we want to add section.</param>
-		/// <param name="firstAvailableColumn"></param>
-		protected abstract void AddFilterSections(ref int row, out int firstAvailableColumn);
+		protected abstract void AddFilterSections(ref int row);
 
         /// <summary>
         /// Gets collection of individual filters in section.
@@ -149,7 +126,7 @@
         }
 
         /// <summary>
-        /// 
+        /// Gets all fields and properties in the current instance of type <see cref="MultipleFiltersSection{DataMinerObjectType}"/>.
         /// </summary>
         /// <returns></returns>
 		protected IEnumerable<MultipleFiltersSection<DataMinerObjectType>> GetMultipleFiltersSections()
@@ -237,7 +214,7 @@
             AddWidget(collapseButton, ++row, 0);
             AddWidget(header, row, 1, 1, 4);
 
-            AddFilterSections(ref row, out int firstAvailablecolumn);
+            AddFilterSections(ref row);
 
 			AddWidget(new WhiteSpace(), ++row, 0);
 

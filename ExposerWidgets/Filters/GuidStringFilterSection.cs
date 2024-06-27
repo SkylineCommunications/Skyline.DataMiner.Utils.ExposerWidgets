@@ -17,7 +17,7 @@
 		private readonly TextBox secondTextBox = new TextBox();
 
 		/// <summary>
-		/// 
+		/// Initializes a new instance of the <see cref="GuidStringFilterSection{DataMinerObjectType}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName"></param>
 		/// <param name="filterFunctions"></param>
@@ -79,41 +79,22 @@
 		}
 
 		/// <summary>
-		/// 
+		/// The first widget that allows the user to input a value for the filter.
 		/// </summary>
 		protected override InteractiveWidget FirstInputWidget => firstTextBox;
 
 		/// <summary>
-		/// 
+		/// The second widget that allows the user to input a value for the filter.
 		/// </summary>
 		protected override InteractiveWidget SecondInputWidget => secondTextBox;
 
 		/// <summary>
-		/// 
+		/// Creates a clone of the current instance.
 		/// </summary>
 		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
 			return new GuidStringFilterSection<DataMinerObjectType>(this);
-		}
-
-		/// <summary>
-		/// Resets filter values to default.
-		/// </summary>
-		public override void Reset()
-		{
-			IsIncluded = false;
-			FirstValue = Guid.Empty;
-			SecondValue = string.Empty;
-		}
-
-		/// <summary>
-		/// Handles filter section default updates.
-		/// </summary>
-		protected override void HandleDefaultUpdate()
-		{
-			firstTextBox.IsEnabled = !IsDefault;
-			secondTextBox.IsEnabled = !IsDefault;
 		}
 	}
 }

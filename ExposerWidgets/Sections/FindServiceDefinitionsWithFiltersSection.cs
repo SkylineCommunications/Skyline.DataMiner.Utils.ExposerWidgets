@@ -1,21 +1,21 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Skyline.DataMiner.Automation;
-	using Skyline.DataMiner.Net.Messages;
-	using Skyline.DataMiner.Net.Messages.SLDataGateway;
-	using Skyline.DataMiner.Net.ServiceManager.Objects;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
-	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-	using Skyline.DataMiner.Utils.YLE.UI.Filters;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Skyline.DataMiner.Automation;
+    using Skyline.DataMiner.Net.Messages;
+    using Skyline.DataMiner.Net.Messages.SLDataGateway;
+    using Skyline.DataMiner.Net.ServiceManager.Objects;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+    using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-	/// <summary>
-	/// Section for filtering service definitions.
-	/// </summary>
-	public class FindServiceDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ServiceDefinition>
+    /// <summary>
+    /// Section for filtering service definitions.
+    /// </summary>
+    public class FindServiceDefinitionsWithFiltersSection : FindItemsWithFiltersSection<ServiceDefinition>
     {
         private readonly MultipleFiltersSection<ServiceDefinition> nameFilterSection = new MultipleFiltersSection<ServiceDefinition>(new StringFilterSection<ServiceDefinition>(
             "Name",
@@ -105,8 +105,7 @@
 		/// Adding filter section in the UI.
 		/// </summary>
 		/// <param name="row">Row on which section should appear.</param>
-		/// <param name="firstAvailableColumn"></param>
-		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
+		protected override void AddFilterSections(ref int row)
         {
             AddSection(nameFilterSection, new SectionLayout(++row, 0));
             row += nameFilterSection.RowCount;
@@ -122,8 +121,6 @@
 
 			AddSection(propertyFilterSection, new SectionLayout(row, 0));
 			row += propertyFilterSection.RowCount;
-
-			firstAvailableColumn = ColumnCount + 1;
 		}
 	}
 }

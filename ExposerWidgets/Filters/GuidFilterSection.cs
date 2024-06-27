@@ -1,17 +1,16 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Filters
 {
-    using System;
+	using System;
 	using System.Collections.Generic;
-	using System.Linq;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
-    /// <summary>
-    /// Represents filter section with one Guid input.
-    /// </summary>
-    /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
-    public class GuidFilterSection<DataMinerObjectType> : FilterSectionOneInput<DataMinerObjectType, Guid>, IDataMinerObjectFilter<DataMinerObjectType>
+	/// <summary>
+	/// Represents filter section with one Guid input.
+	/// </summary>
+	/// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
+	public class GuidFilterSection<DataMinerObjectType> : FilterSectionOneInput<DataMinerObjectType, Guid>, IDataMinerObjectFilter<DataMinerObjectType>
     {
         /// <summary>
         /// Textbox for Guid input.
@@ -19,7 +18,7 @@
         protected readonly TextBox filterContentTextBox = new TextBox() { PlaceHolder = nameof(Guid) };
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="GuidFilterSection{T}"/>"/> class.
+		/// Initializes a new instance of the <see cref="GuidFilterSection{DataMinerObjectType}"/>"/> class.
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter that will be applied.</param>
@@ -29,7 +28,7 @@
 		}
 
         /// <summary>
-        /// 
+        /// Copy constructor.
         /// </summary>
         /// <param name="other"></param>
         protected GuidFilterSection(GuidFilterSection<DataMinerObjectType> other) : base(other)
@@ -62,35 +61,18 @@
             set => filterContentTextBox.Text = value.ToString();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// The widget that allows the user to input a value for the filter.
+		/// </summary>
 		protected override InteractiveWidget InputWidget => filterContentTextBox;
 
 		/// <summary>
-		/// 
+		/// Creates a clone of the current instance.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A clone of the current instance.</returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new GuidFilterSection<DataMinerObjectType>(this);
 		}
-
-		/// <summary>
-		/// Resets filter to default value.
-		/// </summary>
-		public override void Reset()
-        {
-            IsIncluded = false;
-            Value = Guid.Empty;
-        }
-
-        /// <summary>
-        /// Handles default update of filter section.
-        /// </summary>
-        protected override void HandleDefaultUpdate()
-        {
-            filterContentTextBox.IsEnabled = !IsDefault;
-        }
     }
 }

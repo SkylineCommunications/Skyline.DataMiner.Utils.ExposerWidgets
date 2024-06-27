@@ -1,20 +1,20 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-	using System;
-	using System.Collections.Generic;
-	using Skyline.DataMiner.Automation;
-	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
-	using Skyline.DataMiner.Net.Messages.SLDataGateway;
-	using Skyline.DataMiner.Net.Sections;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
-	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-	using Skyline.DataMiner.Utils.YLE.UI.Filters;
+    using System;
+    using System.Collections.Generic;
+    using Skyline.DataMiner.Automation;
+    using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
+    using Skyline.DataMiner.Net.Messages.SLDataGateway;
+    using Skyline.DataMiner.Net.Sections;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+    using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-	/// <summary>
-	/// Section for filtering DOM instances.
-	/// </summary>
-	public class FindDomInstancesWithFiltersSection : FindItemsWithFiltersSection<DomInstance>
+    /// <summary>
+    /// Section for filtering DOM instances.
+    /// </summary>
+    public class FindDomInstancesWithFiltersSection : FindItemsWithFiltersSection<DomInstance>
 	{
 		private readonly Label moduleId = new Label("DOM Module ID:");
 		private readonly TextBox moduleIdTextBox = new TextBox(string.Empty);
@@ -99,7 +99,7 @@
 		}
 
 		/// <summary>
-		/// 
+		/// Exposes the DOM module ID entered by the user.
 		/// </summary>
 		public string DomModuleId => moduleIdTextBox.Text;
 
@@ -112,8 +112,7 @@
 		/// Adding filter sections on a row specified.
 		/// </summary>
 		/// <param name="row">Row position where new section should appear.</param>
-		/// <param name="firstAvailableColumn"></param>
-		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
+		protected override void AddFilterSections(ref int row)
         {
             AddWidget(moduleId, ++row, 1);
             AddWidget(moduleIdTextBox, row, 4);
@@ -138,8 +137,6 @@
 
 			AddSection(fieldValueFiltersSection, new SectionLayout(row, 0));
 			row += fieldValueFiltersSection.RowCount;
-
-			firstAvailableColumn = ColumnCount + 1;
 		}
 
         /// <summary>

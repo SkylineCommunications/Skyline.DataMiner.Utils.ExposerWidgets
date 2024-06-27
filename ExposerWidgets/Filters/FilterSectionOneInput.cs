@@ -14,15 +14,7 @@
 	/// <typeparam name="FilterInputType">Type of filter that is used.</typeparam>
 	public abstract class FilterSectionOneInput<DataMinerObjectType, FilterInputType> : FilterSectionBase<DataMinerObjectType>
     {
-		/// <summary>
-		/// 
-		/// </summary>
 		private Dictionary<Comparers, Func<FilterInputType, FilterElement<DataMinerObjectType>>> filterFunctions;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		protected abstract InteractiveWidget InputWidget { get; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterSectionOneInput{T, T}"/>"/> class.
@@ -52,21 +44,15 @@
 		/// <summary>
 		/// Filter that is created based on input values. Used in getting DataMiner objects in the system.
 		/// </summary>
-		public override FilterElement<DataMinerObjectType> FilterElement => filterFunctions[filterDropDown.Selected.GetEnumValue<Comparers>()](Value);
+		public override FilterElement<DataMinerObjectType> FilterElement => filterFunctions[comparerDropDown.Selected.GetEnumValue<Comparers>()](Value);
 
 		/// <summary>
-		/// Sets default value for filter.
+		/// The widget that allows the user to input a value for the filter.
 		/// </summary>
-		/// <param name="value">Value of filter that will be used.</param>
-		public void SetDefault(FilterInputType value)
-        {
-            IsDefault = true;
-
-            Value = value;
-        }
+		protected abstract InteractiveWidget InputWidget { get; }
 
 		/// <summary>
-		/// Generates UI for Guid filter section.
+		/// Adds the widgets to the Section.
 		/// </summary>
 		protected override void GenerateUi()
 		{
@@ -77,12 +63,12 @@
 			if (!string.IsNullOrWhiteSpace(tooltipLabel.Tooltip)) AddWidget(tooltipLabel, 0, ++column, verticalAlignment: VerticalAlignment.Top);
 			else ++column;
 
-			AddWidget(filterNameCheckBox, 0, ++column, 1, 3);
+			AddWidget(isIncludedCheckBox, 0, ++column, 1, 3);
 			column += 3;
 
 			if (filterFunctions.First().Key.GetComparerType() == ComparerType.Active)
 			{
-				AddWidget(filterDropDown, 0, column, 1, 3);
+				AddWidget(comparerDropDown, 0, column, 1, 3);
 				column += 3;
 				AddWidget(InputWidget, 0, column, 1, 3);
 			}
@@ -90,7 +76,7 @@
 			{
 				AddWidget(InputWidget, 0, column, 1, 3);
 				column += 3;
-				AddWidget(filterDropDown, 0, column, 1, 3);
+				AddWidget(comparerDropDown, 0, column, 1, 3);
 			}
 		}
 
@@ -101,7 +87,7 @@
 
 			this.filterFunctions = filterFunctions;
 
-			filterDropDown.Options = filterFunctions.Keys.Select(k => k.GetDescription()).ToList();
+			comparerDropDown.Options = filterFunctions.Keys.Select(k => k.GetDescription()).ToList();
 		}
 	}
 }

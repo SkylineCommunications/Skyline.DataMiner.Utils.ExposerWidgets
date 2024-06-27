@@ -1,21 +1,21 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using Skyline.DataMiner.Automation;
-	using Skyline.DataMiner.Net.Messages;
-	using Skyline.DataMiner.Net.Messages.SLDataGateway;
-	using Skyline.DataMiner.Net.ResourceManager.Objects;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
-	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-	using Skyline.DataMiner.Utils.YLE.UI.Filters;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Skyline.DataMiner.Automation;
+    using Skyline.DataMiner.Net.Messages;
+    using Skyline.DataMiner.Net.Messages.SLDataGateway;
+    using Skyline.DataMiner.Net.ResourceManager.Objects;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+    using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-	/// <summary>
-	/// Section for filtering resources.
-	/// </summary>
-	public class FindResourcesWithFiltersSection : FindItemsWithFiltersSection<Resource>
+    /// <summary>
+    /// Section for filtering resources.
+    /// </summary>
+    public class FindResourcesWithFiltersSection : FindItemsWithFiltersSection<Resource>
     {
         private readonly MultipleFiltersSection<Resource> functionGuidFilterSection = new MultipleFiltersSection<Resource>(new GuidFilterSection<Resource>(
             "Function ID",
@@ -214,8 +214,7 @@
 		/// Adding filter section in the UI.
 		/// </summary>
 		/// <param name="row">Row on which section should appear.</param>
-		/// <param name="firstAvailableColumn"></param>
-		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
+		protected override void AddFilterSections(ref int row)
         {
 			AddSection(idFilterSection, new SectionLayout(++row, 0));
             row += idFilterSection.RowCount;
@@ -270,8 +269,6 @@
 
 			AddSection(lastModifiedAtFilterSection, new SectionLayout(row, 0));
 			row += lastModifiedAtFilterSection.RowCount;
-
-			firstAvailableColumn = ColumnCount + 1;
 		}
 	}
 }

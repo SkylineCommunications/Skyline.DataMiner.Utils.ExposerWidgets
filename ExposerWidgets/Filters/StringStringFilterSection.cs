@@ -66,42 +66,23 @@
             set => secondTextBox.Text = value;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// The first widget that allows the user to input a value for the filter.
+		/// </summary>
 		protected override InteractiveWidget FirstInputWidget => firstTextBox;
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// The second widget that allows the user to input a value for the filter.
+		/// </summary>
 		protected override InteractiveWidget SecondInputWidget => secondTextBox;
 
 		/// <summary>
-		/// 
+		/// Creates a clone of the current instance.
 		/// </summary>
 		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new StringStringFilterSection<DataMinerObjectType>(this);
 		}
-
-		/// <summary>
-		/// Resets filter values to default.
-		/// </summary>
-		public override void Reset()
-        {
-            IsIncluded = false;
-            FirstValue = string.Empty;
-            SecondValue = string.Empty;
-        }
-
-        /// <summary>
-        /// Handles filter section default updates.
-        /// </summary>
-        protected override void HandleDefaultUpdate()
-        {
-            firstTextBox.IsEnabled = !IsDefault;
-            secondTextBox.IsEnabled = !IsDefault;
-        }
     }
 }

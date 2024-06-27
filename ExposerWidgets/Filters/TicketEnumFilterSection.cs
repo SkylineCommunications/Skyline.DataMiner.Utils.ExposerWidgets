@@ -84,49 +84,28 @@
             set => propertyValueNumeric.Value = value;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// The first widget that allows the user to input a value for the filter.
+		/// </summary>
 		protected override InteractiveWidget FirstInputWidget => propertyNameTextBox;
-		
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override InteractiveWidget SecondInputWidget => propertyValueTextBox;
-		
-        /// <summary>
-        /// 
-        /// </summary>
-        protected override InteractiveWidget ThirdInputWidget => propertyValueNumeric;
 
 		/// <summary>
-		/// 
+		/// The second widget that allows the user to input a value for the filter.
+		/// </summary>
+		protected override InteractiveWidget SecondInputWidget => propertyValueTextBox;
+
+		/// <summary>
+		/// The third widget that allows the user to input a value for the filter.
+		/// </summary>
+		protected override InteractiveWidget ThirdInputWidget => propertyValueNumeric;
+
+		/// <summary>
+		/// Creates a clone of the current instance.
 		/// </summary>
 		/// <returns></returns>
 		public override FilterSectionBase<Ticket> Clone()
 		{
             return new TicketEnumFilterSection(this);
 		}
-
-		/// <summary>
-		/// Resets filter values to default.
-		/// </summary>
-		public override void Reset()
-        {
-            IsIncluded = false;
-            FirstValue = string.Empty;
-            SecondValue = string.Empty;
-            ThirdValue = 0;
-        }
-
-        /// <summary>
-        /// Handles filter section default updates.
-        /// </summary>
-        protected override void HandleDefaultUpdate()
-        {
-            propertyNameTextBox.IsEnabled = !IsDefault;
-            propertyValueTextBox.IsEnabled = !IsDefault;
-            propertyValueNumeric.IsEnabled = !IsDefault;
-        }
     }
 }

@@ -19,7 +19,6 @@
     {
         private Dictionary<Comparers, Func<FilterInputType1, FilterInputType2, FilterElement<DataMinerObjectType>>> filterFunctions;
 
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FilterSectionTwoInputs{T, T, T}"/>
 		/// </summary>
@@ -43,7 +42,7 @@
 		/// <summary>
 		/// Filter that is created based on input values. Used in getting DataMiner objects in the system.
 		/// </summary>
-		public override FilterElement<DataMinerObjectType> FilterElement => filterFunctions[filterDropDown.Selected.GetEnumValue<Comparers>()](FirstValue, SecondValue);
+		public override FilterElement<DataMinerObjectType> FilterElement => filterFunctions[comparerDropDown.Selected.GetEnumValue<Comparers>()](FirstValue, SecondValue);
 
 		/// <summary>
 		/// Gets or sets value of first filter.
@@ -56,30 +55,17 @@
         public abstract FilterInputType2 SecondValue { get; set; }
 
 		/// <summary>
-		/// 
+		/// The first widget that allows the user to input a value for the filter.
 		/// </summary>
 		protected abstract InteractiveWidget FirstInputWidget { get; }
 
 		/// <summary>
-		/// 
+		/// The second widget that allows the user to input a value for the filter.
 		/// </summary>
 		protected abstract InteractiveWidget SecondInputWidget { get; }
 
 		/// <summary>
-		/// Sets default values for filters.
-		/// </summary>
-		/// <param name="value">Default value for first filter.</param>
-		/// <param name="secondValue">Default value for second filter.</param>
-		public void SetDefault(FilterInputType1 value, FilterInputType2 secondValue)
-        {
-            IsDefault = true;
-
-            FirstValue = value;
-            SecondValue = secondValue;
-        }
-
-		/// <summary>
-		/// Generates UI for Guid filter section.
+		/// Adds the widgets to the section.
 		/// </summary>
 		protected override void GenerateUi()
 		{
@@ -90,7 +76,7 @@
 			if (!string.IsNullOrWhiteSpace(tooltipLabel.Tooltip)) AddWidget(tooltipLabel, 0, ++column, verticalAlignment: VerticalAlignment.Top);
 			else ++column;
 
-			AddWidget(filterNameCheckBox, 0, ++column, 1, 3);
+			AddWidget(isIncludedCheckBox, 0, ++column, 1, 3);
 			column += 3;
 
 			if (filterFunctions.First().Key.GetComparerType() == ComparerType.Active)
@@ -98,7 +84,7 @@
 				AddWidget(FirstInputWidget, 0, column, 1, 3);
 				column += 3;
 
-				AddWidget(filterDropDown, 0, column, 1, 3);
+				AddWidget(comparerDropDown, 0, column, 1, 3);
 				column += 3;
 
 				AddWidget(SecondInputWidget, 0, column, 1, 3);
@@ -111,7 +97,7 @@
 				AddWidget(SecondInputWidget, 0, column, 1, 3);
 				column += 3;
 
-				AddWidget(filterDropDown, 0, column, 1, 3);
+				AddWidget(comparerDropDown, 0, column, 1, 3);
 			}
 		}
 
@@ -122,7 +108,7 @@
 
 			this.filterFunctions = filterFunctions;
 
-			filterDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).ToList();
+			comparerDropDown.Options = filterFunctions.Keys.Select(x => x.GetDescription()).ToList();
 		}
 	}
 }

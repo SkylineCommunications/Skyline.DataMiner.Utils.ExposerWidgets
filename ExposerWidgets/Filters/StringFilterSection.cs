@@ -22,7 +22,8 @@
 		/// </summary>
 		/// <param name="filterName">Name of filter.</param>
 		/// <param name="filterFunctions">Filter that will be applied.</param>
-		/// <param name="tooltip"></param>
+		/// <param name="tooltip">Optional tooltip</param>
+		/// <param name="explanation">Optional explanation of the value for the input widget.</param>
 		public StringFilterSection(string filterName, Dictionary<Comparers, Func<string, FilterElement<DataMinerObjectType>>> filterFunctions, string tooltip = null, string explanation = null) : base(filterName, filterFunctions, tooltip)
         {
             filterContentTextBox.PlaceHolder = explanation ?? string.Empty;
@@ -53,35 +54,18 @@
             set => filterContentTextBox.Text = value;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// The widget that allows the user to input a value for the filter.
+		/// </summary>
 		protected override InteractiveWidget InputWidget => filterContentTextBox;
 
 		/// <summary>
-		/// 
+		/// Creates a clone of the current instance.
 		/// </summary>
 		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new StringFilterSection<DataMinerObjectType>(this);
 		}
-
-		/// <summary>
-		/// Resets filter values to default.
-		/// </summary>
-		public override void Reset()
-        {
-            IsIncluded = false;
-            Value = string.Empty;
-        }
-
-        /// <summary>
-        /// Handles filter section default updates.
-        /// </summary>
-        protected override void HandleDefaultUpdate()
-        {
-            filterContentTextBox.IsEnabled = !IsDefault;
-        }
     }
 }

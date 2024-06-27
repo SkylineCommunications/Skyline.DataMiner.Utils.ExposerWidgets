@@ -8,12 +8,12 @@
     using Skyline.DataMiner.Net.Ticketing;
     using Skyline.DataMiner.Utils.InteractiveAutomationScript;
     using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+    using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 
-	/// <summary>
-	/// Section for filtering tickets.
-	/// </summary>
-	public class FindTicketsWithFiltersSection : FindItemsWithFiltersSection<Ticket>
+    /// <summary>
+    /// Section for filtering tickets.
+    /// </summary>
+    public class FindTicketsWithFiltersSection : FindItemsWithFiltersSection<Ticket>
     {
         private readonly MultipleFiltersSection<Ticket> ticketIdFilterSection = new MultipleFiltersSection<Ticket>(new StringFilterSection<Ticket>(
             "ID",
@@ -107,7 +107,7 @@
 		/// </summary>
 		/// <param name="row">Row on which section should appear.</param>
 		/// <param name="firstAvailableColumn"></param>
-		protected override void AddFilterSections(ref int row, out int firstAvailableColumn)
+		protected override void AddFilterSections(ref int row)
         {
             AddSection(ticketIdFilterSection, new SectionLayout(++row, 0));
 			row += ticketIdFilterSection.RowCount;
@@ -126,8 +126,6 @@
 
 			AddSection(enumPropertyFilterSections, new SectionLayout(row, 0));
 			row += enumPropertyFilterSections.RowCount;
-
-			firstAvailableColumn = ColumnCount + 1;
 		}
 	}
 }

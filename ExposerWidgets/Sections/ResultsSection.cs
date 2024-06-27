@@ -6,7 +6,7 @@
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	/// <summary>
-	/// 
+	/// A class allows finetuning the results of a query for DataMiner objects.
 	/// </summary>
 	/// <typeparam name="DataMinerObjectType"></typeparam>
 	public class ResultsSection<DataMinerObjectType> : Section
@@ -24,7 +24,7 @@
 		private List<DataMinerObjectType> allItems = new List<DataMinerObjectType>();
 
 		/// <summary>
-		/// 
+		/// Intializes a new instance of the <see cref="ResultsSection{DataMinerObjectType}"/> class.
 		/// </summary>
 		/// <param name="identifyItemFunction"></param>
 		/// <exception cref="ArgumentNullException"></exception>
@@ -69,7 +69,7 @@
 		public event EventHandler RegenerateUiRequired;
 
 		/// <summary>
-		/// 
+		/// Re-adds the widgets to the section.
 		/// </summary>
 		public void RegenerateUi()
 		{
@@ -77,7 +77,7 @@
 		}
 
 		/// <summary>
-		/// 
+		/// Loads new items to be displayed for manual selection.
 		/// </summary>
 		/// <param name="newItems"></param>
 		public void LoadNewItems(IEnumerable<DataMinerObjectType> newItems)

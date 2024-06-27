@@ -7,7 +7,7 @@
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
     /// <summary>
-    /// Represents filter section with one checkbox input.
+    /// Represents a filter section with one checkbox input.
     /// </summary>
     /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
     public class BooleanFilterSection<DataMinerObjectType> : FilterSectionOneInput<DataMinerObjectType, bool>, IDataMinerObjectFilter<DataMinerObjectType>
@@ -47,35 +47,18 @@
             set => filterValueCheckBox.IsChecked = value;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// The widget that allows the user to input a value for the filter.
+		/// </summary>
 		protected override InteractiveWidget InputWidget => filterValueCheckBox;
 
 		/// <summary>
-		/// 
+		/// Creates a clone of the current instance.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>A clone of the current instance. Values that we're set by user interaction are cleared.</returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
             return new BooleanFilterSection<DataMinerObjectType>(this);
 		}
-
-		/// <summary>
-		/// Sets value to unchecked and filter as non active.
-		/// </summary>
-		public override void Reset()
-        {
-            IsIncluded = false;
-            Value = false;
-        }
-
-        /// <summary>
-        /// Handles default update of checkbox filter.
-        /// </summary>
-        protected override void HandleDefaultUpdate()
-        {
-            filterValueCheckBox.IsEnabled = !IsDefault;
-        }
     }
 }

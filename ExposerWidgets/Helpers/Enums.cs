@@ -1,13 +1,12 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Helpers
 {
 	using System;
-	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Linq;
 	using System.Reflection;
 
 	/// <summary>
-	/// 
+	/// An enum for each kind of comparison between values.
 	/// </summary>
 	public enum Comparers
 	{
@@ -83,28 +82,28 @@
 	}
 
 	/// <summary>
-	/// 
+	/// An enum for the type of comparison.
 	/// </summary>
 	public enum ComparerType
 	{
 		/// <summary>
-		/// 
+		/// Unknown type.
 		/// </summary>
 		Unknown,
 
 		/// <summary>
-		/// 
+		/// The comparison is active.
 		/// </summary>
 		Active,
 
 		/// <summary>
-		/// 
+		/// The comparison is passive.
 		/// </summary>
 		Passive
 	}
 
 	/// <summary>
-	/// 
+	/// An attribute indicating which type of comparison is used
 	/// </summary>
 	public class ComparerTypeAttribute : Attribute
 	{
@@ -124,12 +123,12 @@
 	}
 
 	/// <summary>
-	/// 
+	/// A static class providing tools for handling enums.
 	/// </summary>
 	public static class EnumExtensions
 	{
 		/// <summary>
-		/// 
+		/// Gets the value of the Description attribute on an enum value.
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
@@ -144,7 +143,7 @@
 		}
 
 		/// <summary>
-		/// 
+		/// Gets the value of the ComparerType attribute on an enum value.
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
@@ -159,7 +158,7 @@
 		}
 
 		/// <summary>
-		/// 
+		/// Gets the enum value where the Description attribute matches the string.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="value"></param>
