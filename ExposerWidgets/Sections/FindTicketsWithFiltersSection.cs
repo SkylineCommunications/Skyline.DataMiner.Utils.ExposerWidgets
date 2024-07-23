@@ -56,6 +56,7 @@
 			new Dictionary<Comparers, Func<string, int, FilterElement<Ticket>>>
 			{
 				{Comparers.Equals, (pName, pValue) => TicketingExposers.CustomTicketFields.DictField(pName).Equal(pValue) },
+				{Comparers.NotEquals, (pName, pValue) => TicketingExposers.CustomTicketFields.DictField(pName).NotEqual<Ticket, int>(pValue) },
 			}, "Name"));
 
         private readonly MultipleFiltersSection<Ticket> enumPropertyFilterSections = new MultipleFiltersSection<Ticket>(new TicketEnumFilterSection(
@@ -63,6 +64,7 @@
 			new Dictionary<Comparers, Func<string, string, int, FilterElement<Ticket>>>
 			{
 				{Comparers.Equals, (pName, pValue1, pValue2) => TicketingExposers.CustomTicketFields.DictField(pName).Equal($"{pValue1}/{pValue2}") },
+				{Comparers.NotEquals, (pName, pValue1, pValue2) => TicketingExposers.CustomTicketFields.DictField(pName).NotEqual<Ticket, string>($"{pValue1}/{pValue2}") },
 			}, "Name", "Enum display value", "Enter the enum display value and the enum integer value"));
 
         private readonly TicketingGatewayHelper ticketingHelper;
