@@ -25,7 +25,15 @@
                 {Comparers.NotContains,  x => TicketingExposers.FullID.NotContains(x) },
             }));
 
-        private readonly MultipleFiltersSection<Ticket> ticketCreationDateFilterSection = new MultipleFiltersSection<Ticket>(new DateTimeFilterSection<Ticket>(
+		private readonly MultipleFiltersSection<Ticket> ticketUidFilterSection = new MultipleFiltersSection<Ticket>(new GuidFilterSection<Ticket>(
+	        "Unique ID",
+	        new Dictionary<Comparers, Func<Guid, FilterElement<Ticket>>>
+	        {
+				{Comparers.Equals,  x => TicketingExposers.UniqueID.Equal(x) },
+				{Comparers.NotEquals,  x => TicketingExposers.UniqueID.NotEqual(x) },
+	        }));
+
+		private readonly MultipleFiltersSection<Ticket> ticketCreationDateFilterSection = new MultipleFiltersSection<Ticket>(new DateTimeFilterSection<Ticket>(
             "Creation Date", 
             new Dictionary<Comparers, Func<DateTime, FilterElement<Ticket>>>
             {
@@ -108,11 +116,13 @@
 		/// Adding filter section in the UI.
 		/// </summary>
 		/// <param name="row">Row on which section should appear.</param>
-		/// <param name="firstAvailableColumn"></param>
 		protected override void AddFilterSections(ref int row)
         {
             AddSection(ticketIdFilterSection, new SectionLayout(++row, 0));
 			row += ticketIdFilterSection.RowCount;
+
+			AddSection(ticketUidFilterSection, new SectionLayout(++row, 0));
+			row += ticketUidFilterSection.RowCount;
 
 			AddSection(ticketCreationDateFilterSection, new SectionLayout(row, 0));
 			row += ticketCreationDateFilterSection.RowCount;
