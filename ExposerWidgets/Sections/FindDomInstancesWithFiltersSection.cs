@@ -1,23 +1,26 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-    using System;
-    using System.Collections.Generic;
-    using Skyline.DataMiner.Automation;
-    using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Net.Sections;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-    using Skyline.DataMiner.Utils.YLE.UI.Filters;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
+	using Skyline.DataMiner.Net.Apps.Modules;
+	using Skyline.DataMiner.Net.ManagerStore;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.Sections;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-    /// <summary>
-    /// Section for filtering DOM instances.
-    /// </summary>
-    public class FindDomInstancesWithFiltersSection : FindItemsWithFiltersSection<DomInstance>
+	/// <summary>
+	/// Section for filtering DOM instances.
+	/// </summary>
+	public class FindDomInstancesWithFiltersSection : FindItemsWithFiltersSection<DomInstance>
 	{
 		private readonly Label moduleId = new Label("DOM Module ID:");
-		private readonly TextBox moduleIdTextBox = new TextBox(string.Empty);
+		private readonly DropDown moduleIdDropDown;
 
 		private readonly MultipleFiltersSection<DomInstance> idFilterSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
 			"ID", 
@@ -71,15 +74,15 @@
 				{Comparers.IsNotUsed, (sectionId) => DomInstanceExposers.SectionIds.NotContains(sectionId) }
 			}));
 
-		private readonly MultipleFiltersSection<DomInstance> fieldValueFiltersSection = new MultipleFiltersSection<DomInstance>(new StringStringFilterSection<DomInstance>(
+		private readonly MultipleFiltersSection<DomInstance> idFieldValueFiltersSection = new MultipleFiltersSection<DomInstance>(new GuidStringFilterSection<DomInstance>(
 			"Field",
-			new Dictionary<Comparers, Func<string, string, FilterElement<DomInstance>>>
+			new Dictionary<Comparers, Func<Guid, string, FilterElement<DomInstance>>>
 			{
-				{Comparers.Equals, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Equal(fieldValue) },
-				{Comparers.NotEquals, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotEqual(fieldValue) },
-				{Comparers.Contains, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).Contains(fieldValue) },
-				{Comparers.NotContains, (fieldName, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(fieldName).NotContains(fieldValue) },
-			},"Name", "Value"));
+				{Comparers.Equals, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).Equal(fieldValue) },
+				{Comparers.NotEquals, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotEqual(fieldValue) },
+				{Comparers.Contains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).Contains(fieldValue) },
+				{Comparers.NotContains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotContains(fieldValue) },
+			}, "Field ID", "Value"));
 
 		private DomHelper domHelper;
 
@@ -88,8 +91,14 @@
         /// </summary>
         public FindDomInstancesWithFiltersSection() : base()
         {
-            moduleIdTextBox.FocusLost += ModuleIdTextBox_FocusLost;
+			var moduleSettingsHelper = new ModuleSettingsHelper(Engine.SLNet.SendMessages);
+			var allModuleIds = moduleSettingsHelper.ModuleSettings.ReadAll().Select(x => x.ModuleId).OrderBy(id => id).ToList();
 
+			moduleIdDropDown = new DropDown(allModuleIds, allModuleIds.FirstOrDefault() ?? throw new InvalidOperationException("No DOM modules defined on this system")) { IsDisplayFilterShown = true };
+			domHelper = new DomHelper(Engine.SLNet.SendMessages, moduleIdDropDown.Selected);
+
+			moduleIdDropDown.Changed += ModuleIdDropDown_Changed;
+			
 			foreach (var section in GetMultipleFiltersSections())
 			{
 				section.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
@@ -101,11 +110,11 @@
 		/// <summary>
 		/// Exposes the DOM module ID entered by the user.
 		/// </summary>
-		public string DomModuleId => moduleIdTextBox.Text;
+		public string DomModuleId => moduleIdDropDown.Selected;
 
-		private void ModuleIdTextBox_FocusLost(object sender, TextBox.TextBoxFocusLostEventArgs e)
+		private void ModuleIdDropDown_Changed(object sender, DropDown.DropDownChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(e.Value)) domHelper = new DomHelper(Engine.SLNet.SendMessages, e.Value);
+            if (!string.IsNullOrWhiteSpace(e.Selected)) domHelper = new DomHelper(Engine.SLNet.SendMessages, e.Selected);
         }
 
 		/// <summary>
@@ -115,7 +124,7 @@
 		protected override void AddFilterSections(ref int row)
         {
             AddWidget(moduleId, ++row, 1);
-            AddWidget(moduleIdTextBox, row, 4);
+            AddWidget(moduleIdDropDown, row, 4);
 
             AddSection(idFilterSection, new SectionLayout(++row, 0));
 			row += idFilterSection.RowCount;
@@ -135,8 +144,8 @@
 			AddSection(sectionIdFiltersSection, new SectionLayout(row, 0));
 			row += sectionIdFiltersSection.RowCount;
 
-			AddSection(fieldValueFiltersSection, new SectionLayout(row, 0));
-			row += fieldValueFiltersSection.RowCount;
+			AddSection(idFieldValueFiltersSection, new SectionLayout(row, 0));
+			row += idFieldValueFiltersSection.RowCount;
 		}
 
         /// <summary>
@@ -147,13 +156,13 @@
         {
             if (domHelper == null) 
             {
-				moduleIdTextBox.ValidationState = UIValidationState.Invalid;
-				moduleIdTextBox.ValidationText = "Provide a valid DOM Module ID";
+				moduleIdDropDown.ValidationState = UIValidationState.Invalid;
+				moduleIdDropDown.ValidationText = "Provide a valid DOM Module ID";
                 return new List<DomInstance>();
             }
 			else
 			{
-				moduleIdTextBox.ValidationState = UIValidationState.Valid;
+				moduleIdDropDown.ValidationState = UIValidationState.Valid;
 			}
 
 			return domHelper.DomInstances.Read(GetCombinedFilterElement());
