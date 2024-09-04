@@ -143,8 +143,8 @@
 		/// <returns>Name of reservation instance.</returns>
 		protected override string IdentifyItem(ReservationInstance item)
         {
-            return item.Name;
-        }
+            return $"{item.Name} [{item.ID}]";
+		}
 
 		/// <summary>
 		/// Adding filter section in the UI.

@@ -150,7 +150,7 @@
         /// <returns>Name of profile definition.</returns>
         protected override string IdentifyItem(ProfileDefinition item)
         {
-            return item.Name;
-        }
+            return $"{item.Name} [{item.ID}]";
+		}
 	}
 }

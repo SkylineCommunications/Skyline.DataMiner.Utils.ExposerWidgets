@@ -98,8 +98,8 @@
         /// <returns>Name of service definition.</returns>
         protected override string IdentifyItem(ServiceDefinition item)
         {
-            return item.Name;
-        }
+            return $"{item.Name} [{item.ID}]";
+		}
 
 		/// <summary>
 		/// Adding filter section in the UI.

@@ -101,7 +101,7 @@
 		/// <returns>Name of Job.</returns>
 		protected override string IdentifyItem(Job item)
 		{
-			return item.GetJobName();
+			return $"{item.GetJobName()} [{item.ID}]";
 		}
 	}
 }

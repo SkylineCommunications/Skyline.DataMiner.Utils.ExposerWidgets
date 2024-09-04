@@ -105,7 +105,7 @@
         /// <returns>Name of profile parameter.</returns>
         protected override string IdentifyItem(Parameter item)
         {
-            return item.Name;
-        }
+            return $"{item.Name} [{item.ID}]";
+		}
 	}
 }

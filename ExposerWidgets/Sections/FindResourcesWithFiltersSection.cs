@@ -207,8 +207,8 @@
         /// <returns>Name of resource.</returns>
         protected override string IdentifyItem(Resource item)
         {
-            return item.Name;
-        }
+            return $"{item.Name} [{item.ID}]";
+		}
 
 		/// <summary>
 		/// Adding filter section in the UI.

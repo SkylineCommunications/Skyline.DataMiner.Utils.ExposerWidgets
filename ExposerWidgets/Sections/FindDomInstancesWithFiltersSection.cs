@@ -174,7 +174,7 @@
         /// <returns>Name of dom instance.</returns>
         protected override string IdentifyItem(DomInstance item)
         {
-            return item.Name;
+            return $"{item.Name} [{item.ID}]";
         }
 	}
 }
