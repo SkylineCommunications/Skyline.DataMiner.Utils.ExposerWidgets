@@ -1,23 +1,22 @@
 ﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Skyline.DataMiner.Automation;
-    using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
-    using Skyline.DataMiner.Net.Messages;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Net.ResourceManager.Objects;
-    using Skyline.DataMiner.Net.Serialization;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-    using Skyline.DataMiner.Utils.YLE.UI.Filters;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Automation;
+	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
+	using Skyline.DataMiner.Net.Messages;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.ResourceManager.Objects;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-    /// <summary>
-    /// Section for filtering reservations.
-    /// </summary>
-    public class FindReservationsWithFiltersSection : FindItemsWithFiltersSection<ReservationInstance>
+	/// <summary>
+	/// Section for filtering reservations.
+	/// </summary>
+	public class FindReservationsWithFiltersSection : FindItemsWithFiltersSection<ReservationInstance>
     {
         private readonly MultipleFiltersSection<ReservationInstance> reservationIdFilterSection = new MultipleFiltersSection<ReservationInstance>(new GuidFilterSection<ReservationInstance>(
             "ID",
@@ -112,7 +111,14 @@
                 {Comparers.NotContains, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotContains(propertyValue) },
             }, "Name", "Value"));
 
-        private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
+		private readonly MultipleFiltersSection<ReservationInstance> isQuarantinedFilterSection = new MultipleFiltersSection<ReservationInstance>(new BooleanFilterSection<ReservationInstance>(
+           "Is Quarantined",
+           new Dictionary<Comparers, Func<bool, FilterElement<ReservationInstance>>>
+           {
+				{Comparers.Equals, x => ReservationInstanceExposers.IsQuarantined.Equal(x) },
+           }));
+
+		private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FindReservationsWithFiltersSection"/>"/> class.
@@ -184,6 +190,9 @@
 
 			AddSection(propertyFiltersSection, new SectionLayout(row, 0));
 			row += propertyFiltersSection.RowCount;
-        }
+
+			AddSection(isQuarantinedFilterSection, new SectionLayout(row, 0));
+			row += isQuarantinedFilterSection.RowCount;
+		}
     }
 }
