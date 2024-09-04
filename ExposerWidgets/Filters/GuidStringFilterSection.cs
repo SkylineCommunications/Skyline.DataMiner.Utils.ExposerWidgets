@@ -27,7 +27,10 @@
 		public GuidStringFilterSection(string filterName, Dictionary<Comparers, Func<Guid, string, FilterElement<DataMinerObjectType>>> filterFunctions, string firstValueExplanation = null, string secondValueExplanation = null, string tooltip = null) : base(filterName, filterFunctions, tooltip)
 		{
 			firstTextBox.PlaceHolder = firstValueExplanation ?? string.Empty;
+			firstTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
 			secondTextBox.PlaceHolder = secondValueExplanation ?? string.Empty;
+			secondTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			GenerateUi();
 		}

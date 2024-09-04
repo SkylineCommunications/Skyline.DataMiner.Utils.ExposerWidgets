@@ -31,8 +31,11 @@
 		public StringIntegerFilterSection(string filterName, Dictionary<Comparers, Func<string, int, FilterElement<DataMinerObjectType>>> filterFunctions, string firstValueExplanation = null) : base(filterName, filterFunctions)
         {
             firstValueTextBox.PlaceHolder = firstValueExplanation ?? string.Empty;
+            firstValueTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
 
-            GenerateUi();
+            secondValueNumeric.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			GenerateUi();
         }
 
         /// <summary>

@@ -33,6 +33,8 @@
         {
             this.isIncludedCheckBox = new CheckBox(filterName);
             tooltipLabel.Tooltip = tooltip ?? string.Empty;
+
+            comparerDropDown.Changed += (s, e) => isIncludedCheckBox.IsChecked = true;
         }
 
         /// <summary>

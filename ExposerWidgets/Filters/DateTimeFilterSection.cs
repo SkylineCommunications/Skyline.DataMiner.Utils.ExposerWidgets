@@ -21,6 +21,8 @@
 		/// <param name="filterFunctions">Filter exposers that will be used.</param>
 		public DateTimeFilterSection(string filterName, Dictionary<Comparers, Func<DateTime, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
         {
+            dateTimePicker.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
             GenerateUi();
         }
 

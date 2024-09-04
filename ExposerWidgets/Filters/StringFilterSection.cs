@@ -27,7 +27,7 @@
 		public StringFilterSection(string filterName, Dictionary<Comparers, Func<string, FilterElement<DataMinerObjectType>>> filterFunctions, string tooltip = null, string explanation = null) : base(filterName, filterFunctions, tooltip)
         {
             filterContentTextBox.PlaceHolder = explanation ?? string.Empty;
-
+            filterContentTextBox.FocusLost += (s,e) => isIncludedCheckBox.IsChecked = true;
             GenerateUi();
         }
 

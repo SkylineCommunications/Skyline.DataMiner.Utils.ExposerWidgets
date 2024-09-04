@@ -21,7 +21,9 @@
 		/// <param name="filterFunctions">Filter that will be applied.</param>
 		public BooleanFilterSection(string filterName, Dictionary<Comparers, Func<bool, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
         {
-            GenerateUi();
+			filterValueCheckBox.Changed += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			GenerateUi();
         }
 
         /// <summary>

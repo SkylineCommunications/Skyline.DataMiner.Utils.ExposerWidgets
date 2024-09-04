@@ -24,6 +24,8 @@
 		/// <param name="filterFunctions">Filter that will be applied.</param>
 		public GuidFilterSection(string filterName, Dictionary<Comparers, Func<Guid, FilterElement<DataMinerObjectType>>> filterFunctions) : base(filterName, filterFunctions)
         {
+			filterContentTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
 			GenerateUi();
 		}
 

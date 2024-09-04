@@ -25,7 +25,9 @@
 		/// <param name="tooltip"></param>
 		public IntegerFilterSection(string filterName, Dictionary<Comparers, Func<int, FilterElement<DataMinerObjectType>>> filterFunctions, string tooltip = null) : base(filterName, filterFunctions, tooltip)
         {
-            GenerateUi();
+			filterContentNumeric.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			GenerateUi();
         }
 
         /// <summary>
