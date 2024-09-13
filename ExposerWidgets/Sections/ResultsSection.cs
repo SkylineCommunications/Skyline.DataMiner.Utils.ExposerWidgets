@@ -15,7 +15,7 @@
 		private readonly Label resultsHeader = new Label("Results") { Style = TextStyle.Title, IsVisible = false };
 		private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
 		private readonly Label amountOfSelectedItemsLabel = new Label(string.Empty);
-		private readonly CheckBoxList selectItemsCheckBoxList = new CheckBoxList() { Height = 400 };
+		private readonly CheckBoxList selectItemsCheckBoxList = new CheckBoxList() { Height = 400, MaxWidth = 1200 };
 		private readonly Button selectAllButton = new Button("Select All") { Width = 100, IsVisible = false };
 		private readonly Button unselectAllButton = new Button("Unselect All") { Width = 100, IsVisible = false };
 		
@@ -124,12 +124,12 @@
 			AddWidget(collapseButton, ++row, 0);
 			AddWidget(resultsHeader, row, 1, 1, 5);
 
-			AddWidget(amountOfMatchingItemsLabel, ++row, 1, 1, 2);
+			AddWidget(amountOfMatchingItemsLabel, ++row, 1, 1, 100);
 
 			AddWidget(selectAllButton, ++row, 1);
-			AddWidget(unselectAllButton, row, 2);
+			AddWidget(unselectAllButton, row, 2, 1, 100);
 
-			AddWidget(amountOfSelectedItemsLabel, ++row, 1, 1, 2);
+			AddWidget(amountOfSelectedItemsLabel, ++row, 1, 1, 100);
 
 			AddWidget(selectItemsCheckBoxList, ++row, 1, 1, 100);
 		}

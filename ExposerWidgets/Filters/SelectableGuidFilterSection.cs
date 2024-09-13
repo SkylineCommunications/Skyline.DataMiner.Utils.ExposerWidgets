@@ -31,7 +31,7 @@
 			if (dropDownValuesWithSameDisplayValue.Any()) throw new ArgumentException($"Multiple dropdown values have same display values: {string.Join(", ", dropDownValuesWithSameDisplayValue.Select(x => x.Key))}", nameof(dropDownOptions));
 
 			firstDropDown.Options = _dropDownOptions.Select(dv => dv.DisplayValue).OrderBy(x => x).ToList();
-			firstDropDown.MinWidth = firstDropDown.Options.Any() ? 7 * firstDropDown.Options.Max(x => x.Length) : firstDropDown.MinWidth;
+			firstDropDown.Width = firstDropDown.Options.Any() ? 7 * firstDropDown.Options.Max(x => x.Length) : firstDropDown.MinWidth;
 			firstDropDown.Changed += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			GenerateUi();
@@ -45,7 +45,7 @@
 		{
 			this._dropDownOptions = other._dropDownOptions;
 			firstDropDown.Options = _dropDownOptions.Select(dv => dv.DisplayValue).OrderBy(x => x).ToList();
-			firstDropDown.MinWidth = firstDropDown.Options.Any() ? 7 * firstDropDown.Options.Max(x => x.Length) : firstDropDown.MinWidth;
+			firstDropDown.Width = firstDropDown.Options.Any() ? 7 * firstDropDown.Options.Max(x => x.Length) : firstDropDown.MinWidth;
 			firstDropDown.Changed += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			GenerateUi();
