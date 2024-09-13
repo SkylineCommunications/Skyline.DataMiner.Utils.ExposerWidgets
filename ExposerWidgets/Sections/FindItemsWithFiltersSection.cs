@@ -29,12 +29,12 @@
             resultsSection = new ResultsSection<DataMinerObjectType>((DataMinerObjectType obj) => IdentifyItem(obj));
 			resultsSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
 
-            collapseButton.Pressed += (s, e) => UpdateWidgetsVisibility();
+            collapseButton.Pressed += (s, e) => SetWidgetsVisibility(!collapseButton.IsCollapsed);
 
             findItemsBasedOnFiltersButton.Pressed += (s, e) =>
             {
                 collapseButton.IsCollapsed = true;
-                UpdateWidgetsVisibility();
+                SetWidgetsVisibility(!collapseButton.IsCollapsed);
 				resultsSection.LoadNewItems(GetItemsBasedOnFilters());
                 DataMinerObjectsRetrievedBasedOnFilters?.Invoke(this, EventArgs.Empty);
             };      
@@ -231,14 +231,18 @@
             RegenerateUiRequired?.Invoke(this, EventArgs.Empty);
         }
 
-		private void UpdateWidgetsVisibility()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isVisible"></param>
+		protected virtual void SetWidgetsVisibility(bool isVisible)
 		{
 			foreach (var section in GetMultipleFiltersSections())
 			{
-				section.IsVisible = !collapseButton.IsCollapsed;
+				section.IsVisible = isVisible;
 			}
 
-            findItemsBasedOnFiltersButton.IsVisible = !collapseButton.IsCollapsed;
+            findItemsBasedOnFiltersButton.IsVisible = isVisible;
 		}
 	}
 }

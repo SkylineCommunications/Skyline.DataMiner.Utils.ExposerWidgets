@@ -3,6 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Reflection.Emit;
 	using Skyline.DataMiner.Automation;
 	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
 	using Skyline.DataMiner.Net.Apps.Modules;
@@ -228,5 +229,16 @@
         {
             return $"{item.Name} [{item.ID.Id}]";
         }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="isVisible"></param>
+		protected override void SetWidgetsVisibility(bool isVisible)
+		{
+			base.SetWidgetsVisibility(isVisible);
+
+			moduleIdDropDown.IsVisible = isVisible;
+		}
 	}
 }
