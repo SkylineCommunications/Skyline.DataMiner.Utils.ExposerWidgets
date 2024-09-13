@@ -84,6 +84,8 @@
 				{Comparers.NotContains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotContains(fieldValue) },
 			}, "Field ID", "Value"));
 
+		private readonly MultipleFiltersSection<DomInstance> selectableFieldValueFiltersSection;
+
 		private DomHelper domHelper;
 
         /// <summary>
@@ -98,7 +100,21 @@
 			domHelper = new DomHelper(Engine.SLNet.SendMessages, moduleIdDropDown.Selected);
 
 			moduleIdDropDown.Changed += ModuleIdDropDown_Changed;
-			
+
+
+			var allSectionDefinitions = domHelper.SectionDefinitions.ReadAll();
+			var fieldDescriptorsPerSectionDefinition = allSectionDefinitions.ToDictionary(sd => sd, sd => sd.GetAllFieldDescriptors());
+
+			selectableFieldValueFiltersSection = new MultipleFiltersSection<DomInstance>(new SelectableGuidStringFilterSection<DomInstance>(
+			"Field",
+			new Dictionary<Comparers, Func<Guid, string, FilterElement<DomInstance>>>
+			{
+				{Comparers.Equals, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).Equal(fieldValue) },
+				{Comparers.NotEquals, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotEqual(fieldValue) },
+				{Comparers.Contains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).Contains(fieldValue) },
+				{Comparers.NotContains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotContains(fieldValue) },
+			}, fieldDescriptorsPerSectionDefinition.SelectMany(x => x.Value.Select(fd => new DropDownOption<Guid>($"{x.Key.GetName()}.{fd.Name}", fd.ID.Id))), "Value"));
+
 			foreach (var section in GetMultipleFiltersSections())
 			{
 				section.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
@@ -146,6 +162,9 @@
 
 			AddSection(idFieldValueFiltersSection, new SectionLayout(row, 0));
 			row += idFieldValueFiltersSection.RowCount;
+
+			AddSection(selectableFieldValueFiltersSection, new SectionLayout(row, 0));
+			row += selectableFieldValueFiltersSection.RowCount;
 		}
 
         /// <summary>
