@@ -11,7 +11,7 @@
 	/// <typeparam name="DataMinerObjectType"></typeparam>
 	public class ResultsSection<DataMinerObjectType> : Section
 	{
-		private readonly CollapseButton collapseButton = new CollapseButton() { CollapseText = "-", ExpandText = "+", Width = 44 };
+		private readonly CollapseButton collapseButton = new CollapseButton() { CollapseText = "-", ExpandText = "+", Width = 44, IsVisible = false };
 		private readonly Label resultsHeader = new Label("Results") { Style = TextStyle.Title, IsVisible = false };
 		private readonly Label amountOfMatchingItemsLabel = new Label(string.Empty);
 		private readonly Label amountOfSelectedItemsLabel = new Label(string.Empty);
@@ -92,8 +92,9 @@
 
 			SetAmountOfSelectedItemsMessage();
 
-			resultsHeader.IsVisible = true;
+			collapseButton.IsVisible = true;
 			collapseButton.IsCollapsed = false;
+			resultsHeader.IsVisible = true;
 			UpdateWidgetVisibility();
 			RegenerateUiRequired?.Invoke(this, EventArgs.Empty);
 		}
