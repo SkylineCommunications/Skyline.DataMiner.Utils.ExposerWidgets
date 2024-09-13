@@ -3,7 +3,6 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using System.Reflection.Emit;
 	using Skyline.DataMiner.Automation;
 	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
 	using Skyline.DataMiner.Net.Apps.Modules;
@@ -20,7 +19,7 @@
 	/// </summary>
 	public class FindDomInstancesWithFiltersSection : FindItemsWithFiltersSection<DomInstance>
 	{
-		private readonly Label moduleId = new Label("DOM Module ID:");
+		private readonly Label moduleIdLabel = new Label("DOM Module ID:");
 		private readonly DropDown moduleIdDropDown;
 
 		private readonly MultipleFiltersSection<DomInstance> idFilterSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
@@ -170,7 +169,7 @@
 		/// <param name="row">Row position where new section should appear.</param>
 		protected override void AddFilterSections(ref int row)
         {
-            AddWidget(moduleId, ++row, 1);
+            AddWidget(moduleIdLabel, ++row, 1);
             AddWidget(moduleIdDropDown, row, 4);
 
             AddSection(idFilterSection, new SectionLayout(++row, 0));
@@ -238,6 +237,7 @@
 		{
 			base.SetWidgetsVisibility(isVisible);
 
+			moduleIdLabel.IsVisible = isVisible;
 			moduleIdDropDown.IsVisible = isVisible;
 		}
 	}
