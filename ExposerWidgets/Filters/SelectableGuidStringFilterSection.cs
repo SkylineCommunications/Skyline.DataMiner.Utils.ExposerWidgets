@@ -33,7 +33,7 @@
 			if (dropDownValuesWithSameDisplayValue.Any()) throw new ArgumentException($"Multiple dropdown values have same display values: {string.Join(", ", dropDownValuesWithSameDisplayValue.Select(x => x.Key))}", nameof(dropDownOptions));
 
 			firstDropDown.Options = _dropDownOptions.Select(dv => dv.DisplayValue).OrderBy(x => x).ToList();
-			firstDropDown.Width = firstDropDown.Options.Any() ? 7 * firstDropDown.Options.Max(x => x.Length) : firstDropDown.MinWidth;
+			firstDropDown.MinWidth = firstDropDown.Options.Any() ? 7 * firstDropDown.Options.Max(x => x.Length) : firstDropDown.MinWidth;
 			firstDropDown.Changed += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			secondTextBox.PlaceHolder = secondValueExplanation ?? string.Empty;
@@ -50,7 +50,7 @@
 		{
 			this._dropDownOptions = other._dropDownOptions;
 			firstDropDown.Options = _dropDownOptions.Select(dv => dv.DisplayValue).OrderBy(x => x).ToList();
-			firstDropDown.Width = firstDropDown.Options.Any() ? 7 * firstDropDown.Options.Max(x => x.Length) : firstDropDown.MinWidth;
+			firstDropDown.MinWidth = firstDropDown.Options.Any() ? 7 * firstDropDown.Options.Max(x => x.Length) : firstDropDown.MinWidth;
 			firstDropDown.Changed += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			secondTextBox.PlaceHolder = other.secondTextBox.PlaceHolder;

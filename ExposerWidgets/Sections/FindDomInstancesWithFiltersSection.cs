@@ -170,7 +170,7 @@
 		protected override void AddFilterSections(ref int row)
         {
             AddWidget(moduleIdLabel, ++row, 1);
-            AddWidget(moduleIdDropDown, row, 4);
+            AddWidget(moduleIdDropDown, row, 4, 1, 2);
 
             AddSection(idFilterSection, new SectionLayout(++row, 0));
 			row += idFilterSection.RowCount;
