@@ -84,7 +84,7 @@
 				{Comparers.NotContains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotContains(fieldValue) },
 			}, "Field ID", "Value"));
 
-		private readonly MultipleFiltersSection<DomInstance> selectableFieldValueFiltersSection;
+		private MultipleFiltersSection<DomInstance> selectableFieldValueFiltersSection;
 
 		private DomHelper domHelper;
 
@@ -92,7 +92,7 @@
         /// Initializes a new instance of the <see cref="FindDomInstancesWithFiltersSection"/>"/> class.
         /// </summary>
         public FindDomInstancesWithFiltersSection() : base()
-        {
+		{
 			var moduleSettingsHelper = new ModuleSettingsHelper(Engine.SLNet.SendMessages);
 			var allModuleIds = moduleSettingsHelper.ModuleSettings.ReadAll().Select(x => x.ModuleId).OrderBy(id => id).ToList();
 
@@ -100,8 +100,19 @@
 			domHelper = new DomHelper(Engine.SLNet.SendMessages, moduleIdDropDown.Selected);
 
 			moduleIdDropDown.Changed += ModuleIdDropDown_Changed;
+			
+			InitializeSelectableFieldFilter();
 
+			foreach (var section in GetMultipleFiltersSections())
+			{
+				section.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+			}
 
+			GenerateUi();
+		}
+
+		private void InitializeSelectableFieldFilter()
+		{
 			var allSectionDefinitions = domHelper.SectionDefinitions.ReadAll();
 			var fieldDescriptorsPerSectionDefinition = allSectionDefinitions.ToDictionary(sd => sd, sd => sd.GetAllFieldDescriptors());
 
@@ -114,13 +125,6 @@
 				{Comparers.Contains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).Contains(fieldValue) },
 				{Comparers.NotContains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotContains(fieldValue) },
 			}, fieldDescriptorsPerSectionDefinition.SelectMany(x => x.Value.Select(fd => new DropDownOption<Guid>($"{x.Key.GetName()}.{fd.Name}", fd.ID.Id))), "Value"));
-
-			foreach (var section in GetMultipleFiltersSections())
-			{
-				section.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
-			}
-
-			GenerateUi();
 		}
 
 		/// <summary>
@@ -130,7 +134,14 @@
 
 		private void ModuleIdDropDown_Changed(object sender, DropDown.DropDownChangedEventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(e.Selected)) domHelper = new DomHelper(Engine.SLNet.SendMessages, e.Selected);
+			if (!string.IsNullOrWhiteSpace(e.Selected)) 
+			{
+				domHelper = new DomHelper(Engine.SLNet.SendMessages, e.Selected);
+
+				InitializeSelectableFieldFilter();
+			}
+
+			InvokeRegenerateUi();
         }
 
 		/// <summary>
