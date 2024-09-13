@@ -66,6 +66,8 @@
 				{Comparers.IsNotUsed, (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.NotContains(sectionDefinitionId) },
 			}));
 
+		private MultipleFiltersSection<DomInstance> selectableSectionDefinitionIdFiltersSection;
+
 		private readonly MultipleFiltersSection<DomInstance> sectionIdFiltersSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
 			"Section ID",
 			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
@@ -101,7 +103,7 @@
 
 			moduleIdDropDown.Changed += ModuleIdDropDown_Changed;
 			
-			InitializeSelectableFieldFilter();
+			InitializeSelectableFilters();
 
 			foreach (var section in GetMultipleFiltersSections())
 			{
@@ -122,15 +124,27 @@
 			{
 				domHelper = new DomHelper(Engine.SLNet.SendMessages, e.Selected);
 
-				InitializeSelectableFieldFilter();
+				InitializeSelectableFilters();
 			}
 
 			InvokeRegenerateUi();
         }
 
-		private void InitializeSelectableFieldFilter()
+		private void InitializeSelectableFilters()
 		{
 			var allSectionDefinitions = domHelper.SectionDefinitions.ReadAll();
+			
+			selectableSectionDefinitionIdFiltersSection = new MultipleFiltersSection<DomInstance>(new SelectableGuidFilterSection<DomInstance>(
+			"Section Definition ID",
+			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
+			{
+				{Comparers.IsUsed, (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.Contains(sectionDefinitionId) },
+				{Comparers.IsNotUsed, (sectionDefinitionId) => DomInstanceExposers.SectionDefinitionIds.NotContains(sectionDefinitionId) },
+			},
+			allSectionDefinitions.Select(sd => new DropDownOption<Guid>(sd.GetName(), sd.GetID().Id))));
+
+			selectableSectionDefinitionIdFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+
 			var fieldDescriptorsPerSectionDefinition = allSectionDefinitions.ToDictionary(sd => sd, sd => sd.GetAllFieldDescriptors());
 
 			selectableFieldValueFiltersSection = new MultipleFiltersSection<DomInstance>(new SelectableGuidStringFilterSection<DomInstance>(
@@ -141,7 +155,10 @@
 				{Comparers.NotEquals, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotEqual(fieldValue) },
 				{Comparers.Contains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).Contains(fieldValue) },
 				{Comparers.NotContains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotContains(fieldValue) },
-			}, fieldDescriptorsPerSectionDefinition.SelectMany(x => x.Value.Select(fd => new DropDownOption<Guid>($"{x.Key.GetName()}.{fd.Name}", fd.ID.Id))), "Value", "Dropdown is populated with [Section Definition Name].[Field Descriptor Name]"));
+			}, 
+			fieldDescriptorsPerSectionDefinition.SelectMany(x => x.Value.Select(fd => new DropDownOption<Guid>($"{x.Key.GetName()}.{fd.Name}", fd.ID.Id))), 
+			"Value", 
+			"Dropdown is populated with [Section Definition Name].[Field Descriptor Name]"));
 
 			selectableFieldValueFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
 		}
@@ -169,6 +186,9 @@
 
 			AddSection(sectionDefinitionIdFiltersSection, new SectionLayout(row, 0));
 			row += sectionDefinitionIdFiltersSection.RowCount;
+
+			AddSection(selectableSectionDefinitionIdFiltersSection, new SectionLayout(row, 0));
+			row += selectableSectionDefinitionIdFiltersSection.RowCount;
 
 			AddSection(sectionIdFiltersSection, new SectionLayout(row, 0));
 			row += sectionIdFiltersSection.RowCount;
