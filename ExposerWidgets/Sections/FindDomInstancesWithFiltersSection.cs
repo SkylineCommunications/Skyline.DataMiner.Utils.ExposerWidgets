@@ -142,6 +142,8 @@
 				{Comparers.Contains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).Contains(fieldValue) },
 				{Comparers.NotContains, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotContains(fieldValue) },
 			}, fieldDescriptorsPerSectionDefinition.SelectMany(x => x.Value.Select(fd => new DropDownOption<Guid>($"{x.Key.GetName()}.{fd.Name}", fd.ID.Id))), "Value"));
+
+			selectableFieldValueFiltersSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
 		}
 
 		/// <summary>
