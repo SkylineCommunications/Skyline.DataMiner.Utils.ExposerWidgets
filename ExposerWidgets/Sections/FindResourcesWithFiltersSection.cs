@@ -95,6 +95,16 @@
 					{Comparers.NotEquals, x => FunctionResourceExposers.MainDVEElementID.NotEqual(x)},
 			}));
 
+		private readonly MultipleFiltersSection<Resource> functionNameFilterSection = new MultipleFiltersSection<Resource>(new StringFilterSection<Resource>(
+			"Function Name",
+			new Dictionary<Comparers, Func<string, FilterElement<Resource>>>
+			{
+					{Comparers.Equals, x => FunctionResourceExposers.FunctionName.Equal(x)},
+					{Comparers.NotEquals, x => FunctionResourceExposers.FunctionName.NotEqual(x)},
+					{Comparers.NotEquals, x => FunctionResourceExposers.FunctionName.Contains(x)},
+					{Comparers.NotEquals, x => FunctionResourceExposers.FunctionName.NotContains(x)},
+			}));
+
 		private readonly MultipleFiltersSection<Resource> modeFilterSection = new MultipleFiltersSection<Resource>(new IntegerFilterSection<Resource>(
 			"Mode",
 			new Dictionary<Comparers, Func<int, FilterElement<Resource>>>
@@ -228,7 +238,10 @@
 			AddSection(functionGuidFilterSection, new SectionLayout(row, 0));
             row += functionGuidFilterSection.RowCount;
 
-            AddSection(resourcePoolFilterSection, new SectionLayout(row, 0));
+			AddSection(functionNameFilterSection, new SectionLayout(row, 0));
+			row += functionNameFilterSection.RowCount;
+
+			AddSection(resourcePoolFilterSection, new SectionLayout(row, 0));
 			row += resourcePoolFilterSection.RowCount;
 
 			AddSection(resourcePoolGuidFilterSection, new SectionLayout(row, 0));
