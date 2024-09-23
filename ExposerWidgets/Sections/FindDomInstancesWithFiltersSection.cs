@@ -118,6 +118,11 @@
 		/// </summary>
 		public string DomModuleId => moduleIdDropDown.Selected;
 
+		/// <summary>
+		/// Event invoked when the DOM Module ID was changed by the user.
+		/// </summary>
+		public event EventHandler DomModuleIdChanged;
+
 		private void ModuleIdDropDown_Changed(object sender, DropDown.DropDownChangedEventArgs e)
         {
 			if (!string.IsNullOrWhiteSpace(e.Selected)) 
@@ -127,6 +132,7 @@
 				InitializeSelectableFilters();
 			}
 
+			DomModuleIdChanged?.Invoke(this, e);
 			InvokeRegenerateUi();
         }
 
