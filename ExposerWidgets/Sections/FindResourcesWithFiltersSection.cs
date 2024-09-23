@@ -101,8 +101,8 @@
 			{
 					{Comparers.Equals, x => FunctionResourceExposers.FunctionName.Equal(x)},
 					{Comparers.NotEquals, x => FunctionResourceExposers.FunctionName.NotEqual(x)},
-					{Comparers.NotEquals, x => FunctionResourceExposers.FunctionName.Contains(x)},
-					{Comparers.NotEquals, x => FunctionResourceExposers.FunctionName.NotContains(x)},
+					{Comparers.Contains, x => FunctionResourceExposers.FunctionName.Contains(x)},
+					{Comparers.NotContains, x => FunctionResourceExposers.FunctionName.NotContains(x)},
 			}));
 
 		private readonly MultipleFiltersSection<Resource> modeFilterSection = new MultipleFiltersSection<Resource>(new IntegerFilterSection<Resource>(
