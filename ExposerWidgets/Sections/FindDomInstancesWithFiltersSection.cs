@@ -88,8 +88,6 @@
 
 		private MultipleFiltersSection<DomInstance> selectableFieldValueFiltersSection;
 
-		private DomHelper domHelper;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FindDomInstancesWithFiltersSection"/>"/> class.
         /// </summary>
@@ -99,7 +97,7 @@
 			var allModuleIds = moduleSettingsHelper.ModuleSettings.ReadAll().Select(x => x.ModuleId).OrderBy(id => id).ToList();
 
 			moduleIdDropDown = new DropDown(allModuleIds, allModuleIds.FirstOrDefault() ?? throw new InvalidOperationException("No DOM modules defined on this system")) { IsDisplayFilterShown = true };
-			domHelper = new DomHelper(Engine.SLNet.SendMessages, moduleIdDropDown.Selected);
+			DomHelper = new DomHelper(Engine.SLNet.SendMessages, moduleIdDropDown.Selected);
 
 			moduleIdDropDown.Changed += ModuleIdDropDown_Changed;
 			
@@ -114,31 +112,25 @@
 		}
 
 		/// <summary>
-		/// Exposes the DOM module ID entered by the user.
+		/// Gets the DomHelper for the current DOM Module ID.
 		/// </summary>
-		public string DomModuleId => moduleIdDropDown.Selected;
-
-		/// <summary>
-		/// Event invoked when the DOM Module ID was changed by the user.
-		/// </summary>
-		public event EventHandler<string> DomModuleIdChanged;
+		public DomHelper DomHelper { get; private set; }
 
 		private void ModuleIdDropDown_Changed(object sender, DropDown.DropDownChangedEventArgs e)
         {
 			if (!string.IsNullOrWhiteSpace(e.Selected)) 
 			{
-				domHelper = new DomHelper(Engine.SLNet.SendMessages, e.Selected);
+				DomHelper = new DomHelper(Engine.SLNet.SendMessages, e.Selected);
 
 				InitializeSelectableFilters();
 			}
 
-			DomModuleIdChanged?.Invoke(this, e.Selected);
 			InvokeRegenerateUi();
         }
 
 		private void InitializeSelectableFilters()
 		{
-			var allSectionDefinitions = domHelper.SectionDefinitions.ReadAll();
+			var allSectionDefinitions = DomHelper.SectionDefinitions.ReadAll();
 			
 			selectableSectionDefinitionIdFiltersSection = new MultipleFiltersSection<DomInstance>(new SelectableGuidFilterSection<DomInstance>(
 			"Section Definition ID",
@@ -212,7 +204,7 @@
         /// <returns>Collection of dom instances.</returns>
         protected override IEnumerable<DomInstance> FindItemsWithFilters()
         {
-            if (domHelper == null) 
+            if (DomHelper == null) 
             {
 				moduleIdDropDown.ValidationState = UIValidationState.Invalid;
 				moduleIdDropDown.ValidationText = "Provide a valid DOM Module ID";
@@ -223,7 +215,7 @@
 				moduleIdDropDown.ValidationState = UIValidationState.Valid;
 			}
 
-			return domHelper.DomInstances.Read(GetCombinedFilterElement());
+			return DomHelper.DomInstances.Read(GetCombinedFilterElement());
         }
 
         /// <summary>
