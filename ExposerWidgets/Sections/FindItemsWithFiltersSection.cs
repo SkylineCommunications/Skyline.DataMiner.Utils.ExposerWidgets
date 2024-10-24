@@ -12,7 +12,7 @@
     /// Section for selecting base info about filtering.
     /// </summary>
     /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
-    public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : Section
+    public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : FindItemsWithFiltersSectionBase
     {
 		private readonly CollapseButton collapseButton = new CollapseButton() { CollapseText = "-", ExpandText = "+", Width = 44 };
 		private readonly Label header = new Label($"Find {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Title };
@@ -36,19 +36,9 @@
                 collapseButton.IsCollapsed = true;
                 SetWidgetsVisibility(!collapseButton.IsCollapsed);
 				resultsSection.LoadNewItems(GetItemsBasedOnFilters());
-                DataMinerObjectsRetrievedBasedOnFilters?.Invoke(this, EventArgs.Empty);
+                InvokeDataMinerObjectsRetrievedBasedOnFilters();
             };      
         }
-
-        /// <summary>
-        /// Event triggered when we need to regenerate UI.
-        /// </summary>
-        public event EventHandler RegenerateUiRequired;
-
-        /// <summary>
-        /// An event raised when DataMiner objects have been retrieved based on the filters.
-        /// </summary>
-        public event EventHandler DataMinerObjectsRetrievedBasedOnFilters;
 
         /// <summary>
         /// Gets list of selected DataMiner objects.
@@ -56,14 +46,9 @@
         public IEnumerable<DataMinerObjectType> SelectedItems => resultsSection.SelectedItems;
 
         /// <summary>
-        /// Gets a boolean indicating if this item type is supported on the current system.
-        /// </summary>
-        public bool ItemTypeIsSupportedOnThisSystem { get; protected set; } = true;
-
-        /// <summary>
         /// Regenerates section UI.
         /// </summary>
-        public void RegenerateUi()
+        public override void RegenerateUi()
         {
             RegenerateFilterSections();
             GenerateUi();
@@ -227,14 +212,6 @@
 
 			AddSection(resultsSection, new SectionLayout(++row, 0));
 		}
-
-        /// <summary>
-        /// Method that triggers UI regeneration evenet.
-        /// </summary>
-        protected void InvokeRegenerateUi()
-        {
-            RegenerateUiRequired?.Invoke(this, EventArgs.Empty);
-        }
 
         /// <summary>
         /// 
