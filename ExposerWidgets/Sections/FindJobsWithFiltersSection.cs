@@ -56,7 +56,7 @@
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FindJobsWithFiltersSection"/>"/> class.
 		/// </summary>
-		public FindJobsWithFiltersSection() : base()
+		public FindJobsWithFiltersSection()
 		{
 			foreach (var section in GetMultipleFiltersSections())
 			{

@@ -181,17 +181,23 @@
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FindResourcesWithFiltersSection"/>"/> class.
 		/// </summary>
-		public FindResourcesWithFiltersSection() : base()
+		public FindResourcesWithFiltersSection()
         {
             var resourcePools = resourceManagerHelper.GetResourcePools() ?? new ResourcePool[0];
 
+			if (!resourcePools.Any())
+			{
+				ItemTypeIsSupportedOnThisSystem = false;
+				return;
+			}
+
 			resourcePoolFilterSection = new MultipleFiltersSection<Resource>(new ResourcePoolFilterSection(
-                "Resource Pool",
-                new Dictionary<Comparers, Func<Guid, FilterElement<Resource>>>
-                {
-                    {Comparers.Equals,  x => ResourceExposers.PoolGUIDs.Contains(x) }
-                }, 
-                resourcePools));
+				"Resource Pool",
+				new Dictionary<Comparers, Func<Guid, FilterElement<Resource>>>
+				{
+								{Comparers.Equals,  x => ResourceExposers.PoolGUIDs.Contains(x) }
+				},
+				resourcePools));	
 
 			foreach (var section in GetMultipleFiltersSections())
 			{
@@ -240,10 +246,10 @@
 
 			AddSection(functionNameFilterSection, new SectionLayout(row, 0));
 			row += functionNameFilterSection.RowCount;
-
+		
 			AddSection(resourcePoolFilterSection, new SectionLayout(row, 0));
-			row += resourcePoolFilterSection.RowCount;
-
+			row += resourcePoolFilterSection.RowCount;		
+			
 			AddSection(resourcePoolGuidFilterSection, new SectionLayout(row, 0));
 			row += resourcePoolGuidFilterSection.RowCount;
 

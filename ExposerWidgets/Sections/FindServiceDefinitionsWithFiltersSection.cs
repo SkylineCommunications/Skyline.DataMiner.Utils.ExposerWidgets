@@ -65,7 +65,7 @@
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FindServiceDefinitionsWithFiltersSection"/>"/> class.
 		/// </summary>
-		public FindServiceDefinitionsWithFiltersSection() : base()
+		public FindServiceDefinitionsWithFiltersSection()
         {
             serviceManagerHelper.RequestResponseEvent += (s, e) => e.responseMessage = Engine.SLNet.SendSingleResponseMessage(e.requestMessage);
 

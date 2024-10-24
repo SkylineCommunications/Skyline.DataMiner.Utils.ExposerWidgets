@@ -80,10 +80,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="FindTicketsWithFiltersSection"/>"/> class.
         /// </summary>
-        public FindTicketsWithFiltersSection() : base()
+        public FindTicketsWithFiltersSection()
         {            
             ticketingHelper = new TicketingGatewayHelper { HandleEventsAsync = false };
-            ticketingHelper.RequestResponseEvent += (sender, args) => args.responseMessage = Skyline.DataMiner.Automation.Engine.SLNet.SendSingleResponseMessage(args.requestMessage);
+            ticketingHelper.RequestResponseEvent += (sender, args) => args.responseMessage = Automation.Engine.SLNet.SendSingleResponseMessage(args.requestMessage);
 
 			foreach (var section in GetMultipleFiltersSections())
 			{

@@ -123,7 +123,7 @@
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FindReservationsWithFiltersSection"/>"/> class.
 		/// </summary>
-		public FindReservationsWithFiltersSection() : base()
+		public FindReservationsWithFiltersSection()
         {
 			foreach (var section in GetMultipleFiltersSections())
 			{

@@ -56,6 +56,11 @@
         public IEnumerable<DataMinerObjectType> SelectedItems => resultsSection.SelectedItems;
 
         /// <summary>
+        /// Gets a boolean indicating if this item type is supported on the current system.
+        /// </summary>
+        public bool ItemTypeIsSupportedOnThisSystem { get; protected set; } = true;
+
+        /// <summary>
         /// Regenerates section UI.
         /// </summary>
         public void RegenerateUi()

@@ -93,10 +93,16 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="FindDomInstancesWithFiltersSection"/>"/> class.
         /// </summary>
-        public FindDomInstancesWithFiltersSection() : base()
+        public FindDomInstancesWithFiltersSection()
 		{
 			var moduleSettingsHelper = new ModuleSettingsHelper(Engine.SLNet.SendMessages);
 			var allModuleIds = moduleSettingsHelper.ModuleSettings.ReadAll().Select(x => x.ModuleId).OrderBy(id => id).ToList();
+
+			if (!allModuleIds.Any())
+			{
+				ItemTypeIsSupportedOnThisSystem = false;
+				return;
+			}
 
 			moduleIdDropDown = new DropDown(allModuleIds, allModuleIds.FirstOrDefault() ?? throw new InvalidOperationException("No DOM modules defined on this system")) { IsDisplayFilterShown = true };
 			DomHelper = new DomHelper(Engine.SLNet.SendMessages, moduleIdDropDown.Selected);

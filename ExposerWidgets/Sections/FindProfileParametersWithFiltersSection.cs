@@ -59,7 +59,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="FindProfileParametersWithFiltersSection"/>"/> class.
         /// </summary>
-        public FindProfileParametersWithFiltersSection() : base()
+        public FindProfileParametersWithFiltersSection()
         {
             profileHelper = new ProfileHelper(Engine.SLNet.SendMessages);
 
