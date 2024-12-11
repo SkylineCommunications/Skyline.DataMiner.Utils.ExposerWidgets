@@ -10,9 +10,9 @@
 	/// 
 	/// </summary>
 	/// <typeparam name="DataMinerObjectType"></typeparam>
-	public class SelectableGuidStringFilterSection<DataMinerObjectType> : SelectableFilterSectionTwoInputs<DataMinerObjectType, Guid, string>, IDataMinerObjectFilter<DataMinerObjectType>
+	public class SelectableGuidIntegerFilterSection<DataMinerObjectType> : SelectableFilterSectionTwoInputs<DataMinerObjectType, Guid, int>, IDataMinerObjectFilter<DataMinerObjectType>
 	{
-		private readonly TextBox secondTextBox = new TextBox();
+		private readonly Numeric numeric = new Numeric(0) { Decimals = 0, StepSize = 0 };
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="GuidStringFilterSection{DataMinerObjectType}"/>"/> class.
@@ -20,12 +20,10 @@
 		/// <param name="filterName"></param>
 		/// <param name="filterFunctions"></param>
 		/// <param name="dropDownOptions"></param>
-		/// <param name="secondValueExplanation"></param>
 		/// <param name="tooltip"></param>
-		public SelectableGuidStringFilterSection(string filterName, Dictionary<Comparers, Func<Guid, string, FilterElement<DataMinerObjectType>>> filterFunctions, IEnumerable<IDropDownOption<Guid>> dropDownOptions, string secondValueExplanation = null, string tooltip = null) : base(filterName, filterFunctions, dropDownOptions, tooltip)
+		public SelectableGuidIntegerFilterSection(string filterName, Dictionary<Comparers, Func<Guid, int, FilterElement<DataMinerObjectType>>> filterFunctions, IEnumerable<IDropDownOption<Guid>> dropDownOptions, string tooltip = null) : base(filterName, filterFunctions, dropDownOptions, tooltip)
 		{
-			secondTextBox.PlaceHolder = secondValueExplanation ?? string.Empty;
-			secondTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+			numeric.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			GenerateUi();
 		}
@@ -34,10 +32,9 @@
 		/// Copy constructor
 		/// </summary>
 		/// <param name="other"></param>
-		protected SelectableGuidStringFilterSection(SelectableGuidStringFilterSection<DataMinerObjectType> other) : base(other)
+		protected SelectableGuidIntegerFilterSection(SelectableGuidIntegerFilterSection<DataMinerObjectType> other) : base(other)
 		{
-			secondTextBox.PlaceHolder = other.secondTextBox.PlaceHolder;
-			secondTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+			numeric.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			GenerateUi();
 		}
@@ -50,16 +47,16 @@
 		/// <summary>
 		/// Gets or sets string filter value for custom property.
 		/// </summary>
-		public override string SecondValue
+		public override int SecondValue
 		{
-			get => secondTextBox.Text;
-			set => secondTextBox.Text = value;
+			get => (int)numeric.Value;
+			set => numeric.Value = value;
 		}
 
 		/// <summary>
 		/// The second widget that allows the user to input a value for the filter.
 		/// </summary>
-		protected override InteractiveWidget SecondInputWidget => secondTextBox;
+		protected override InteractiveWidget SecondInputWidget => numeric;
 
 		/// <summary>
 		/// Creates a clone of the current instance.
@@ -67,7 +64,7 @@
 		/// <returns></returns>
 		public override FilterSectionBase<DataMinerObjectType> Clone()
 		{
-			return new SelectableGuidStringFilterSection<DataMinerObjectType>(this);
+			return new SelectableGuidIntegerFilterSection<DataMinerObjectType>(this);
 		}
 	}
 }
