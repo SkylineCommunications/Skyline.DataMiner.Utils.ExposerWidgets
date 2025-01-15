@@ -354,15 +354,9 @@
         /// <returns>Collection of dom instances.</returns>
         protected override IEnumerable<DomInstance> FindItemsWithFilters()
         {
-            if (DomHelper == null) 
-            {
-				moduleIdDropDown.ValidationState = UIValidationState.Invalid;
-				moduleIdDropDown.ValidationText = "Provide a valid DOM Module ID";
-                return new List<DomInstance>();
-            }
-			else
+			if (!DomHelpersIsValid())
 			{
-				moduleIdDropDown.ValidationState = UIValidationState.Valid;
+				return new List<DomInstance>();
 			}
 
 			return DomHelper.DomInstances.Read(GetCombinedFilterElement());
@@ -374,18 +368,27 @@
 		/// <returns>Count.</returns>
 		protected override long CountItemsWithFilters()
 		{
+			if (!DomHelpersIsValid())
+			{
+				return 0;
+			}
+
+			return DomHelper.DomInstances.Count(GetCombinedFilterElement(allowNoActiveFilter: true));
+		}
+
+		private bool DomHelpersIsValid()
+		{
 			if (DomHelper == null)
 			{
 				moduleIdDropDown.ValidationState = UIValidationState.Invalid;
 				moduleIdDropDown.ValidationText = "Provide a valid DOM Module ID";
-				return 0;
+				return false;
 			}
 			else
 			{
 				moduleIdDropDown.ValidationState = UIValidationState.Valid;
+				return true;
 			}
-
-			return DomHelper.DomInstances.Count(GetCombinedFilterElement());
 		}
 
 		/// <summary>

@@ -104,7 +104,7 @@
 		/// </summary>
 		protected override long CountItemsWithFilters()
 		{
-			return jobManagerHelper.Jobs.Count(GetCombinedFilterElement());
+			return jobManagerHelper.Jobs.Count(GetCombinedFilterElement(allowNoActiveFilter: true));
 		}
 
 		/// <summary>

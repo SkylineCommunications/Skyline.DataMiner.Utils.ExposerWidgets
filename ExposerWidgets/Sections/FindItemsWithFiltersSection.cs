@@ -100,7 +100,7 @@
         /// <returns>ID of an object.</returns>
         protected abstract string IdentifyItem(DataMinerObjectType item);
 
-        private IEnumerable<DataMinerObjectType> GetItemsBasedOnFilters()
+		private IEnumerable<DataMinerObjectType> GetItemsBasedOnFilters()
         {           
             if (!OneOrMoreFiltersAreActive() || !ActiveFiltersAreValid())
             {
@@ -194,11 +194,21 @@
         /// </summary>
         /// <returns>Combined filter.</returns>
         /// <exception cref="InvalidOperationException">If there isn't any active filter.</exception>
-        protected ANDFilterElement<DataMinerObjectType> GetCombinedFilterElement()
+        protected ANDFilterElement<DataMinerObjectType> GetCombinedFilterElement(bool allowNoActiveFilter = false)
         {
             var individualActiveFilterElements = GetIndividualFilters().Where(filter => filter.IsIncluded).Select(filter => filter.FilterElement);
 
-            if (!individualActiveFilterElements.Any()) throw new InvalidOperationException("Unable to find any active filters");
+            if (!individualActiveFilterElements.Any())
+            {
+                if (allowNoActiveFilter)
+                {
+                    return new ANDFilterElement<DataMinerObjectType>();
+                }
+                else
+                {
+					throw new InvalidOperationException("Unable to find any active filters");
+				}
+			}
 
             return new ANDFilterElement<DataMinerObjectType>(individualActiveFilterElements.ToArray());
         }
