@@ -134,6 +134,11 @@
 		/// </summary>
 		public DomHelper DomHelper { get; private set; }
 
+		/// <summary>
+		/// Counting items is supported.
+		/// </summary>
+		protected override bool CountingItemsIsSupported { get; } = true;
+
 		private void ModuleIdDropDown_Changed(object sender, DropDown.DropDownChangedEventArgs e)
         {
 			if (!string.IsNullOrWhiteSpace(e.Selected)) 
