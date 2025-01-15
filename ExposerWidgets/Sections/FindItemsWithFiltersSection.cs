@@ -32,7 +32,7 @@
 
             collapseButton.Pressed += (s, e) => SetWidgetsVisibility(!collapseButton.IsCollapsed);
 
-			findItemsBasedOnFiltersButton.Pressed += (s, e) =>
+			countItemsBasedOnFiltersButton.Pressed += (s, e) =>
 			{
 				collapseButton.IsCollapsed = true;
 				SetWidgetsVisibility(!collapseButton.IsCollapsed);
@@ -249,6 +249,7 @@
 				section.IsVisible = isVisible;
 			}
 
+            countItemsBasedOnFiltersButton.IsVisible = isVisible;
             findItemsBasedOnFiltersButton.IsVisible = isVisible;
 		}
 	}

@@ -55,7 +55,7 @@
 			selectAllButton.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
 			unselectAllButton.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
 
-			selectItemsCheckBoxList.IsVisible = !collapseButton.IsCollapsed;
+			selectItemsCheckBoxList.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
 		}
 
 		/// <summary>
