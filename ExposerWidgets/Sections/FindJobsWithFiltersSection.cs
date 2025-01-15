@@ -67,6 +67,11 @@
 		}
 
 		/// <summary>
+		/// Counting items is supported.
+		/// </summary>
+		protected override bool CountingItemsIsSupported { get; } = true;
+
+		/// <summary>
 		/// Adding filter section in the UI.
 		/// </summary>
 		/// <param name="row">Row on which section should appear.</param>
@@ -92,6 +97,14 @@
 		protected override IEnumerable<Job> FindItemsWithFilters()
 		{
 			return jobManagerHelper.Jobs.Read(GetCombinedFilterElement()).ToList();
+		}
+
+		/// <summary>
+		/// Count jobs matching the filters.
+		/// </summary>
+		protected override long CountItemsWithFilters()
+		{
+			return jobManagerHelper.Jobs.Count(GetCombinedFilterElement());
 		}
 
 		/// <summary>

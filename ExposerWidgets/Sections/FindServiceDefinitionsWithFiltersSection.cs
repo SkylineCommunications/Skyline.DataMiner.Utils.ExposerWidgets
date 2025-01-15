@@ -89,14 +89,23 @@
             }
 
             return serviceManagerHelper.GetServiceDefinitions(combinedFilter);
-        }
+		}
 
-        /// <summary>
-        /// Gets name of service definition.
-        /// </summary>
-        /// <param name="item">Service definition for which we want to retrieve name.</param>
-        /// <returns>Name of service definition.</returns>
-        protected override string IdentifyItem(ServiceDefinition item)
+		/// <summary>
+		/// Not supported
+		/// </summary>
+		/// <exception cref="NotSupportedException"></exception>
+		protected override long CountItemsWithFilters()
+		{
+			throw new NotSupportedException();
+		}
+
+		/// <summary>
+		/// Gets name of service definition.
+		/// </summary>
+		/// <param name="item">Service definition for which we want to retrieve name.</param>
+		/// <returns>Name of service definition.</returns>
+		protected override string IdentifyItem(ServiceDefinition item)
         {
             return $"{item.Name} [{item.ID}]";
 		}

@@ -140,7 +140,16 @@
         protected override IEnumerable<ReservationInstance> FindItemsWithFilters()
         {
             return resourceManagerHelper.GetReservationInstances(GetCombinedFilterElement()).ToList();
-        }
+		}
+
+		/// <summary>
+		/// Not supported
+		/// </summary>
+		/// <exception cref="NotSupportedException"></exception>
+		protected override long CountItemsWithFilters()
+		{
+			throw new NotSupportedException();
+		}
 
 		/// <summary>
 		/// Gets name of reservation instance.

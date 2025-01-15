@@ -363,11 +363,31 @@
 			return DomHelper.DomInstances.Read(GetCombinedFilterElement());
         }
 
-        /// <summary>
-        /// Retrieves name of dom instance.
-        /// </summary>
-        /// <returns>Name of dom instance.</returns>
-        protected override string IdentifyItem(DomInstance item)
+		/// <summary>
+		/// Counts all items in the system based on input values.
+		/// </summary>
+		/// <returns>Count.</returns>
+		protected override long CountItemsWithFilters()
+		{
+			if (DomHelper == null)
+			{
+				moduleIdDropDown.ValidationState = UIValidationState.Invalid;
+				moduleIdDropDown.ValidationText = "Provide a valid DOM Module ID";
+				return 0;
+			}
+			else
+			{
+				moduleIdDropDown.ValidationState = UIValidationState.Valid;
+			}
+
+			return DomHelper.DomInstances.Count(GetCombinedFilterElement());
+		}
+
+		/// <summary>
+		/// Retrieves name of dom instance.
+		/// </summary>
+		/// <returns>Name of dom instance.</returns>
+		protected override string IdentifyItem(DomInstance item)
         {
             return $"{item.Name} [{item.ID.Id}]";
         }

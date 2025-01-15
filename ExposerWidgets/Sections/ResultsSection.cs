@@ -77,14 +77,28 @@
 		}
 
 		/// <summary>
+		/// Loads the count to be displayed.
+		/// </summary>
+		/// <param name="itemCount"></param>
+		public void LoadNewCount(long itemCount)
+		{
+			SetItemsAndCount(Enumerable.Empty<DataMinerObjectType>(), itemCount);
+		}
+
+		/// <summary>
 		/// Loads new items to be displayed for manual selection.
 		/// </summary>
 		/// <param name="newItems"></param>
 		public void LoadNewItems(IEnumerable<DataMinerObjectType> newItems)
 		{
-			allItems = newItems.ToList();
+			SetItemsAndCount(newItems, newItems.Count());
+		}
 
-			amountOfMatchingItemsLabel.Text = $"Found {allItems.Count} {typeof(DataMinerObjectType).Name}s matching the filters";
+		private void SetItemsAndCount(IEnumerable<DataMinerObjectType> items, long itemCount)
+		{
+			allItems = items.ToList();
+
+			amountOfMatchingItemsLabel.Text = $"Found {itemCount} {typeof(DataMinerObjectType).Name}s matching the filters";
 
 			selectItemsCheckBoxList.SetOptions(allItems.Select(r => identifyItemFunction(r)).OrderBy(name => name));
 			selectItemsCheckBoxList.CheckAll();

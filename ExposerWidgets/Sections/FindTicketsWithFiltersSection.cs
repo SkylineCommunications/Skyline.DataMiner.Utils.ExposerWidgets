@@ -100,14 +100,23 @@
         protected override IEnumerable<Ticket> FindItemsWithFilters()
         {
             return new HashSet<Ticket>(ticketingHelper.GetTickets(null, GetCombinedFilterElement(), false).ToList());
-        }
+		}
 
-        /// <summary>
-        /// Gets name of ticket.
-        /// </summary>
-        /// <param name="item">Ticket for which we want to retrieve name.</param>
-        /// <returns>Name of ticket.</returns>
-        protected override string IdentifyItem(Ticket item)
+		/// <summary>
+		/// Not supported
+		/// </summary>
+		/// <exception cref="NotSupportedException"></exception>
+		protected override long CountItemsWithFilters()
+		{
+			throw new NotSupportedException();
+		}
+
+		/// <summary>
+		/// Gets name of ticket.
+		/// </summary>
+		/// <param name="item">Ticket for which we want to retrieve name.</param>
+		/// <returns>Name of ticket.</returns>
+		protected override string IdentifyItem(Ticket item)
         {
             return item.ID.ToString();
         }

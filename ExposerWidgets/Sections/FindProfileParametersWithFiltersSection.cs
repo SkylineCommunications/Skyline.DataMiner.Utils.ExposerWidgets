@@ -97,13 +97,22 @@
         protected override IEnumerable<Parameter> FindItemsWithFilters()
         {
             return profileHelper.ProfileParameters.Read(GetCombinedFilterElement());
-        }
+		}
 
-        /// <summary>
-        /// Retrieves name of profile parameter.
-        /// </summary>
-        /// <returns>Name of profile parameter.</returns>
-        protected override string IdentifyItem(Parameter item)
+		/// <summary>
+		/// Not supported
+		/// </summary>
+		/// <exception cref="NotSupportedException"></exception>
+		protected override long CountItemsWithFilters()
+		{
+			throw new NotSupportedException();
+		}
+
+		/// <summary>
+		/// Retrieves name of profile parameter.
+		/// </summary>
+		/// <returns>Name of profile parameter.</returns>
+		protected override string IdentifyItem(Parameter item)
         {
             return $"{item.Name} [{item.ID}]";
 		}

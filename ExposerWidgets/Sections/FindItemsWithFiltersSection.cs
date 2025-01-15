@@ -1,22 +1,23 @@
 ﻿namespace Skyline.DataMiner.Utils.YLE.UI.Filters
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Skyline.DataMiner.Net.Messages.SLDataGateway;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
-    using Skyline.DataMiner.Utils.ExposerWidgets.Sections;
-    using Skyline.DataMiner.Utils.InteractiveAutomationScript;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Sections;
+	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
-    /// <summary>
-    /// Section for selecting base info about filtering.
-    /// </summary>
-    /// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
-    public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : FindItemsWithFiltersSectionBase
+	/// <summary>
+	/// Section for selecting base info about filtering.
+	/// </summary>
+	/// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
+	public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : FindItemsWithFiltersSectionBase
     {
 		private readonly CollapseButton collapseButton = new CollapseButton() { CollapseText = "-", ExpandText = "+", Width = 44 };
 		private readonly Label header = new Label($"Find {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Title };
 
+        private readonly Button countItemsBasedOnFiltersButton = new Button($"Count {typeof(DataMinerObjectType).Name}s Based on Filters") { Width = 300 };
         private readonly Button findItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction, Width = 300 };
 
         private readonly ResultsSection<DataMinerObjectType> resultsSection;
@@ -31,7 +32,15 @@
 
             collapseButton.Pressed += (s, e) => SetWidgetsVisibility(!collapseButton.IsCollapsed);
 
-            findItemsBasedOnFiltersButton.Pressed += (s, e) =>
+			findItemsBasedOnFiltersButton.Pressed += (s, e) =>
+			{
+				collapseButton.IsCollapsed = true;
+				SetWidgetsVisibility(!collapseButton.IsCollapsed);
+				resultsSection.LoadNewCount(CountItemsWithFilters());
+				InvokeDataMinerObjectsRetrievedBasedOnFilters();
+			};
+
+			findItemsBasedOnFiltersButton.Pressed += (s, e) =>
             {
                 collapseButton.IsCollapsed = true;
                 SetWidgetsVisibility(!collapseButton.IsCollapsed);
@@ -40,10 +49,15 @@
             };      
         }
 
-        /// <summary>
-        /// Gets list of selected DataMiner objects.
-        /// </summary>
-        public IEnumerable<DataMinerObjectType> SelectedItems => resultsSection.SelectedItems;
+		/// <summary>
+		/// A boolean indicating if counting is supported.
+		/// </summary>
+		protected virtual bool CountingItemsIsSupported { get; }
+
+		/// <summary>
+		/// Gets list of selected DataMiner objects.
+		/// </summary>
+		public IEnumerable<DataMinerObjectType> SelectedItems => resultsSection.SelectedItems;
 
         /// <summary>
         /// Regenerates section UI.
@@ -72,6 +86,12 @@
         /// </summary>
         /// <returns>Collection of filtered objects.</returns>
         protected abstract IEnumerable<DataMinerObjectType> FindItemsWithFilters();
+
+		/// <summary>
+		/// Counting all objects based on provided filters.
+		/// </summary>
+		/// <returns>Collection of filtered objects.</returns>
+		protected abstract long CountItemsWithFilters();
 
         /// <summary>
         /// Gets ID of object.
@@ -207,6 +227,11 @@
             AddFilterSections(ref row);
 
 			AddWidget(new WhiteSpace(), ++row, 0);
+
+            if (CountingItemsIsSupported)
+            {
+				AddWidget(countItemsBasedOnFiltersButton, ++row, 0, 1, 5);
+			}
 
 			AddWidget(findItemsBasedOnFiltersButton, ++row, 0, 1, 5);
 
