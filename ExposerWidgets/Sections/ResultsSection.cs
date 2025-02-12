@@ -3,6 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.Text.RegularExpressions;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
 	/// <summary>
@@ -18,7 +19,9 @@
 		private readonly CheckBoxList selectItemsCheckBoxList = new CheckBoxList() { Height = 400, MaxWidth = 1200 };
 		private readonly Button selectAllButton = new Button("Select All") { Width = 100, IsVisible = false };
 		private readonly Button unselectAllButton = new Button("Unselect All") { Width = 100, IsVisible = false };
-		
+		private readonly Button selectBasedOnRegexButton = new Button("Select Based on Regex") { Width = 100, IsVisible = false };
+		private readonly TextBox regexTextBox = new TextBox { PlaceHolder = "Regex", IsVisible = false };
+
 		private readonly Func<DataMinerObjectType, string> identifyItemFunction;
 		
 		private List<DataMinerObjectType> allItems = new List<DataMinerObjectType>();
@@ -45,17 +48,37 @@
 				selectItemsCheckBoxList.UncheckAll();
 				SetAmountOfSelectedItemsMessage();
 			};
+
+			selectBasedOnRegexButton.Pressed += (o, e) =>
+			{
+				var regex = new Regex(regexTextBox.Text);
+				foreach (var option in selectItemsCheckBoxList.Options)
+				{
+					if (regex.IsMatch(option))
+					{
+						selectItemsCheckBoxList.Check(option);
+					}
+					else
+					{
+						selectItemsCheckBoxList.Uncheck(option);
+					}
+				}
+				SetAmountOfSelectedItemsMessage();
+			};
 		}
 
 		private void UpdateWidgetVisibility()
 		{
 			amountOfMatchingItemsLabel.IsVisible = !collapseButton.IsCollapsed;
 
-			amountOfSelectedItemsLabel.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
-			selectAllButton.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
-			unselectAllButton.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
+			bool selectionButtonsVisible = !collapseButton.IsCollapsed && allItems.Any();
 
-			selectItemsCheckBoxList.IsVisible = !collapseButton.IsCollapsed && allItems.Any();
+			amountOfSelectedItemsLabel.IsVisible = selectionButtonsVisible;
+			selectAllButton.IsVisible = selectionButtonsVisible;
+			unselectAllButton.IsVisible = selectionButtonsVisible;
+			selectBasedOnRegexButton.IsVisible = selectionButtonsVisible;
+			regexTextBox.IsVisible = selectionButtonsVisible;
+			selectItemsCheckBoxList.IsVisible = selectionButtonsVisible;
 		}
 
 		/// <summary>
@@ -141,7 +164,9 @@
 			AddWidget(amountOfMatchingItemsLabel, ++row, 1, 1, 100);
 
 			AddWidget(selectAllButton, ++row, 1);
-			AddWidget(unselectAllButton, row, 2, 1, 100);
+			AddWidget(unselectAllButton, row, 2);
+			AddWidget(selectBasedOnRegexButton, row, 3);
+			AddWidget(regexTextBox, row, 4);
 
 			AddWidget(amountOfSelectedItemsLabel, ++row, 1, 1, 100);
 
