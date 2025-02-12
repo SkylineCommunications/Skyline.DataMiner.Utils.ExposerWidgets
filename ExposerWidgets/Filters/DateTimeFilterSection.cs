@@ -32,7 +32,9 @@
         /// <param name="other"></param>
         protected DateTimeFilterSection(DateTimeFilterSection<DataMinerObjectType> other) : base(other)
         {
-            GenerateUi();
+			dateTimePicker.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			GenerateUi();
         }
 
         /// <summary>

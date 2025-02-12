@@ -37,7 +37,10 @@
         /// <param name="other"></param>
         protected StringFilterSection(StringFilterSection<DataMinerObjectType> other) : base(other)
         {
-            GenerateUi();
+			filterContentTextBox.PlaceHolder = other.filterContentTextBox.PlaceHolder;
+			filterContentTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			GenerateUi();
         }
 
         /// <summary>

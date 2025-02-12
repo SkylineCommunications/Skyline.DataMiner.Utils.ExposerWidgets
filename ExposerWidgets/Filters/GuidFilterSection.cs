@@ -35,7 +35,9 @@
         /// <param name="other"></param>
         protected GuidFilterSection(GuidFilterSection<DataMinerObjectType> other) : base(other)
         {
-            GenerateUi();
+			filterContentTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			GenerateUi();
         }
 
         /// <summary>

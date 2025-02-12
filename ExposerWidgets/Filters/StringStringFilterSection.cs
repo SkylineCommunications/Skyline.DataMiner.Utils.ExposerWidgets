@@ -41,9 +41,12 @@
         protected StringStringFilterSection(StringStringFilterSection<DataMinerObjectType> other) : base(other)
         {
             firstTextBox.PlaceHolder = other.firstTextBox.PlaceHolder;
-            secondTextBox.PlaceHolder = other.secondTextBox.PlaceHolder;
+			firstTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
 
-            GenerateUi();
+			secondTextBox.PlaceHolder = other.secondTextBox.PlaceHolder;
+			secondTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			GenerateUi();
         }
 
         /// <summary>

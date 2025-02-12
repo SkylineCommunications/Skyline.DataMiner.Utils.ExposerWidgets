@@ -45,6 +45,9 @@
         protected StringIntegerFilterSection(StringIntegerFilterSection<DataMinerObjectType> other) : base(other)
         {
 			firstValueTextBox.PlaceHolder = other.firstValueTextBox.PlaceHolder;
+			firstValueTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			secondValueNumeric.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			GenerateUi();
         }

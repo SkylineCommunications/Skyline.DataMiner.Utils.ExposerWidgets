@@ -42,7 +42,10 @@
 		protected GuidStringFilterSection(GuidStringFilterSection<DataMinerObjectType> other) : base(other)
 		{
 			firstTextBox.PlaceHolder = other.firstTextBox.PlaceHolder;
+			firstTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
 			secondTextBox.PlaceHolder = other.secondTextBox.PlaceHolder;
+			secondTextBox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			GenerateUi();
 		}

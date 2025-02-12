@@ -32,7 +32,9 @@
         /// <param name="other"></param>
         protected BooleanFilterSection(BooleanFilterSection<DataMinerObjectType> other) : base(other)
         {
-            GenerateUi();
+			filterValueCheckBox.Changed += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			GenerateUi();
         }
 
         /// <summary>

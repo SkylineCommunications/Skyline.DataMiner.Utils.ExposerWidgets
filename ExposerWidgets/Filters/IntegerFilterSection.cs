@@ -36,7 +36,9 @@
         /// <param name="other"></param>
         protected IntegerFilterSection(IntegerFilterSection<DataMinerObjectType> other) : base(other)
         {
-            GenerateUi();
+			filterContentNumeric.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			GenerateUi();
         }
 
         /// <summary>

@@ -40,6 +40,9 @@
 		protected GuidIntegerFilterSection(GuidIntegerFilterSection<DataMinerObjectType> other) : base(other)
 		{
 			textbox.PlaceHolder = other.textbox.PlaceHolder;
+			textbox.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
+
+			numeric.FocusLost += (s, e) => isIncludedCheckBox.IsChecked = true;
 
 			GenerateUi();
 		}
