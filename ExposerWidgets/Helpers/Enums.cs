@@ -79,6 +79,34 @@
 		[Description("Is Not Used")]
 		[ComparerType(ComparerType.Passive)]
 		IsNotUsed,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("Exists And Equals")]
+		[ComparerType(ComparerType.Active)]
+		ExistsAndEquals,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("Exists And Does Not Equal")]
+		[ComparerType(ComparerType.Active)]
+		ExistsAndNotEquals,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("Exists And Contains")]
+		[ComparerType(ComparerType.Active)]
+		ExistsAndContains,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		[Description("Exists And Does Not Contain")]
+		[ComparerType(ComparerType.Active)]
+		ExistsAndNotContains,
 	}
 
 	/// <summary>

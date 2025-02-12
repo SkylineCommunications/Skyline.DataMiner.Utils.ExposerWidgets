@@ -105,10 +105,10 @@
             "Property",
             new Dictionary<Comparers, Func<string, string, FilterElement<ReservationInstance>>>
             {
-                {Comparers.Equals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Equal(propertyValue) },
-                {Comparers.NotEquals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue) },
-                {Comparers.Contains, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Contains(propertyValue) },
-                {Comparers.NotContains, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotContains(propertyValue) },
+                {Comparers.ExistsAndEquals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Equal(propertyValue) },
+                {Comparers.ExistsAndNotEquals, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue) },
+                {Comparers.ExistsAndContains, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).Contains(propertyValue) },
+                {Comparers.ExistsAndNotContains, (propertyName, propertyValue) => ReservationInstanceExposers.Properties.DictStringField(propertyName).NotContains(propertyValue) },
             }, "Name", "Value"));
 
 		private readonly MultipleFiltersSection<ReservationInstance> isQuarantinedFilterSection = new MultipleFiltersSection<ReservationInstance>(new BooleanFilterSection<ReservationInstance>(
