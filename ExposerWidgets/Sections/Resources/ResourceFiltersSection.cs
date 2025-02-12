@@ -1,4 +1,4 @@
-﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
+﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections.Resources
 {
 	using System;
 	using System.Collections.Generic;
@@ -15,15 +15,15 @@
 	/// <summary>
 	/// Section for filtering resources.
 	/// </summary>
-	public class FindResourcesWithFiltersSection : FindItemsWithFiltersSection<Resource>
-    {
-        private readonly MultipleFiltersSection<Resource> functionGuidFilterSection = new MultipleFiltersSection<Resource>(new GuidFilterSection<Resource>(
-            "Function ID",
-            new Dictionary<Comparers, Func<Guid, FilterElement<Resource>>>
-            {
-                {Comparers.Equals, x => FunctionResourceExposers.FunctionGUID.Equal(x) },
-                {Comparers.NotEquals, x => FunctionResourceExposers.FunctionGUID.NotEqual(x) },
-            }));
+	public class ResourceFiltersSection : SectionContainingDataMinerObjectFilters<Resource>
+	{
+		private readonly MultipleFiltersSection<Resource> functionGuidFilterSection = new MultipleFiltersSection<Resource>(new GuidFilterSection<Resource>(
+			"Function ID",
+			new Dictionary<Comparers, Func<Guid, FilterElement<Resource>>>
+			{
+				{Comparers.Equals, x => FunctionResourceExposers.FunctionGUID.Equal(x) },
+				{Comparers.NotEquals, x => FunctionResourceExposers.FunctionGUID.NotEqual(x) },
+			}));
 
 		private readonly MultipleFiltersSection<Resource> resourcePoolGuidFilterSection = new MultipleFiltersSection<Resource>(new GuidFilterSection<Resource>(
 			"Resource Pool ID",
@@ -35,15 +35,15 @@
 
 		private readonly MultipleFiltersSection<Resource> resourcePoolFilterSection;
 
-        private readonly MultipleFiltersSection<Resource> nameFilterSection = new MultipleFiltersSection<Resource>(new StringFilterSection<Resource>(
-            "Name",
-            new Dictionary<Comparers, Func<string, FilterElement<Resource>>>
-            {
-                {Comparers.Equals, x => ResourceExposers.Name.Equal(x)},
-                {Comparers.NotEquals, x => ResourceExposers.Name.NotEqual(x)},
-                {Comparers.Contains, x => ResourceExposers.Name.Contains(x)},
-                {Comparers.NotContains, x => ResourceExposers.Name.NotContains(x)},
-            }));
+		private readonly MultipleFiltersSection<Resource> nameFilterSection = new MultipleFiltersSection<Resource>(new StringFilterSection<Resource>(
+			"Name",
+			new Dictionary<Comparers, Func<string, FilterElement<Resource>>>
+			{
+				{Comparers.Equals, x => ResourceExposers.Name.Equal(x)},
+				{Comparers.NotEquals, x => ResourceExposers.Name.NotEqual(x)},
+				{Comparers.Contains, x => ResourceExposers.Name.Contains(x)},
+				{Comparers.NotContains, x => ResourceExposers.Name.NotContains(x)},
+			}));
 
 		private readonly MultipleFiltersSection<Resource> descriptionFilterSection = new MultipleFiltersSection<Resource>(new StringFilterSection<Resource>(
 			"Description",
@@ -56,36 +56,36 @@
 			}));
 
 		private readonly MultipleFiltersSection<Resource> idFilterSection = new MultipleFiltersSection<Resource>(new GuidFilterSection<Resource>(
-            "ID",
-            new Dictionary<Comparers, Func<Guid, FilterElement<Resource>>>
-            {
-                {Comparers.Equals, x => ResourceExposers.ID.Equal(x)},
-                { Comparers.NotEquals, x => ResourceExposers.ID.NotEqual(x) },
-            }));
+			"ID",
+			new Dictionary<Comparers, Func<Guid, FilterElement<Resource>>>
+			{
+				{Comparers.Equals, x => ResourceExposers.ID.Equal(x)},
+				{ Comparers.NotEquals, x => ResourceExposers.ID.NotEqual(x) },
+			}));
 
-        private readonly MultipleFiltersSection<Resource> dmaIdFilterSection = new MultipleFiltersSection<Resource>(new IntegerFilterSection<Resource>(
-            "DMA ID",
-            new Dictionary<Comparers, Func<int, FilterElement<Resource>>>
-            {
-                {Comparers.Equals, x => ResourceExposers.DmaID.Equal(x)},
-                {Comparers.NotEquals, x => ResourceExposers.DmaID.NotEqual(x)},
-            }));
+		private readonly MultipleFiltersSection<Resource> dmaIdFilterSection = new MultipleFiltersSection<Resource>(new IntegerFilterSection<Resource>(
+			"DMA ID",
+			new Dictionary<Comparers, Func<int, FilterElement<Resource>>>
+			{
+				{Comparers.Equals, x => ResourceExposers.DmaID.Equal(x)},
+				{Comparers.NotEquals, x => ResourceExposers.DmaID.NotEqual(x)},
+			}));
 
-        private readonly MultipleFiltersSection<Resource> elementIdFilterSection = new MultipleFiltersSection<Resource>(new IntegerFilterSection<Resource>(
-            "Element ID",
-            new Dictionary<Comparers, Func<int, FilterElement<Resource>>>
-            {
-                {Comparers.Equals, x => ResourceExposers.ElementID.Equal(x)},
-                {Comparers.NotEquals, x => ResourceExposers.ElementID.NotEqual(x)},
-            }));
+		private readonly MultipleFiltersSection<Resource> elementIdFilterSection = new MultipleFiltersSection<Resource>(new IntegerFilterSection<Resource>(
+			"Element ID",
+			new Dictionary<Comparers, Func<int, FilterElement<Resource>>>
+			{
+				{Comparers.Equals, x => ResourceExposers.ElementID.Equal(x)},
+				{Comparers.NotEquals, x => ResourceExposers.ElementID.NotEqual(x)},
+			}));
 
 		private readonly MultipleFiltersSection<Resource> mainDveDmaIdFilterSection = new MultipleFiltersSection<Resource>(new IntegerFilterSection<Resource>(
-	        "Main DVE DMA ID",
-	        new Dictionary<Comparers, Func<int, FilterElement<Resource>>>
-	        {
-				    {Comparers.Equals, x => FunctionResourceExposers.MainDVEDmaID.Equal(x)},
-				    {Comparers.NotEquals, x => FunctionResourceExposers.MainDVEDmaID.NotEqual(x)},
-	        }));
+			"Main DVE DMA ID",
+			new Dictionary<Comparers, Func<int, FilterElement<Resource>>>
+			{
+					{Comparers.Equals, x => FunctionResourceExposers.MainDVEDmaID.Equal(x)},
+					{Comparers.NotEquals, x => FunctionResourceExposers.MainDVEDmaID.NotEqual(x)},
+			}));
 
 		private readonly MultipleFiltersSection<Resource> mainDveElementIdFilterSection = new MultipleFiltersSection<Resource>(new IntegerFilterSection<Resource>(
 			"Main DVE Element ID",
@@ -131,7 +131,7 @@
 				{Comparers.NotEquals, (propertyName, propertyValue) => ResourceExposers.Properties.DictStringField(propertyName).NotEqual(propertyValue) },
 			}, "Name", "Value"));
 
-        private readonly MultipleFiltersSection<Resource> capabilityFilterSections = new MultipleFiltersSection<Resource>(new GuidStringFilterSection<Resource>(
+		private readonly MultipleFiltersSection<Resource> capabilityFilterSections = new MultipleFiltersSection<Resource>(new GuidStringFilterSection<Resource>(
 			"Discrete Capability",
 			new Dictionary<Comparers, Func<Guid, string, FilterElement<Resource>>>
 			{
@@ -175,29 +175,21 @@
 					{Comparers.GreaterThan, x => ResourceExposers.CreatedAt.GreaterThan(x) },
 					{Comparers.LessThan, x => ResourceExposers.CreatedAt.LessThan(x) },
 			}));
-
-		private readonly ResourceManagerHelper resourceManagerHelper = new ResourceManagerHelper(Engine.SLNet.SendSingleResponseMessage);
+		
+		private readonly IEnumerable<ResourcePool> resourcePools;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="FindResourcesWithFiltersSection"/>"/> class.
+		/// Initializes a new instance of the <see cref="ResourceFiltersSection"/>"/> class.
 		/// </summary>
-		public FindResourcesWithFiltersSection()
-        {
-            var resourcePools = resourceManagerHelper.GetResourcePools() ?? new ResourcePool[0];
-
-			if (!resourcePools.Any())
-			{
-				ItemTypeIsSupportedOnThisSystem = false;
-				return;
-			}
-
+		public ResourceFiltersSection(IEnumerable<ResourcePool> resourcePools)
+		{
 			resourcePoolFilterSection = new MultipleFiltersSection<Resource>(new ResourcePoolFilterSection(
 				"Resource Pool",
 				new Dictionary<Comparers, Func<Guid, FilterElement<Resource>>>
 				{
-								{Comparers.Equals,  x => ResourceExposers.PoolGUIDs.Contains(x) }
+					{Comparers.Equals,  x => ResourceExposers.PoolGUIDs.Contains(x) }
 				},
-				resourcePools));	
+				resourcePools));
 
 			foreach (var section in GetMultipleFiltersSections())
 			{
@@ -205,60 +197,41 @@
 			}
 
 			GenerateUi();
+			this.resourcePools = resourcePools;
 		}
 
-        /// <summary>
-        /// Filtering all resources in system based on provided input.
-        /// </summary>
-        /// <returns>Collection of filtered resources.</returns>
-        protected override IEnumerable<Resource> FindItemsWithFilters()
-        {
-            return resourceManagerHelper.GetResources(this.GetCombinedFilterElement()).ToList();
-		}
-
-		/// <summary>
-		/// Not supported
-		/// </summary>
-		/// <exception cref="NotSupportedException"></exception>
-		protected override long CountItemsWithFilters()
+		public override SectionContainingDataMinerObjectFilters<Resource> Clone()
 		{
-			throw new NotSupportedException();
-		}
-
-		/// <summary>
-		/// Gets name of resource.
-		/// </summary>
-		/// <param name="item">Resource for which we want to retrieve name.</param>
-		/// <returns>Name of resource.</returns>
-		protected override string IdentifyItem(Resource item)
-        {
-            return $"{item.Name} [{item.ID}]";
+			return new ResourceFiltersSection(this.resourcePools);
 		}
 
 		/// <summary>
 		/// Adding filter section in the UI.
 		/// </summary>
-		/// <param name="row">Row on which section should appear.</param>
-		protected override void AddFilterSections(ref int row)
-        {
+		protected override void GenerateUi()
+		{
+			Clear();
+
+			int row = -1;
+
 			AddSection(idFilterSection, new SectionLayout(++row, 0));
-            row += idFilterSection.RowCount;
+			row += idFilterSection.RowCount;
 
 			AddSection(nameFilterSection, new SectionLayout(row, 0));
-            row += nameFilterSection.RowCount;
+			row += nameFilterSection.RowCount;
 
 			AddSection(descriptionFilterSection, new SectionLayout(row, 0));
 			row += descriptionFilterSection.RowCount;
 
 			AddSection(functionGuidFilterSection, new SectionLayout(row, 0));
-            row += functionGuidFilterSection.RowCount;
+			row += functionGuidFilterSection.RowCount;
 
 			AddSection(functionNameFilterSection, new SectionLayout(row, 0));
 			row += functionNameFilterSection.RowCount;
-		
+
 			AddSection(resourcePoolFilterSection, new SectionLayout(row, 0));
-			row += resourcePoolFilterSection.RowCount;		
-			
+			row += resourcePoolFilterSection.RowCount;
+
 			AddSection(resourcePoolGuidFilterSection, new SectionLayout(row, 0));
 			row += resourcePoolGuidFilterSection.RowCount;
 
@@ -281,7 +254,7 @@
 			row += maxConcurrencyIdFilterSection.RowCount;
 
 			AddSection(propertyFilterSections, new SectionLayout(row, 0));
-            row += propertyFilterSections.RowCount;
+			row += propertyFilterSections.RowCount;
 
 			AddSection(capabilityFilterSections, new SectionLayout(row, 0));
 			row += capabilityFilterSections.RowCount;

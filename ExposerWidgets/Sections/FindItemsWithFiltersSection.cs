@@ -4,7 +4,7 @@
 	using System.Collections.Generic;
 	using System.Linq;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
-	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
+	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Sections;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
 
@@ -12,47 +12,49 @@
 	/// Section for selecting base info about filtering.
 	/// </summary>
 	/// <typeparam name="DataMinerObjectType">Type of filtered object.</typeparam>
-	public abstract class FindItemsWithFiltersSection<DataMinerObjectType> : FindItemsWithFiltersSectionBase
+	public class FindItemsWithFiltersSection<DataMinerObjectType> : FindItemsWithFiltersSectionBase
     {
 		private readonly CollapseButton collapseButton = new CollapseButton() { CollapseText = "-", ExpandText = "+", Width = 44 };
 		private readonly Label header = new Label($"Find {typeof(DataMinerObjectType).Name}s with filters") { Style = TextStyle.Title };
 
-        private readonly Button countItemsBasedOnFiltersButton = new Button($"Count {typeof(DataMinerObjectType).Name}s Based on Filters") { Width = 300 };
+		private readonly List<SectionContainingDataMinerObjectFilters<DataMinerObjectType>> sectionsContainingFilters = new List<SectionContainingDataMinerObjectFilters<DataMinerObjectType>>();
+
+		private readonly Button addOrFilterButton = new Button("Add OR Filter");
+
+		private readonly Button countItemsBasedOnFiltersButton = new Button($"Count {typeof(DataMinerObjectType).Name}s Based on Filters") { Width = 300 };
         private readonly Button findItemsBasedOnFiltersButton = new Button($"Find {typeof(DataMinerObjectType).Name}s Based on Filters") { Style = ButtonStyle.CallToAction, Width = 300 };
 
         private readonly ResultsSection<DataMinerObjectType> resultsSection;
+		private IDataMinerObjectFinder<DataMinerObjectType> dataMinerObjectFinder;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FindItemsWithFiltersSection{T}"/>"/> class.
-        /// </summary>
-        protected FindItemsWithFiltersSection()
-        {
-            resultsSection = new ResultsSection<DataMinerObjectType>((DataMinerObjectType obj) => IdentifyItem(obj));
-			resultsSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+		/// <summary>
+		/// 
+		/// </summary>
+		public FindItemsWithFiltersSection()
+		{
+			collapseButton.Pressed += (s, e) => SetWidgetsVisibility(!collapseButton.IsCollapsed);
 
-            collapseButton.Pressed += (s, e) => SetWidgetsVisibility(!collapseButton.IsCollapsed);
+			addOrFilterButton.Pressed += AddOrFilterButton_Pressed;
 
 			countItemsBasedOnFiltersButton.Pressed += (s, e) =>
 			{
 				collapseButton.IsCollapsed = true;
 				SetWidgetsVisibility(!collapseButton.IsCollapsed);
-				resultsSection.LoadNewCount(CountItemsWithFilters());
+				resultsSection.LoadNewCount(dataMinerObjectFinder.CountObjects(GetCombinedFilterElement(allowNoActiveFilter: true)));
 				InvokeDataMinerObjectsRetrievedBasedOnFilters();
 			};
 
 			findItemsBasedOnFiltersButton.Pressed += (s, e) =>
-            {
-                collapseButton.IsCollapsed = true;
-                SetWidgetsVisibility(!collapseButton.IsCollapsed);
+			{
+				collapseButton.IsCollapsed = true;
+				SetWidgetsVisibility(!collapseButton.IsCollapsed);
 				resultsSection.LoadNewItems(GetItemsBasedOnFilters());
-                InvokeDataMinerObjectsRetrievedBasedOnFilters();
-            };      
-        }
+				InvokeDataMinerObjectsRetrievedBasedOnFilters();
+			};
 
-		/// <summary>
-		/// A boolean indicating if counting is supported.
-		/// </summary>
-		protected virtual bool CountingItemsIsSupported { get; }
+			resultsSection = new ResultsSection<DataMinerObjectType>((DataMinerObjectType obj) => dataMinerObjectFinder.IdentifyObject(obj));
+			resultsSection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
+		}
 
 		/// <summary>
 		/// Gets list of selected DataMiner objects.
@@ -64,141 +66,94 @@
         /// </summary>
         public override void RegenerateUi()
         {
-            RegenerateFilterSections();
-            GenerateUi();
-        }
-
-        /// <summary>
-        /// Re-adds all widgets to the section.
-        /// </summary>
-        protected virtual void RegenerateFilterSections()
-        {
-			foreach (var section in GetMultipleFiltersSections())
+			foreach (var section in sectionsContainingFilters)
 			{
 				section.RegenerateUi();
 			}
 
 			resultsSection.RegenerateUi();
-		}
-
-        /// <summary>
-        /// Finding all objects based on provided filters.
-        /// </summary>
-        /// <returns>Collection of filtered objects.</returns>
-        protected abstract IEnumerable<DataMinerObjectType> FindItemsWithFilters();
+            
+            GenerateUi();
+        }
 
 		/// <summary>
-		/// Counting all objects based on provided filters.
+		/// 
 		/// </summary>
-		/// <returns>Collection of filtered objects.</returns>
-		protected abstract long CountItemsWithFilters();
+		/// <param name="dataMinerObjectFinder"></param>
+		public void SetDataMinerObjectFinder(IDataMinerObjectFinder<DataMinerObjectType> dataMinerObjectFinder)
+		{
+			this.dataMinerObjectFinder = dataMinerObjectFinder;
+		}
 
-        /// <summary>
-        /// Gets ID of object.
-        /// </summary>
-        /// <param name="item">Object for which ID is being retrieved.</param>
-        /// <returns>ID of an object.</returns>
-        protected abstract string IdentifyItem(DataMinerObjectType item);
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="newSectionContainingFilters"></param>
+		public void AddNewSectionContainingFilters(SectionContainingDataMinerObjectFilters<DataMinerObjectType> newSectionContainingFilters)
+		{
+			newSectionContainingFilters.RegenerateUiRequired += (o, e2) => InvokeRegenerateUi();
+
+			newSectionContainingFilters.Deleted += (o, e2) =>
+			{
+				sectionsContainingFilters.Remove(newSectionContainingFilters);
+				InvokeRegenerateUi();
+			};
+
+			sectionsContainingFilters.Add(newSectionContainingFilters);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public void RemoveAllSectionsContainingFilters()
+		{
+			sectionsContainingFilters.Clear();
+		}
 
 		private IEnumerable<DataMinerObjectType> GetItemsBasedOnFilters()
         {           
-            if (!OneOrMoreFiltersAreActive() || !ActiveFiltersAreValid())
+            bool oneOrMoreFiltersAreIncluded = sectionsContainingFilters.Any(s => s.IsIncluded);
+            bool includedFiltersAreValid = sectionsContainingFilters.Where(s => s.IsIncluded).All(s => s.IsValid);
+
+            if (!oneOrMoreFiltersAreIncluded || !includedFiltersAreValid)
             {
                 return new List<DataMinerObjectType>();
             }
+            else if(TryGetCombinedFilterElement(out var filterElement))
+            {
+				return dataMinerObjectFinder.FindObjects(filterElement).ToList();
+            }
             else
             {
-                return FindItemsWithFilters().ToList();
-            }
+				return new List<DataMinerObjectType>();
+			}
         }
 
-		/// <summary>
-		/// Adding filter section to UI.
-		/// </summary>
-		/// <param name="row">Row on which we want to add section.</param>
-		protected abstract void AddFilterSections(ref int row);
-
-        /// <summary>
-        /// Gets collection of individual filters in section.
-        /// </summary>
-        /// <returns>Collection of individual filters.</returns>
-        protected IEnumerable<IDataMinerObjectFilter<DataMinerObjectType>> GetIndividualFilters()
-        {
-            var fieldValues = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Select(field => field.GetValue(this)).ToList();
-
-            var fieldsImplementingInterface = fieldValues.OfType<IDataMinerObjectFilter<DataMinerObjectType>>().ToList();
-
-            var fieldsContainingCollectionOfInterface = fieldValues.OfType<IEnumerable<IDataMinerObjectFilter<DataMinerObjectType>>>().SelectMany(collection => collection).ToList();
-
-            var filters = fieldsImplementingInterface.Concat(fieldsContainingCollectionOfInterface).ToList();
-
-            return filters;
-        }
-
-        /// <summary>
-        /// Gets all fields and properties in the current instance of type <see cref="MultipleFiltersSection{DataMinerObjectType}"/>.
-        /// </summary>
-        /// <returns></returns>
-		protected IEnumerable<MultipleFiltersSection<DataMinerObjectType>> GetMultipleFiltersSections()
-		{
-			var fieldValues = this.GetType().GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).Select(field => field.GetValue(this)).ToList();
-
-			return fieldValues.OfType<MultipleFiltersSection<DataMinerObjectType>>().ToList();
-		}
-
-		/// <summary>
-		/// Checks if all active filters are valid.
-		/// </summary>
-		/// <returns>True if all active filters are valid, false if one or more of them isn't.</returns>
-		protected bool ActiveFiltersAreValid()
-        {
-            var individualFilters = GetIndividualFilters();
-
-            if (!individualFilters.Any()) return true;
-
-            return individualFilters.Where(filter => filter.IsIncluded).All(filter => filter.IsValid);
-        }
-
-        /// <summary>
-        /// Check if one or more filters are active.
-        /// </summary>
-        /// <returns>True if one or more filters are active, false if there isn't any active filter.</returns>
-        protected bool OneOrMoreFiltersAreActive()
-        {
-            var individualFilters = GetIndividualFilters();
-
-            return individualFilters.Any(filter => filter.IsIncluded);
-        }
-
-        /// <summary>
-        /// Method that tries to get combined filter based on input values of active filters.
-        /// </summary>
-        /// <param name="filter">Combined filter.</param>
-        /// <returns>True if successful.</returns>
-        protected bool TryGetCombinedFilterElement(out ANDFilterElement<DataMinerObjectType> filter)
+        private bool TryGetCombinedFilterElement(out FilterElement<DataMinerObjectType> filterElement, bool allowNoActiveFilter = false)
         {
             try
             {
-                filter = GetCombinedFilterElement();
-                return true;
+                filterElement = GetCombinedFilterElement(allowNoActiveFilter);
+
+                return filterElement != null;
             }
             catch (Exception)
             {
-                filter = null;
+                filterElement = null;
                 return false;
             }
         }
 
-        /// <summary>
-        /// Method that gets combined filter based on input values of active filters.
-        /// </summary>
-        /// <returns>Combined filter.</returns>
-        /// <exception cref="InvalidOperationException">If there isn't any active filter.</exception>
-        protected ANDFilterElement<DataMinerObjectType> GetCombinedFilterElement(bool allowNoActiveFilter = false)
+		/// <summary>
+		/// Method that gets combined filter based on input values of active filters.
+		/// </summary>
+		/// <returns>Combined filter.</returns>
+		/// <exception cref="InvalidOperationException">If there isn't any active filter.</exception>
+		private FilterElement<DataMinerObjectType> GetCombinedFilterElement(bool allowNoActiveFilter = false)
         {
-            var individualActiveFilterElements = GetIndividualFilters().Where(filter => filter.IsIncluded).Select(filter => filter.FilterElement);
+            var includedAndFilters = sectionsContainingFilters.Where(filter => filter.IsIncluded).Select(filter => filter.FilterElement);
 
-            if (!individualActiveFilterElements.Any())
+            if (!includedAndFilters.Any())
             {
                 if (allowNoActiveFilter)
                 {
@@ -210,7 +165,7 @@
 				}
 			}
 
-            return new ANDFilterElement<DataMinerObjectType>(individualActiveFilterElements.ToArray());
+            return new ORFilterElement<DataMinerObjectType>(includedAndFilters.ToArray());
         }
 
         /// <summary>
@@ -225,6 +180,11 @@
             GenerateUi(ref row);
         }
 
+		protected virtual void AddWidgetsBeforeFilters(ref int row)
+		{
+			// Override to implement
+		}
+
         /// <summary>
         /// Generates section UI.
         /// </summary>
@@ -234,11 +194,19 @@
             AddWidget(collapseButton, ++row, 0);
             AddWidget(header, row, 1, 1, 4);
 
-            AddFilterSections(ref row);
+			AddWidgetsBeforeFilters(ref row);
+
+			foreach (var filtersSection in sectionsContainingFilters)
+			{
+				AddSection(filtersSection, new SectionLayout(++row, 0));
+				row += filtersSection.RowCount;
+			}
+
+			AddWidget(addOrFilterButton, ++row, 0, 1, 5);
 
 			AddWidget(new WhiteSpace(), ++row, 0);
 
-            if (CountingItemsIsSupported)
+            if (dataMinerObjectFinder.SupportsCountingObjects)
             {
 				AddWidget(countItemsBasedOnFiltersButton, ++row, 0, 1, 5);
 			}
@@ -254,13 +222,20 @@
         /// <param name="isVisible"></param>
 		protected virtual void SetWidgetsVisibility(bool isVisible)
 		{
-			foreach (var section in GetMultipleFiltersSections())
+			foreach (var section in sectionsContainingFilters)
 			{
 				section.IsVisible = isVisible;
 			}
 
             countItemsBasedOnFiltersButton.IsVisible = isVisible;
             findItemsBasedOnFiltersButton.IsVisible = isVisible;
+		}
+
+		private void AddOrFilterButton_Pressed(object sender, EventArgs e)
+		{
+			var newSectionContainingFilters = sectionsContainingFilters.First().Clone();
+
+			AddNewSectionContainingFilters(newSectionContainingFilters);
 		}
 	}
 }

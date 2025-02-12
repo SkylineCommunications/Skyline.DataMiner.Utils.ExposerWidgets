@@ -1,21 +1,19 @@
-﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
+﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections.Jobs
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Skyline.DataMiner.Automation;
 	using Skyline.DataMiner.Net.Jobs;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Net.Sections;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
 	/// <summary>
 	/// Section for filtering jobs.
 	/// </summary>
-	public class FindJobsWithFiltersSection : FindItemsWithFiltersSection<Job>
+	public class JobFiltersSection : SectionContainingDataMinerObjectFilters<Job>
 	{
 		private readonly MultipleFiltersSection<Job> jobIdFilterSection = new MultipleFiltersSection<Job>(new GuidFilterSection<Job>(
 			"ID",
@@ -51,12 +49,10 @@
 				{Comparers.NotContains, (fieldDescriptorId, propertyValue) => JobExposers.FieldValues.JobField(new FieldDescriptorID(fieldDescriptorId)).NotContains(propertyValue) },
 		   }, "Field Descriptor ID", "Value"));
 
-		private readonly JobManagerHelper jobManagerHelper = new JobManagerHelper(Engine.SLNet.SendMessages);
-
 		/// <summary>
-		/// Initializes a new instance of the <see cref="FindJobsWithFiltersSection"/>"/> class.
+		/// Initializes a new instance of the <see cref="JobFiltersSection"/>"/> class.
 		/// </summary>
-		public FindJobsWithFiltersSection()
+		public JobFiltersSection()
 		{
 			foreach (var section in GetMultipleFiltersSections())
 			{
@@ -66,17 +62,20 @@
 			GenerateUi();
 		}
 
-		/// <summary>
-		/// Counting items is supported.
-		/// </summary>
-		protected override bool CountingItemsIsSupported { get; } = true;
+		public override SectionContainingDataMinerObjectFilters<Job> Clone()
+		{
+			return new JobFiltersSection();
+		}
 
 		/// <summary>
 		/// Adding filter section in the UI.
 		/// </summary>
-		/// <param name="row">Row on which section should appear.</param>
-		protected override void AddFilterSections(ref int row)
+		protected override void GenerateUi()
 		{
+			Clear();
+
+			int row = -1;
+
 			AddSection(jobIdFilterSection, new SectionLayout(++row, 0));
 			row += jobIdFilterSection.RowCount;
 
@@ -88,33 +87,6 @@
 
 			AddSection(fieldFiltersSection, new SectionLayout(++row, 0));
 			row += jobEndFilterSection.RowCount;
-		}
-
-		/// <summary>
-		/// Filtering all jobs in system based on provided input.
-		/// </summary>
-		/// <returns>Collection of filtered jobs.</returns>
-		protected override IEnumerable<Job> FindItemsWithFilters()
-		{
-			return jobManagerHelper.Jobs.Read(GetCombinedFilterElement()).ToList();
-		}
-
-		/// <summary>
-		/// Count jobs matching the filters.
-		/// </summary>
-		protected override long CountItemsWithFilters()
-		{
-			return jobManagerHelper.Jobs.Count(GetCombinedFilterElement(allowNoActiveFilter: true));
-		}
-
-		/// <summary>
-		/// Gets name of job.
-		/// </summary>
-		/// <param name="item">Job for which we want to retrieve name.</param>
-		/// <returns>Name of Job.</returns>
-		protected override string IdentifyItem(Job item)
-		{
-			return $"{item.GetJobName()} [{item.ID.Id}]";
 		}
 	}
 }

@@ -1,38 +1,31 @@
-﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections
+﻿namespace Skyline.DataMiner.Utils.ExposerWidgets.Sections.DomInstances
 {
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
-	using Skyline.DataMiner.Automation;
+	using System.Text;
+	using System.Threading.Tasks;
 	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
-	using Skyline.DataMiner.Net.Apps.Modules;
 	using Skyline.DataMiner.Net.ManagerStore;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.Net.Sections;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Filters;
 	using Skyline.DataMiner.Utils.ExposerWidgets.Helpers;
 	using Skyline.DataMiner.Utils.InteractiveAutomationScript;
-	using Skyline.DataMiner.Utils.YLE.UI.Filters;
 
-	/// <summary>
-	/// Section for filtering DOM instances.
-	/// </summary>
-	public class FindDomInstancesWithFiltersSection : FindItemsWithFiltersSection<DomInstance>
+	public class DomInstanceFiltersSection : SectionContainingDataMinerObjectFilters<DomInstance>
 	{
-		private readonly Label moduleIdLabel = new Label("DOM Module ID:");
-		private readonly DropDown moduleIdDropDown;
-
 		private readonly MultipleFiltersSection<DomInstance> idFilterSection = new MultipleFiltersSection<DomInstance>(new GuidFilterSection<DomInstance>(
-			"ID", 
+			"ID",
 			new Dictionary<Comparers, Func<Guid, FilterElement<DomInstance>>>
 			{
 				{Comparers.Equals, x => DomInstanceExposers.Id.Equal(x) },
-				{Comparers.NotEquals, x => DomInstanceExposers.Id.NotEqual(x)}, 
+				{Comparers.NotEquals, x => DomInstanceExposers.Id.NotEqual(x)},
 			}));
 
-        private readonly MultipleFiltersSection<DomInstance> nameFilterSection = new MultipleFiltersSection<DomInstance>(new StringFilterSection<DomInstance>(
-			"Name", 
-			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>> 
+		private readonly MultipleFiltersSection<DomInstance> nameFilterSection = new MultipleFiltersSection<DomInstance>(new StringFilterSection<DomInstance>(
+			"Name",
+			new Dictionary<Comparers, Func<string, FilterElement<DomInstance>>>
 			{
 				{Comparers.Equals, x => DomInstanceExposers.Name.Equal(x) },
 				{Comparers.NotEquals, x => DomInstanceExposers.Name.NotEqual(x)},
@@ -97,28 +90,13 @@
 				{Comparers.Equals, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).Equal(fieldValue) },
 				{Comparers.NotEquals, (fieldId, fieldValue) => DomInstanceExposers.FieldValues.DomInstanceField(new FieldDescriptorID(fieldId)).NotEqual(fieldValue) },
 			}, "Field ID"));
-
+		private readonly DomHelper domHelper;
 		private MultipleFiltersSection<DomInstance> selectableIntegerFieldValueFiltersSection;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="FindDomInstancesWithFiltersSection"/>"/> class.
-		/// </summary>
-		public FindDomInstancesWithFiltersSection()
+		public DomInstanceFiltersSection(DomHelper domHelper) : base()
 		{
-			var moduleSettingsHelper = new ModuleSettingsHelper(Engine.SLNet.SendMessages);
-			var allModuleIds = moduleSettingsHelper.ModuleSettings.ReadAll().Select(x => x.ModuleId).OrderBy(id => id).ToList();
+			this.domHelper = domHelper ?? throw new ArgumentNullException(nameof(domHelper));
 
-			if (!allModuleIds.Any())
-			{
-				ItemTypeIsSupportedOnThisSystem = false;
-				return;
-			}
-
-			moduleIdDropDown = new DropDown(allModuleIds, allModuleIds.FirstOrDefault() ?? throw new InvalidOperationException("No DOM modules defined on this system")) { IsDisplayFilterShown = true };
-			DomHelper = new DomHelper(Engine.SLNet.SendMessages, moduleIdDropDown.Selected);
-
-			moduleIdDropDown.Changed += ModuleIdDropDown_Changed;
-			
 			InitializeSelectableFilters();
 
 			foreach (var section in GetMultipleFiltersSections())
@@ -129,39 +107,22 @@
 			GenerateUi();
 		}
 
-		/// <summary>
-		/// Gets the DomHelper for the current DOM Module ID.
-		/// </summary>
-		public DomHelper DomHelper { get; private set; }
-
-		/// <summary>
-		/// Counting items is supported.
-		/// </summary>
-		protected override bool CountingItemsIsSupported { get; } = true;
-
-		private void ModuleIdDropDown_Changed(object sender, DropDown.DropDownChangedEventArgs e)
-        {
-			if (!string.IsNullOrWhiteSpace(e.Selected)) 
-			{
-				DomHelper = new DomHelper(Engine.SLNet.SendMessages, e.Selected);
-
-				InitializeSelectableFilters();
-			}
-
-			InvokeRegenerateUi();
-        }
+		public override SectionContainingDataMinerObjectFilters<DomInstance> Clone()
+		{
+			return new DomInstanceFiltersSection(domHelper);
+		}
 
 		private void InitializeSelectableFilters()
 		{
 			InitializeSelectableDomDefinitionFilterSection();
 
-			var allSectionDefinitions = DomHelper.SectionDefinitions.ReadAll();
+			var allSectionDefinitions = domHelper.SectionDefinitions.ReadAll();
 			var fieldDescriptorsPerSectionDefinition = allSectionDefinitions.ToDictionary(sd => sd, sd => sd.GetAllFieldDescriptors());
 
 			InitializeSelectableSectionDefinitionFilterSection(allSectionDefinitions);
 
 			InitializeSelectableStringFieldDescriptorFilterSection(fieldDescriptorsPerSectionDefinition);
-			
+
 			InitializeSelectableIntegerFieldDescriptorFilterSection(fieldDescriptorsPerSectionDefinition);
 		}
 
@@ -184,7 +145,7 @@
 					}
 
 					dropDownOptions.Add(new DropDownOption<Guid>(displayValue, internalValue));
-				}		
+				}
 			}
 
 			selectableStringFieldValueFiltersSection = new MultipleFiltersSection<DomInstance>(new SelectableGuidStringFilterSection<DomInstance>(
@@ -271,7 +232,7 @@
 
 		private void InitializeSelectableDomDefinitionFilterSection()
 		{
-			var allDomDefinitions = DomHelper.DomDefinitions.ReadAll();
+			var allDomDefinitions = domHelper.DomDefinitions.ReadAll();
 
 			var dropDownOptions = new List<DropDownOption<Guid>>();
 
@@ -302,19 +263,16 @@
 			selectableDomDefinitionFiltersection.RegenerateUiRequired += (s, e) => InvokeRegenerateUi();
 		}
 
-		/// <summary>
-		/// Adding filter sections on a row specified.
-		/// </summary>
-		/// <param name="row">Row position where new section should appear.</param>
-		protected override void AddFilterSections(ref int row)
-        {
-            AddWidget(moduleIdLabel, ++row, 1);
-            AddWidget(moduleIdDropDown, row, 4, 1, 2);
+		protected override void GenerateUi()
+		{
+			Clear();
 
-            AddSection(idFilterSection, new SectionLayout(++row, 0));
+			int row = -1;
+
+			AddSection(idFilterSection, new SectionLayout(++row, 0));
 			row += idFilterSection.RowCount;
 
-            AddSection(nameFilterSection, new SectionLayout(row, 0));
+			AddSection(nameFilterSection, new SectionLayout(row, 0));
 			row += nameFilterSection.RowCount;
 
 			AddSection(domDefinitionIdFilterSection, new SectionLayout(row, 0));
@@ -346,70 +304,6 @@
 
 			AddSection(selectableIntegerFieldValueFiltersSection, new SectionLayout(row, 0));
 			row += selectableIntegerFieldValueFiltersSection.RowCount;
-		}
-
-        /// <summary>
-        /// Retrieving all items in the system based on input values.
-        /// </summary>
-        /// <returns>Collection of dom instances.</returns>
-        protected override IEnumerable<DomInstance> FindItemsWithFilters()
-        {
-			if (!DomHelpersIsValid())
-			{
-				return new List<DomInstance>();
-			}
-
-			return DomHelper.DomInstances.Read(GetCombinedFilterElement());
-        }
-
-		/// <summary>
-		/// Counts all items in the system based on input values.
-		/// </summary>
-		/// <returns>Count.</returns>
-		protected override long CountItemsWithFilters()
-		{
-			if (!DomHelpersIsValid())
-			{
-				return 0;
-			}
-
-			return DomHelper.DomInstances.Count(GetCombinedFilterElement(allowNoActiveFilter: true));
-		}
-
-		private bool DomHelpersIsValid()
-		{
-			if (DomHelper == null)
-			{
-				moduleIdDropDown.ValidationState = UIValidationState.Invalid;
-				moduleIdDropDown.ValidationText = "Provide a valid DOM Module ID";
-				return false;
-			}
-			else
-			{
-				moduleIdDropDown.ValidationState = UIValidationState.Valid;
-				return true;
-			}
-		}
-
-		/// <summary>
-		/// Retrieves name of dom instance.
-		/// </summary>
-		/// <returns>Name of dom instance.</returns>
-		protected override string IdentifyItem(DomInstance item)
-        {
-            return $"{item.Name} [{item.ID.Id}]";
-        }
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="isVisible"></param>
-		protected override void SetWidgetsVisibility(bool isVisible)
-		{
-			base.SetWidgetsVisibility(isVisible);
-
-			moduleIdLabel.IsVisible = isVisible;
-			moduleIdDropDown.IsVisible = isVisible;
 		}
 	}
 }
